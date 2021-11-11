@@ -1,6 +1,8 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import "reflect-metadata";
 import {Routes} from "./config/routes";
+
 
 class App {
   public app: express.Application;

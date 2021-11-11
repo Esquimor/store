@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "pretty": true,
@@ -8,6 +10,6 @@
     "outDir": "./dist",
     "baseUrl": "./lib"
   },
-  "include": ["lib/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["entity/*.ts", "controllers/*.ts"],
+  "exclude": ["node_modules"],
 }

@@ -5,8 +5,11 @@ export class Routes {
   public nodesController: NodesController = new NodesController();
 
   public routes(app): void {
-    app.route("/").get(this.nodesController.index);
-
-    app.route("/nodes").get(this.nodesController.index);
+    /*
+    app
+      .route("/nodes")
+      .get(this.nodesController.index)
+      .post(this.nodesController.create);
+    */
   }
 }
