@@ -1,11 +1,10 @@
 import {Request, Response} from "express";
-import { User } from "../entity/User";
-import { createConnection } from "typeorm";
+import UserDao from "../dao/UserDao";
 
 export default class UserController {
+
   public async index(req: Request, res: Response) {
-    const connection = await createConnection()
-    const users = await connection.getRepository(User).find();
+    const users = await UserDao.getAll();
     if (!users) {
       res.status(400).json({message: "users not found"});
       return;
