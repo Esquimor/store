@@ -1,12 +1,12 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import "reflect-metadata";
-import {Routes} from "./config/routes";
+import DefaultRouter from "./routers/DefaultRouter";
 
 
 class App {
   public app: express.Application;
-  public routePrv: Routes = new Routes();
+  public routePrv: DefaultRouter = new DefaultRouter();
 
   constructor() {
     this.app = express();

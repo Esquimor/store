@@ -1,23 +1,17 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class User {
+export class Feature {
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    email: string;
+    name: string;
 
     @Column()
-    password: string;
+    values: string;
 
     @Column()
-    firstname: string;
-
-    @Column()
-    lastname: number;
-
-    @Column()
-    phone: boolean;
+    type: string;
 }

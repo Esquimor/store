@@ -1,11 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Organization {
+export class OrderLine {
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    name: string;
+    quantity: number;
 }

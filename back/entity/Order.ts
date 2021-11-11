@@ -1,11 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Organization {
+export class Order {
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    name: string;
+    status: string;
 }
