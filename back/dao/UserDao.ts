@@ -1,11 +1,10 @@
 import { User } from "../entity/User";
 import {getConnection} from "typeorm";
+import Dao from "./Dao";
 
-export default class UserDao {
+export default class UserDao extends Dao {
 
-  static getAll() {
-    const users = getConnection().getRepository(User).find();
-    if (!users) return null;
-    return users;
+  constructor() {
+    super(User)
   }
 }

@@ -7,6 +7,6 @@ export default class DefaultRouter {
   public routes(app): void {
     app
       .route("/")
-      .get(this.userController.index);
+      .get(this.userController.get.bind(this.userController));
   }
 }

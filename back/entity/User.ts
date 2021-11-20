@@ -1,9 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
+import { ROLE } from "../../commons/Interface/Role";
+import { Order } from "./Order";
+import { Organization } from "./Organization";
 
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("uuid")
     id: number;
 
     @Column()
@@ -20,4 +23,17 @@ export class User {
 
     @Column()
     phone: boolean;
+
+    @Column({
+        type: "enum",
+        enum: ROLE,
+        default: ROLE.ADMIN
+    })
+    role: ROLE;
+
+    @ManyToOne(() => Organization, organization => organization.users)
+    organization: Organization;
+
+    @OneToMany(() => Order, order => order.user)
+    orders: Order[];
 }
