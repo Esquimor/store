@@ -20,8 +20,8 @@ import {
   ref,
   toRef,
   Ref,
-} from 'vue';
-import { Todo, Meta } from './models';
+} from "vue";
+import { Todo, Meta } from "./models";
 
 function useClickCount() {
   const clickCount = ref(0);
@@ -39,7 +39,7 @@ function useDisplayTodo(todos: Ref<Todo[]>) {
 }
 
 export default defineComponent({
-  name: 'CompositionComponent',
+  name: "CompositionComponent",
   props: {
     title: {
       type: String,
@@ -58,7 +58,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    return { ...useClickCount(), ...useDisplayTodo(toRef(props, 'todos')) };
+    return { ...useClickCount(), ...useDisplayTodo(toRef(props, "todos")) };
   },
 });
 </script>

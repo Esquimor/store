@@ -3,6 +3,6 @@
 
 export default {
   user: {
-    login: 'Login'
+    login: "Login"
   }
 };

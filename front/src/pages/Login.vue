@@ -40,11 +40,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useQuasar } from 'quasar'
+import { defineComponent, ref } from "vue";
+import { useQuasar } from "quasar"
 
 export default defineComponent({
-  name: 'LoginIndex',
+  name: "LoginIndex",
   components: { },
   setup() {
     const $q = useQuasar()
@@ -56,18 +56,18 @@ export default defineComponent({
     const onSubmit = () => {
       if (accept.value !== true) {
         $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'warning',
-          message: 'You need to accept the license and terms first'
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message: "You need to accept the license and terms first"
         })
       }
       else {
         $q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: 'Submitted'
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Submitted"
         })
       }
     }
