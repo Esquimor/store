@@ -1,11 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
-import { Order } from "./Order";
-import { OrderLineFeature } from "./OrderLineFeature";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Order } from './Order';
+import { OrderLineFeature } from './OrderLineFeature';
 
 @Entity()
 export class OrderLine {
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: number;
 
     @Column()

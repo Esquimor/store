@@ -1,3 +1,3 @@
 export enum ORDER {
-  CREATED = "created"
+  CREATED = 'created'
 }

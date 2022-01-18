@@ -1,12 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, Tree, TreeChildren, TreeParent } from "typeorm";
-import { Feature } from "./Feature";
-import { Furniture } from "./Furniture";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, Tree, TreeChildren, TreeParent } from 'typeorm';
+import { Feature } from './Feature';
+import { Furniture } from './Furniture';
 
 @Entity()
-@Tree("closure-table")
+@Tree('closure-table')
 export class FurnitureCategory {
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: number;
 
     @Column()

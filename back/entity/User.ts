@@ -1,12 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
-import { ROLE } from "../../commons/Interface/Role";
-import { Order } from "./Order";
-import { Organization } from "./Organization";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { ROLE } from '../../commons/Interface/Role';
+import { Order } from './Order';
+import { Organization } from './Organization';
 
 @Entity()
 export class User {
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: number;
 
     @Column()
@@ -25,7 +25,7 @@ export class User {
     phone: boolean;
 
     @Column({
-        type: "enum",
+        type: 'enum',
         enum: ROLE,
         default: ROLE.ADMIN
     })

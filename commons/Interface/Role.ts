@@ -1,5 +1,5 @@
 export enum ROLE {
-  ADMIN = "admin",
-  NORMAL = "normal",
-  VALIDATOR = "validator"
+  ADMIN = 'admin',
+  NORMAL = 'normal',
+  VALIDATOR = 'validator'
 };

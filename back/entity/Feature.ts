@@ -1,18 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from "typeorm";
-import { FeatureCategory } from "./FeatureCategory";
-import { FurnitureCategory } from "./FurnitureCategory";
-import { OrderLineFeature } from "./OrderLineFeature";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import { FeatureCategory } from './FeatureCategory';
+import { FurnitureCategory } from './FurnitureCategory';
+import { OrderLineFeature } from './OrderLineFeature';
 
 @Entity()
 export class Feature {
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: number;
 
     @Column()
     name: string;
 
-    @Column("simple-array")
+    @Column('simple-array')
     values: string[];
 
     @Column()

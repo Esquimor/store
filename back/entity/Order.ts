@@ -1,16 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
-import { ORDER } from "../../commons/Interface/Order"
-import { OrderLine } from "./OrderLine";
-import { User } from "./User";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { ORDER } from '../../commons/Interface/Order'
+import { OrderLine } from './OrderLine';
+import { User } from './User';
 
 @Entity()
 export class Order {
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: number;
 
     @Column({
-        type: "enum",
+        type: 'enum',
         enum: ORDER,
         default: ORDER.CREATED
     })

@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
-import { Feature } from "./Feature";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Feature } from './Feature';
 
 @Entity()
 export class FeatureCategory {
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: number;
 
     @Column()

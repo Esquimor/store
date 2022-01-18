@@ -1,8 +1,8 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import "reflect-metadata";
-import DefaultRouter from "./routers/DefaultRouter";
-import { createConnection } from "typeorm";
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import 'reflect-metadata';
+import DefaultRouter from './routers/DefaultRouter';
+import { createConnection } from 'typeorm';
 
 
 class App {
