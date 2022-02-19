@@ -15,19 +15,26 @@ export class User {
     @Column()
     password: string;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     firstname: string;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     lastname: number;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     phone: boolean;
 
     @Column({
         type: 'enum',
         enum: ROLE,
-        default: ROLE.ADMIN
+        default: ROLE.ADMIN,
+        nullable: true,
     })
     role: ROLE;
 
@@ -36,4 +43,19 @@ export class User {
 
     @OneToMany(() => Order, order => order.user)
     orders: Order[];
+
+    initializeNewUser({ email, password }: { email: string; password: string}) {
+        this.email = email;
+        this.password = password;
+    }
+
+    userForResponse() {
+        return {
+            id: this.id,
+            email: this.email,
+            firstname: this.firstname,
+            lastname: this.lastname,
+            phone: this.phone,
+        }
+    }
 }
