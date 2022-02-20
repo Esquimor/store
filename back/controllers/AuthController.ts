@@ -4,7 +4,7 @@ import { User } from '../entity/User';
 import FormAuth from "../form/FormAuth";
 import FormRegister from "../form/FormRegister";
 import { comparePassword, generatePassword } from "../technical/password";
-import { generateToken } from "../technical/token";
+import { decodeToken, generateToken } from "../technical/token";
 
 export default class AuthController {
 
@@ -64,6 +64,13 @@ export default class AuthController {
     res.json({
       token:  generateToken(userCreated.id),
       user: userCreated.userForResponse()
+    })
+  }
+
+  public async me(req: Request, res: Response) {
+    res.json({
+      // @ts-ignore
+      user: (req.user as unknown as User).userForResponse()
     })
   }
 }

@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import AuthController from '../controllers/AuthController';
+import { auth } from '../middleware/auth';
 
 export default class AuthRouter {
   public authController: AuthController = new AuthController();
@@ -11,5 +12,8 @@ export default class AuthRouter {
     app
       .route("/register")
       .post(this.authController.register);
+    app
+      .route("/me")
+      .post(auth, this.authController.me)
   }
 }

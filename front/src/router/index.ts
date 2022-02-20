@@ -1,4 +1,6 @@
 import { route } from "quasar/wrappers";
+import UserRequest from "src/request/UserRequest";
+import { UserActionTypes } from "src/store/user/action-types";
 import {
   createMemoryHistory,
   createRouter,
@@ -37,7 +39,20 @@ export default route<StateInterface>(({ store }) => {
   Router.beforeEach((to, from, next) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (to.matched.some(record => record.meta.requireAuth) && !store.getters["user/user"]) {
-      next({ name: "login" })
+      const token = localStorage.getItem("token");
+      if (!token) {
+        next({ name: "login" });
+        return;
+      }
+      void UserRequest.Me()
+        .then(({ user }) => {
+          if (!user) {
+            next({ name: "login" });
+            return;
+          }
+          void store.dispatch(`user/${UserActionTypes.SET_USER}`, user);
+          next();
+        })
     } else {
       next()
     }

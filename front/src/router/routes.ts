@@ -11,14 +11,30 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: "/settings",
+    name: "settings",
+    component: () => import("layouts/SettingLayout.vue"),
+    children: [
+      {
+        path: "/user",
+        name: "settings-user",
+        component: () => import("pages/Settings/User.vue")
+      },
+      {
+        path: "/organizarion",
+        name: "settings-organization",
+        component: () => import("pages/Settings/Organization.vue")
+      }
+    ],
+    meta: {
+      requireAuth: true
+    }
+  },
+  {
     path: "/login",
     name: "login",
-    component: () => import("layouts/LoginLayout.vue"),
-    children: [{ path: "", component: () => import("pages/Login.vue") }],
+    component: () => import("pages/Login.vue"),
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: "/:catchAll(.*)*",
     name: "rest",

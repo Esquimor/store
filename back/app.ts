@@ -26,7 +26,7 @@ class App {
     // Create Database Connection
     createConnection()
 
-    this.app.use(bodyParser());
+    this.app.use(bodyParser.json());
     // CORS
     this.app.use(cors());
   }

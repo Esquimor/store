@@ -78,6 +78,7 @@ module.exports = configure(function (ctx) {
       chainWebpack (/* chain */) {
         //
       },
+      env: require("dotenv").config().parsed
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -102,7 +103,9 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        "Notify"
+      ]
     },
 
     // animations: 'all', // --- includes all animations

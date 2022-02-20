@@ -1,87 +1,84 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6">{{$t('user.login')}}</div>
-      </q-card-section>
-      <q-card-section>
-       <q-form
-          @submit="onSubmit"
-          @reset="onReset"
-          class="q-gutter-md"
-        >
-        <q-input
-          filled
-          v-model="username"
-          label="Your name *"
-          hint="Name and surname"
-          lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
-        />
+  <login-layout>
+    <q-card-section>
+      <div class="text-h6">{{$t('user.login')}}</div>
+    </q-card-section>
+    <q-card-section>
+    <q-form
+        @submit="onSubmit"
+        @reset="onReset"
+        class="q-gutter-md"
+      >
+      <q-input
+        filled
+        v-model="email"
+        label="Email"
+        lazy-rules
+        :rules="[ val => val && val.length > 0 || 'Please type something']"
+      />
 
-        <q-input
-          filled
-          v-model="password"
-          label="Your age *"
-          lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
-        />
+      <q-input
+        filled
+        v-model="password"
+        label="Password"
+        lazy-rules
+        :rules="[ val => val && val.length > 0 || 'Please type something']"
+      />
 
-        <q-toggle v-model="accept" label="I accept the license and terms" />
-
-        <div>
-          <q-btn label="Submit" type="submit" color="primary"/>
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-        </div>
-       </q-form>
-      </q-card-section>
-    </q-card>
-  </q-page>
+      <div>
+        <q-btn label="Submit" type="submit" color="primary"/>
+        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+      </div>
+    </q-form>
+    </q-card-section>
+  </login-layout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar"
+import LoginLayout from "../layouts/LoginLayout.vue";
+import { useStore } from "../store/index";
+import { UserActionTypes } from "../store/user/action-types";
+import { useRouter } from "vue-router";
+import UserRequest from "../request/UserRequest";
 
 export default defineComponent({
   name: "LoginIndex",
-  components: { },
+  components: {
+    LoginLayout
+   },
   setup() {
+    const $store = useStore()
     const $q = useQuasar()
+    const router = useRouter()
 
-    const username = ref(null)
-    const password = ref(null)
-    const accept = ref(false)
+    const email = ref("")
+    const password = ref("")
 
     const onSubmit = () => {
-      if (accept.value !== true) {
-        $q.notify({
-          color: "red-5",
-          textColor: "white",
-          icon: "warning",
-          message: "You need to accept the license and terms first"
+      void UserRequest.Login({ email: email.value, password: password.value })
+        .then(({ user, token }) => {
+          localStorage.setItem("token", token)
+          void $store.dispatch(`user/${UserActionTypes.SET_USER}`, user)
+          $q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Submitted"
+          })
+          void router.push({name: "home"})
         })
-      }
-      else {
-        $q.notify({
-          color: "green-4",
-          textColor: "white",
-          icon: "cloud_done",
-          message: "Submitted"
-        })
-      }
     }
 
     const onReset = () => {
-      username.value = null
-      password.value = null
-      accept.value = false
+      email.value = "";
+      password.value = "";
     }
 
     return { 
-      username,
+      email,
       password,
-      accept,
       onSubmit,
       onReset
      };

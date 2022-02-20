@@ -12,6 +12,7 @@ export const auth = async (req, res, next) => {
     if (user) {
       req.user = user;
       next();
+      return;
     }
   }
   res.status(401).send({ msg: 'Unauthorized' });
