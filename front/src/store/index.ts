@@ -6,7 +6,9 @@ import {
   useStore as vuexUseStore,
 } from "vuex"
 import user from "./user"
+import organization from "./organization"
 import { UserStateInterface } from "./user/state"
+import { OrganizationStateInterface } from "./organization/state"
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -21,7 +23,8 @@ import { UserStateInterface } from "./user/state"
  */
 
 export interface StateInterface {
-  user: UserStateInterface
+  user: UserStateInterface,
+  organization: OrganizationStateInterface
 }
 
 // provide typings for `this.$store`
@@ -37,7 +40,8 @@ export const storeKey: InjectionKey<VuexStore<StateInterface>> = Symbol("vuex-ke
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
-      user
+      user,
+      organization
     },
 
     // enable strict mode (adds overhead!)

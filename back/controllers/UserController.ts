@@ -1,5 +1,7 @@
 import {Request, Response} from 'express';
 import UserDao from '../dao/UserDao';
+import FormPatchUser from "../form/User/FormPatchUser";
+import { RequestAuth } from "../middleware/auth";
 
 export default class UserController {
 
@@ -26,5 +28,23 @@ export default class UserController {
       return;
     }
     res.json(user);
+  }
+
+  public async patch(req: RequestAuth, res: Response) {
+    const query = (req.body as unknown as { firstname?: string, lastname?: string});
+    const form = new FormPatchUser(query);
+    if (form.hasError()) {
+      res.status(400).json({message: "missing param"})
+      return;
+    }
+    const userPatched = req.user;
+    userPatched.firstname = query.firstname;
+    userPatched.lastname = query.lastname;
+    const userPatchSaved = await this.userDao.update(userPatched);
+    if (!userPatchSaved) {
+      res.status(400).json({message: 'an error has occured'});
+      return;
+    }
+    res.json({ user: userPatchSaved.userForResponse() })
   }
 }

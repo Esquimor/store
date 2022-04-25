@@ -6,7 +6,7 @@ export interface UserStateInterface {
 
 function state(): UserStateInterface {
   return {
-    user: null
+    user: null,
   }
 };
 

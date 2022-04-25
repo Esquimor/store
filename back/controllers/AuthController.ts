@@ -1,10 +1,12 @@
 import {Request, Response} from 'express';
 import UserDao from '../dao/UserDao';
+import OrganizationDao from '../dao/OrganizationDao';
 import { User } from '../entity/User';
-import FormAuth from "../form/FormAuth";
-import FormRegister from "../form/FormRegister";
+import FormAuth from "../form/Auth/FormAuth";
+import FormRegister from "../form/Auth/FormRegister";
 import { comparePassword, generatePassword } from "../technical/password";
-import { decodeToken, generateToken } from "../technical/token";
+import { generateToken } from "../technical/token";
+import { RequestAuth } from "../middleware/auth";
 
 export default class AuthController {
 
@@ -19,7 +21,7 @@ export default class AuthController {
     }
 
     const { email, password } = form.getData();
-    const user = await AuthController.userDao.getByEmail(email);
+    const user = await AuthController.userDao.getWithOrganizationByEmail(email);
     if (!user) {
       res.status(400).json({message: 'user not found'});
       return;
@@ -32,7 +34,8 @@ export default class AuthController {
     }
     res.json({
       token: generateToken((user as unknown as User).id),
-      user: (user as unknown as User).userForResponse()
+      user: (user as unknown as User).userForResponse(),
+      organization: user.organization,
     });
   }
 
@@ -54,7 +57,7 @@ export default class AuthController {
     const user = new User();
     user.initializeNewUser({ email, password: generatedPassword });
 
-    const userCreated = await AuthController.userDao.createUser(user);
+    const userCreated = await AuthController.userDao.create(user);
 
     if (!userCreated) {
       res.status(400).json({ message: "error"})
@@ -63,14 +66,14 @@ export default class AuthController {
 
     res.json({
       token:  generateToken(userCreated.id),
-      user: userCreated.userForResponse()
+      user: userCreated.userForResponse(),
     })
   }
 
-  public async me(req: Request, res: Response) {
+  public async me(req: RequestAuth, res: Response) {
     res.json({
-      // @ts-ignore
-      user: (req.user as unknown as User).userForResponse()
+      user: req.user.userForResponse(),
+      organization: req.user.organization,
     })
   }
 }

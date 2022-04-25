@@ -13,13 +13,13 @@
             <q-item-section avatar>
               <q-icon color="primary" name="person" />
             </q-item-section>
-            <q-item-section>My Account</q-item-section>
+            <q-item-section>{{$t("setting.my_account")}}</q-item-section>
           </q-item>
           <q-item clickable v-ripple :to="{ name: 'settings-organization'}">
             <q-item-section avatar>
               <q-icon color="primary" name="groups" />
             </q-item-section>
-            <q-item-section>My Organization</q-item-section>
+            <q-item-section>{{$t("setting.my_organization")}}</q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>

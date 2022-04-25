@@ -4,6 +4,8 @@ import 'reflect-metadata';
 import DefaultRouter from './routers/DefaultRouter';
 import { createConnection } from 'typeorm';
 import AuthRouter from './routers/AuthRouter';
+import UserRouter from './routers/UserRouter';
+import OrganizationRouter from './routers/OrganizationRouter';
 const cors = require("cors");
 const dotenv = require("dotenv");
 
@@ -11,12 +13,16 @@ class App {
   public app: express.Application;
   public routePrv: DefaultRouter = new DefaultRouter();
   public routeAuth: AuthRouter = new AuthRouter();
+  public routeUser: UserRouter = new UserRouter();
+  public routeOrganization: OrganizationRouter = new OrganizationRouter();
 
   constructor() {
     this.app = express();
     this.config();
     this.routePrv.routes(this.app);
     this.routeAuth.routes(this.app);
+    this.routeUser.routes(this.app);
+    this.routeOrganization.routes(this.app);
   }
 
   private config(): void {

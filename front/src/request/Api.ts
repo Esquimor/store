@@ -37,7 +37,9 @@ export default {
       url,
       params,
       getHeaders()
-    )
+    ).then((response) => {
+      return Promise.resolve(response.data)
+    })
   },
   put(url: string, params = {}) {
     return api.put(

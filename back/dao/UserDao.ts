@@ -2,7 +2,7 @@ import { User } from '../entity/User';
 import {getConnection} from 'typeorm';
 import Dao from './Dao';
 
-export default class UserDao extends Dao {
+export default class UserDao extends Dao<User> {
 
   constructor() {
     super(User)
@@ -14,9 +14,15 @@ export default class UserDao extends Dao {
     return (item as unknown as User);
   }
 
-  async createUser(user: User) {
-    const newUser = getConnection().getRepository(this.entity).save(user);
-    if (!newUser) return null;
-    return newUser;
+  async getWithOrganizationByEmail(email: string):Promise<User>|null {
+    const item = await getConnection().getRepository(this.entity).findOne({ email }, { relations: ["organization"] });
+    if (!item) return null;
+    return (item as unknown as User);
+  }
+  
+  async getWithOrganizationById(id: string) {
+    const item = await getConnection().getRepository(this.entity).findOne(id, { relations: ["organization"] });
+    if (!item) return null;
+    return item;
   }
 }

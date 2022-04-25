@@ -1,6 +1,7 @@
 import { route } from "quasar/wrappers";
 import UserRequest from "src/request/UserRequest";
 import { UserActionTypes } from "src/store/user/action-types";
+import { OrganizationActionTypes } from "src/store/organization/action-types";
 import {
   createMemoryHistory,
   createRouter,
@@ -45,12 +46,13 @@ export default route<StateInterface>(({ store }) => {
         return;
       }
       void UserRequest.Me()
-        .then(({ user }) => {
+        .then(({ user, organization }) => {
           if (!user) {
             next({ name: "login" });
             return;
           }
           void store.dispatch(`user/${UserActionTypes.SET_USER}`, user);
+          void store.dispatch(`organization/${OrganizationActionTypes.SET_ORGANIZATION}`, organization);
           next();
         })
     } else {

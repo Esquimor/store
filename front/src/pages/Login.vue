@@ -40,6 +40,7 @@ import { useQuasar } from "quasar"
 import LoginLayout from "../layouts/LoginLayout.vue";
 import { useStore } from "../store/index";
 import { UserActionTypes } from "../store/user/action-types";
+import { OrganizationActionTypes } from "../store/organization/action-types";
 import { useRouter } from "vue-router";
 import UserRequest from "../request/UserRequest";
 
@@ -58,9 +59,10 @@ export default defineComponent({
 
     const onSubmit = () => {
       void UserRequest.Login({ email: email.value, password: password.value })
-        .then(({ user, token }) => {
+        .then(({ user, token, organization }) => {
           localStorage.setItem("token", token)
           void $store.dispatch(`user/${UserActionTypes.SET_USER}`, user)
+          void $store.dispatch(`organization/${OrganizationActionTypes.SET_ORGANIZATION}`, organization)
           $q.notify({
             color: "green-4",
             textColor: "white",
