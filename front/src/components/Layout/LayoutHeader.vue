@@ -1,8 +1,8 @@
 <template>
   <q-header elevated>
     <q-toolbar>
-      <q-toolbar-title>
-        Furniture
+      <q-toolbar-title >
+        <q-btn flat label="Funiture" :to="{ name: 'home'}" />
       </q-toolbar-title>
 
       <div>
