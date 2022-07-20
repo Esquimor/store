@@ -1,6 +1,7 @@
 import { User } from '../entity/User';
 import {getConnection} from 'typeorm';
 import Dao from './Dao';
+import { Organization } from '../entity/Organization';
 
 export default class UserDao extends Dao<User> {
 
@@ -24,5 +25,11 @@ export default class UserDao extends Dao<User> {
     const item = await getConnection().getRepository(this.entity).findOne(id, { relations: ["organization"] });
     if (!item) return null;
     return item;
+  }
+
+  async getUsersInOrganization(organization: Organization) {
+    const items = await getConnection().getRepository(this.entity).find({ organization });
+    if (!items) return null;
+    return (items as unknown as User);
   }
 }

@@ -6,8 +6,8 @@ export default class FormAuth extends Form {
   constructor(formBody: any) {
     super();
     const schema = z.object({
-      email: z.string().email().nonempty(),
-      password: z.string().nonempty()
+      email: z.string().email(),
+      password: z.string()
     });
     this.buildForm(schema, formBody)
   }

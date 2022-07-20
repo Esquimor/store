@@ -9,7 +9,7 @@
     >
       <q-scroll-area class="fit">
         <q-list bordered>
-          <q-item clickable v-ripple :to="{ name: 'settings-user'}">
+          <q-item clickable v-ripple :to="{ name: 'settings-account'}">
             <q-item-section avatar>
               <q-icon color="primary" name="person" />
             </q-item-section>
@@ -17,9 +17,15 @@
           </q-item>
           <q-item clickable v-ripple :to="{ name: 'settings-organization'}">
             <q-item-section avatar>
-              <q-icon color="primary" name="groups" />
+              <q-icon color="primary" name="store" />
             </q-item-section>
             <q-item-section>{{$t("setting.my_organization")}}</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple :to="{ name: 'settings-users'}">
+            <q-item-section avatar>
+              <q-icon color="primary" name="groups" />
+            </q-item-section>
+            <q-item-section>{{$t("setting.users")}}</q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>

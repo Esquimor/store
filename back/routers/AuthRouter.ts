@@ -1,4 +1,3 @@
-import {Request, Response} from 'express';
 import AuthController from '../controllers/AuthController';
 import { auth } from '../middleware/auth';
 

@@ -4,32 +4,32 @@
       <div class="text-h6">{{$t('user.login')}}</div>
     </q-card-section>
     <q-card-section>
-    <q-form
-        @submit="onSubmit"
-        @reset="onReset"
-        class="q-gutter-md"
-      >
-      <q-input
-        filled
-        v-model="email"
-        label="Email"
-        lazy-rules
-        :rules="[ val => val && val.length > 0 || 'Please type something']"
-      />
+      <q-form
+          @submit="onSubmit"
+          @reset="onReset"
+          class="q-gutter-md"
+        >
+        <q-input
+          filled
+          v-model="email"
+          label="Email"
+          lazy-rules
+          :rules="[ val => val && val.length > 0 || 'Please type something']"
+        />
 
-      <q-input
-        filled
-        v-model="password"
-        label="Password"
-        lazy-rules
-        :rules="[ val => val && val.length > 0 || 'Please type something']"
-      />
+        <q-input
+          filled
+          v-model="password"
+          label="Password"
+          lazy-rules
+          :rules="[ val => val && val.length > 0 || 'Please type something']"
+        />
 
-      <div>
-        <q-btn label="Submit" type="submit" color="primary"/>
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-      </div>
-    </q-form>
+        <div>
+          <q-btn label="Submit" type="submit" color="primary"/>
+          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        </div>
+      </q-form>
     </q-card-section>
   </login-layout>
 </template>

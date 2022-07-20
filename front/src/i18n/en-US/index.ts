@@ -15,6 +15,7 @@ export default {
   setting: {
     my_personal_information: "My personal information",
     my_account: "My Account",
-    my_organization: "My Organization"
+    my_organization: "My Organization",
+    users: "Users"
   }
 };

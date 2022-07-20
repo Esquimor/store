@@ -3,23 +3,20 @@
     <div class="row justify-center">
       <q-card class="col col-lg-8 col-md-10 col-sx-12">
         <q-card-section>
-          <div class="text-h5">{{title}}</div>
+          <div class="row justify-between items-center">
+            <div class="col">
+              <div class="text-h5">{{title}}</div>
+            </div>
+            <div class="col row justify-end">
+              <slot name="actions"/>
+            </div>
+          </div>
         </q-card-section>
 
         <q-separator/>
 
         <q-card-section>
-          <q-form @submit="submit" @reset="reset" class="row q-col-gutter-lg">
-            <div class="row q-col-gutter-lg col-12">
-              <slot />
-            </div>
-            <div class="row q-col-gutter-lg col-12">
-              <div class="col-6">
-                <q-btn :label="$t('label.submit')" type="submit" color="primary" />
-                <q-btn :label="$t('label.reset')" type="reset" color="primary" flat class="q-ml-sm" />
-              </div>
-            </div>
-          </q-form>
+          <slot/>
         </q-card-section>
       </q-card>
     </div>
@@ -33,12 +30,6 @@ export default defineComponent({
   name: "LayoutSettings",
   props: {
     title: String,
-    submit: Function,
-    reset: Function
   }
 })
 </script>
-
-<style>
-
-</style>

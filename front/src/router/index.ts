@@ -54,7 +54,7 @@ export default route<StateInterface>(({ store }) => {
           void store.dispatch(`user/${UserActionTypes.SET_USER}`, user);
           void store.dispatch(`organization/${OrganizationActionTypes.SET_ORGANIZATION}`, organization);
           next();
-        })
+        }).catch(() => next({ name: "login" }))
     } else {
       next()
     }

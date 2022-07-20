@@ -6,6 +6,7 @@ import { createConnection } from 'typeorm';
 import AuthRouter from './routers/AuthRouter';
 import UserRouter from './routers/UserRouter';
 import OrganizationRouter from './routers/OrganizationRouter';
+import FurnitureRouter from './routers/FurnitureRouter';
 const cors = require("cors");
 const dotenv = require("dotenv");
 
@@ -14,6 +15,7 @@ class App {
   public routePrv: DefaultRouter = new DefaultRouter();
   public routeAuth: AuthRouter = new AuthRouter();
   public routeUser: UserRouter = new UserRouter();
+  public routerFurniture: FurnitureRouter = new FurnitureRouter();
   public routeOrganization: OrganizationRouter = new OrganizationRouter();
 
   constructor() {
@@ -22,6 +24,7 @@ class App {
     this.routePrv.routes(this.app);
     this.routeAuth.routes(this.app);
     this.routeUser.routes(this.app);
+    this.routerFurniture.routes(this.app);
     this.routeOrganization.routes(this.app);
   }
 

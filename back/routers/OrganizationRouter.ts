@@ -8,5 +8,9 @@ export default class UserRouter {
     app
       .route('/organization')
       .patch(auth, this.organizationController.patch.bind(this.organizationController));
+
+    app
+      .route('/organization/users')
+      .get(auth, this.organizationController.getUsersOfMyOrganization.bind(this.organizationController))
   }
 }

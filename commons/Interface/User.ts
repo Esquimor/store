@@ -9,5 +9,4 @@ export interface User {
   phone: boolean;
   role: ROLE;
   organization: number;
-  orders: number[];
 }

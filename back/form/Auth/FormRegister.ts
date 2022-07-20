@@ -6,8 +6,9 @@ export default class FormRegister extends Form {
   constructor(formBody: any) {
     super();
     const schema = z.object({
-      email: z.string().email().nonempty(),
-      password: z.string().nonempty(),
+      email: z.string().email(),
+      password: z.string(),
+      organization: z.string(),
     });
     this.buildForm(schema, formBody)
   }

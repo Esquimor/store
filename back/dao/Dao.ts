@@ -21,7 +21,7 @@ export default class Dao<T> {
   }
 
   async create(element: T) {
-    const newElement = getConnection().getRepository(this.entity).save(element);
+    const newElement = await getConnection().getRepository(this.entity).save(element);
     if (!newElement) return null;
     return newElement;
   }

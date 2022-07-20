@@ -13,7 +13,7 @@
           icon="person"
         >
           <q-menu auto-close>
-            <q-item clickable :to="{ name: 'settings-user'}" v-ripple>
+            <q-item clickable :to="{ name: 'settings-account'}" v-ripple>
               <q-item-section avatar>
                 <q-icon name="settings" />
               </q-item-section>

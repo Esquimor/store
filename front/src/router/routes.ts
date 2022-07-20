@@ -15,14 +15,19 @@ const routes: RouteRecordRaw[] = [
     component: () => import("layouts/SettingLayout.vue"),
     children: [
       {
-        path: "/user",
-        name: "settings-user",
-        component: () => import("pages/Settings/User.vue")
+        path: "/account",
+        name: "settings-account",
+        component: () => import("pages/Settings/Account.vue")
       },
       {
         path: "/organizarion",
         name: "settings-organization",
         component: () => import("pages/Settings/Organization.vue")
+      },
+      {
+        path: "/users",
+        name: "settings-users",
+        component: () => import("pages/Settings/Users.vue")
       }
     ],
     meta: {
@@ -33,6 +38,11 @@ const routes: RouteRecordRaw[] = [
     path: "/login",
     name: "login",
     component: () => import("pages/Login.vue"),
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("pages/Register.vue"),
   },
   {
     path: "/:catchAll(.*)*",

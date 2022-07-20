@@ -21,6 +21,9 @@ export default {
         ...getHeaders()
       }
     )
+    .then((response) => {
+      return Promise.resolve(response.data)
+    })
   },
   post(url: string, params = {}) {
     return api.post(
@@ -47,6 +50,9 @@ export default {
       params,
       getHeaders()
     )
+    .then((response) => {
+      return Promise.resolve(response.data)
+    })
   },
   delete(url: string, params = {}) {
     return api.delete(
@@ -56,5 +62,8 @@ export default {
         ...getHeaders()
       }
     )
+    .then((response) => {
+      return Promise.resolve(response.data)
+    })
   }
 }

@@ -7,10 +7,13 @@ import FormRegister from "../form/Auth/FormRegister";
 import { comparePassword, generatePassword } from "../technical/password";
 import { generateToken } from "../technical/token";
 import { RequestAuth } from "../middleware/auth";
+import { Organization } from '../entity/Organization';
 
 export default class AuthController {
 
   private static userDao: UserDao = new UserDao();
+  private static organizationDao: OrganizationDao = new OrganizationDao();
+
 
   public async auth(req: Request, res: Response) {
     const query = (req.body as unknown as { email?: string, password?: string});
@@ -47,16 +50,22 @@ export default class AuthController {
       return;
     }
 
-    const { email, password } = form.getData();
+    const { email, password, organization } = form.getData();
     const existingUser = await AuthController.userDao.getByEmail(email);
     if (existingUser) {
       res.status(400).json({ message: "error"})
       return;
     }
+
+    // Create Organization
+    const userOrganization = new Organization();
+    userOrganization.name = organization
+    const organizationCreated = await AuthController.organizationDao.create(userOrganization);
+
+    // Create User
     const generatedPassword = await generatePassword(password);
     const user = new User();
-    user.initializeNewUser({ email, password: generatedPassword });
-
+    user.initializeNewUser({ email, password: generatedPassword, organization: organizationCreated });
     const userCreated = await AuthController.userDao.create(user);
 
     if (!userCreated) {
@@ -67,10 +76,11 @@ export default class AuthController {
     res.json({
       token:  generateToken(userCreated.id),
       user: userCreated.userForResponse(),
+      organization: organizationCreated,
     })
   }
 
-  public async me(req: RequestAuth, res: Response) {
+  public  me(req: RequestAuth, res: Response) {
     res.json({
       user: req.user.userForResponse(),
       organization: req.user.organization,

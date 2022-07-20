@@ -1,5 +1,5 @@
 <template>
-  <layout-settings
+  <layout-settings-form
     :title="$t('setting.my_personal_information')"
     @submit="onSubmit"
     @reset="onReset"
@@ -16,7 +16,7 @@
       :label="$t('label.lastname')"
       lazy-rules
     />
-  </layout-settings>
+  </layout-settings-form>
 </template>
 
 <script lang="ts">
@@ -25,10 +25,10 @@ import { useQuasar } from "quasar"
 import { useStore } from "../../store/index";
 import { UserActionTypes } from "../../store/user/action-types";
 import UserRequest from "../../request/UserRequest";
-import LayoutSettings from "../../components/Settings/LayoutSettings.vue";
+import LayoutSettingsForm from "../../components/Settings/LayoutSettingsForm.vue";
 
 export default defineComponent({
-  components: { LayoutSettings },
+  components: { LayoutSettingsForm },
   name: "SettingsUser",
   setup() {
     const $store = useStore();

@@ -7,8 +7,10 @@ import {
 } from "vuex"
 import user from "./user"
 import organization from "./organization"
+import furniture from "./furniture"
 import { UserStateInterface } from "./user/state"
 import { OrganizationStateInterface } from "./organization/state"
+import { FurnitureStateInterface } from "./furniture/state"
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -24,7 +26,8 @@ import { OrganizationStateInterface } from "./organization/state"
 
 export interface StateInterface {
   user: UserStateInterface,
-  organization: OrganizationStateInterface
+  organization: OrganizationStateInterface,
+  furniture: FurnitureStateInterface
 }
 
 // provide typings for `this.$store`
@@ -41,7 +44,8 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
       user,
-      organization
+      organization,
+      furniture
     },
 
     // enable strict mode (adds overhead!)

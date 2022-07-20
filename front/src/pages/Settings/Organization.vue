@@ -1,12 +1,12 @@
 <template>
-  <layout-settings :title="$t('setting.my_organization')" :submit="onSubmit" :reset="onReset">
+  <layout-settings-form :title="$t('setting.my_organization')" :submit="onSubmit" :reset="onReset">
     <q-input
       class="col-6"
       v-model="name"
       :label="$t('label.name')"
       lazy-rules
     />
-  </layout-settings>
+  </layout-settings-form>
 </template>
 
 <script lang="ts">
@@ -15,10 +15,10 @@ import { useQuasar } from "quasar"
 import { useStore } from "../../store/index";
 import { OrganizationActionTypes } from "../../store/organization/action-types";
 import OrganizationRequest from "../../request/OrganizationRequest";
-import LayoutSettings from "../../components/Settings/LayoutSettings.vue";
+import LayoutSettingsForm from "../../components/Settings/LayoutSettingsForm.vue";
 
 export default defineComponent({
-  components: { LayoutSettings },
+  components: { LayoutSettingsForm },
   name: "SettingOrganization",
   setup() {
     const $store = useStore();
