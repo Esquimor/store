@@ -1,0 +1,28 @@
+<template>
+  <div>
+    <q-card>
+      <q-card-section class="bg-primary text-white">
+        <div class="text-h6">{{props.order.name}}</div>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions align="right">
+        <q-btn flat>See</q-btn>
+      </q-card-actions>
+    </q-card>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { defineProps} from "vue";
+import { OrderWithFurnitures } from "../../../../commons/Interface/Order";
+
+const props = defineProps<{
+  order: OrderWithFurnitures
+}>()
+</script>
+
+<style>
+
+</style>

@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Organization } from './Organization';
-import { User } from './User';
 import { FURNITURE_STATUS } from "../../commons/Interface/Furniture"
+import { Order } from './Order';
 
 @Entity()
 export class Furniture {
@@ -18,14 +17,11 @@ export class Furniture {
     @Column({
         type: 'enum',
         enum: FURNITURE_STATUS,
-        default: FURNITURE_STATUS.CREATED,
+        default: FURNITURE_STATUS.WANTED,
         nullable: false,
     })
     status: FURNITURE_STATUS;
 
-    @ManyToOne(() => Organization, organization => organization.furnitures)
-    organization: Organization;
-
-    @ManyToOne(() => User, user => user.furnitures)
-    user: User;
+    @ManyToOne(() => Order, order => order.furnitures)
+    order: Order;
 }

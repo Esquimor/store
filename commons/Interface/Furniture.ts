@@ -1,14 +1,15 @@
 export enum FURNITURE_STATUS {
-  CREATED = 0,
-  VALIDATED,
-  IN_WORKING,
-  FINISHED,
-  ERROR
+  WANTED = 0,
+  DECLINED,
+  VALIDED,
 }
 
-export interface Furniture {
+export interface Furniture extends FurnitureDefault {
   id: string;
+  status: FURNITURE_STATUS
+}
+
+export interface FurnitureDefault {
   name: string;
   description?: string;
-  status: FURNITURE_STATUS
 }

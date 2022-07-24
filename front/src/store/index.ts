@@ -8,9 +8,11 @@ import {
 import user from "./user"
 import organization from "./organization"
 import furniture from "./furniture"
+import order from "./order"
 import { UserStateInterface } from "./user/state"
 import { OrganizationStateInterface } from "./organization/state"
 import { FurnitureStateInterface } from "./furniture/state"
+import { OrderStateInterface } from "./order/state"
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -27,7 +29,8 @@ import { FurnitureStateInterface } from "./furniture/state"
 export interface StateInterface {
   user: UserStateInterface,
   organization: OrganizationStateInterface,
-  furniture: FurnitureStateInterface
+  furniture: FurnitureStateInterface,
+  order: OrderStateInterface
 }
 
 // provide typings for `this.$store`
@@ -45,7 +48,8 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       user,
       organization,
-      furniture
+      furniture,
+      order
     },
 
     // enable strict mode (adds overhead!)

@@ -7,8 +7,10 @@ export default class FormCreateFurniture extends Form {
     super();
     const schema = z.object({
       name: z.string(),
-      description: z.string().nullable(),
-      orderId: z.string(),
+      furnitures: z.object({
+        name: z.string(),
+        description: z.string().nullable(),
+      }).array()
     });
     this.buildForm(schema, formBody)
   }

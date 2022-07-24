@@ -1,9 +1,8 @@
 <template>
   <q-layout view="hHh lpR fFf">
-
     <q-page-container>
       <q-page class="row items-center justify-evenly">
-        <q-card class="my-card">
+        <q-card>
           <slot />
         </q-card>
       </q-page>

@@ -7,6 +7,7 @@ import AuthRouter from './routers/AuthRouter';
 import UserRouter from './routers/UserRouter';
 import OrganizationRouter from './routers/OrganizationRouter';
 import FurnitureRouter from './routers/FurnitureRouter';
+import OrderRouter from './routers/OrderRouter';
 const cors = require("cors");
 const dotenv = require("dotenv");
 
@@ -17,6 +18,7 @@ class App {
   public routeUser: UserRouter = new UserRouter();
   public routerFurniture: FurnitureRouter = new FurnitureRouter();
   public routeOrganization: OrganizationRouter = new OrganizationRouter();
+  public routeOrder: OrderRouter = new OrderRouter();
 
   constructor() {
     this.app = express();
@@ -26,6 +28,7 @@ class App {
     this.routeUser.routes(this.app);
     this.routerFurniture.routes(this.app);
     this.routeOrganization.routes(this.app);
+    this.routeOrder.routes(this.app);
   }
 
   private config(): void {

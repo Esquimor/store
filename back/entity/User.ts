@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ROLE } from '../../commons/Interface/Role';
 import { Furniture } from './Furniture';
+import { Order } from './Order';
 import { Organization } from './Organization';
 
 @Entity()
@@ -46,10 +47,10 @@ export class User {
     @ManyToOne(() => Organization, organization => organization.users)
     organization: Organization;
     
-    @OneToMany(() => Furniture, furniture => furniture.organization, {
+    @OneToMany(() => Order, order => order.organization, {
         cascade: true,
     })
-    furnitures: Furniture[];
+    orders: Order[];
 
     initializeNewUser({ email, password, organization }: { email: string; password: string, organization: Organization}) {
         this.email = email;
