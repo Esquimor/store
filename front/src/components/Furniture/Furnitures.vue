@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md row items-start q-gutter-md">
-    <q-card v-for="furniture in furnitures" :key="furniture.id" class="my-card">
+    <q-card v-for="furniture in props.furnitures" :key="furniture.id" class="my-card">
       <q-card-section>
         <div class="text-h6">{{furniture.name}}</div>
       </q-card-section>
@@ -24,9 +24,6 @@ import FurnitureBadge from "./FurnitureBadge.vue"
 const props = defineProps<{
   furnitures: Furniture[]
 }>()
-
-console.log(props.furnitures.length)
-
 </script>
 
 <style>

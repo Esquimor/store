@@ -28,10 +28,20 @@ export class Order {
     organization: Organization;
 
     @ManyToOne(() => User, user => user.orders)
-    user: User;
+    creator: User;
     
     @OneToMany(() => Furniture, furniture => furniture.order, {
       cascade: true,
     })
     furnitures: Furniture[];
+
+    orderForResponseWithFurnituresAndCreator() {
+      return {
+        furnitures: this.furnitures, 
+        id: this.id, 
+        name: this.name, 
+        status: this.status, 
+        creator: this.creator.userForResponse()
+      }
+    }
 }

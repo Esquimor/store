@@ -8,9 +8,16 @@ export default class OrderDao extends Dao<Order> {
   constructor() {
     super(Order)
   }
+
   async getByOrganizationWithFurnitures(organization: Organization):Promise<Order[] | null> {
     const items = await getConnection().getRepository(this.entity).find({ organization, relations: ["furnitures"] });
     if (!items) return null;
     return (items as unknown as Order[]);
+  }
+  
+  async getByIdWithOrganizationAndCreatorAndFurnitures(id: string) {
+    const item = await getConnection().getRepository(this.entity).findOne(id, { relations: ["furnitures", "creator", "organization"]});
+    if (!item) return null;
+    return item;
   }
 }

@@ -1,56 +1,30 @@
 <template>
-  <q-badge :color="badge.color">
-    {{badge.label}}
-  </q-badge>
+  <Badge :value="props.status" :status="status"/>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import { FURNITURE_STATUS } from "../../../../commons/Interface/Furniture"
+import Badge from "../Global/Ui/Badge.vue";
 
 const props = defineProps<{
   status: FURNITURE_STATUS
 }>()
-    
-const badge = computed<{color: string; label: string}>(
-  () => {
-    switch ((props.status as unknown as FURNITURE_STATUS)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      case FURNITURE_STATUS.CREATED:
-        return {
-          color: "blue",
-          label: "Created"
-        };
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      case FURNITURE_STATUS.VALIDATED:
-        return {
-          color: "yellow",
-          label: "Validated"
-        };
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      case FURNITURE_STATUS.IN_WORKING:
-        return {
-          color: "purple",
-          label: "IN Working"
-        };
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      case FURNITURE_STATUS.FINISHED:
-        return {
-          color: "green",
-          label: "Finished"
-        };
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      case FURNITURE_STATUS.ERROR:
-        return {
-          color: "red",
-          label: "Error"
-        };
-      default:
-        return {
-          color: "",
-          label: "Empty"
-        };
-    }
-  }
-)
+
+const status = [
+  {
+    value: FURNITURE_STATUS.WANTED,
+    color: "blue",
+    label: "Wanted"
+  },
+  {
+    value: FURNITURE_STATUS.DECLINED,
+    color: "yellow",
+    label: "Declined"
+  },
+  {
+    value: FURNITURE_STATUS.VALIDED,
+    color: "purple",
+    label: "Valided"
+  },
+]
 </script>

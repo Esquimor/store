@@ -1,9 +1,13 @@
 import { Response} from 'express';
 import OrderDao from '../dao/OrderDao';
 import { RequestAuth } from '../middleware/auth';
+import { RequestOrder } from "../middleware/orderAccessById";
 import FormCreateOrderWithFurnitures from "../form/Order/FormCreateOrderWithFurnitures";
 import { Furniture } from '../entity/Furniture';
 import { Order } from '../entity/Order';
+import { ORDER_STATUS } from '../../commons/Interface/Order';
+import { FURNITURE_STATUS } from '../../commons/Interface/Furniture';
+import FormUpdateOrder from "../form/Order/FormUpdateOrder";
 
 export default class OrderController {
 
@@ -37,7 +41,7 @@ export default class OrderController {
     order.name = query.name;
     
     const user = req.user;
-    order.user = user;
+    order.creator = user;
     order.organization = user.organization;
     
     const orderSaved = await this.orderDao.create(order);
@@ -45,7 +49,9 @@ export default class OrderController {
       res.status(400).json({message: 'an error has occured'});
       return;
     }
-    res.json({ order: {furnitures: orderSaved.furnitures, id: orderSaved.id, status: orderSaved.status} })
+    res.json({
+      order: orderSaved.orderForResponseWithFurnituresAndCreator()
+    })
   }
 
   public async get(req: RequestAuth, res: Response) {
@@ -56,5 +62,61 @@ export default class OrderController {
       return;
     }
     res.json({orders})
+  }
+
+  public getById(req: RequestOrder, res: Response) {
+    const order = req.order
+    res.json({ 
+      order: order.orderForResponseWithFurnituresAndCreator()
+    })
+  }
+
+  public async update(req: RequestOrder, res: Response) {
+    const query = (req.body as unknown as { name?: string, status?: ORDER_STATUS;});
+    const form = new FormUpdateOrder(query);
+    if (form.hasError()) {
+      res.status(400).json({message: "missing param"})
+      return;
+    }
+
+    const order = req.order
+    if (query.status) {
+      order.status = query.status
+    }
+    if (query.name) {
+      order.name = query.name;
+    }
+    const savedOrder = await this.orderDao.update(order) as Order
+
+    if (!savedOrder) {
+      res.status(400).json({message: 'an error has occured'});
+      return;
+    }
+
+    res.json({ 
+      order: savedOrder.orderForResponseWithFurnituresAndCreator()
+    })
+  }
+
+  public async validate(req: RequestOrder, res: Response) {
+    const order = req.order
+
+    order.status = ORDER_STATUS.VALIDATED;
+    order.furnitures.map(furn => {
+      if (furn.status === FURNITURE_STATUS.WANTED) {
+        furn.status = FURNITURE_STATUS.VALIDED
+      }
+    })
+
+    const savedOrder = await this.orderDao.update(order) as Order
+
+    if (!savedOrder) {
+      res.status(400).json({message: 'an error has occured'});
+      return;
+    }
+
+    res.json({ 
+      order: savedOrder.orderForResponseWithFurnituresAndCreator()
+    })
   }
 }

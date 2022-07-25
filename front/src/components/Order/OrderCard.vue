@@ -8,7 +8,7 @@
       <q-separator />
 
       <q-card-actions align="right">
-        <q-btn flat>See</q-btn>
+        <q-btn flat @click="goToOrder">See</q-btn>
       </q-card-actions>
     </q-card>
   </div>
@@ -16,11 +16,18 @@
 
 <script lang="ts" setup>
 import { defineProps} from "vue";
+import { useRouter } from "vue-router"
 import { OrderWithFurnitures } from "../../../../commons/Interface/Order";
+
+const router = useRouter()
 
 const props = defineProps<{
   order: OrderWithFurnitures
 }>()
+
+const goToOrder = async () => {
+  await router.push({ name: "order", params: { id: props.order.id } })
+}
 </script>
 
 <style>

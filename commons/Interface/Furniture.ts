@@ -1,7 +1,7 @@
 export enum FURNITURE_STATUS {
-  WANTED = 0,
-  DECLINED,
-  VALIDED,
+  WANTED = "WANTED",
+  DECLINED = "DECLINED",
+  VALIDED = "VALIDED",
 }
 
 export interface Furniture extends FurnitureDefault {

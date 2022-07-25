@@ -1,11 +1,18 @@
 import { Furniture } from "./Furniture";
+import { User } from "./User";
 
 export enum ORDER_STATUS {
-  CREATED = 0,
-  VALIDATED,
-  IN_WORKING,
-  FINISHED,
-  ERROR
+  CREATED = "CREATED",
+  VALIDATED = "VALIDATED",
+  ORDERED = "ORDERED",
+  FINISHED = "FINISHED",
+  ERROR = "ERROR"
+}
+
+export interface OrderWithFurnituresAndCreator extends OrderWithCreator, OrderWithFurnitures {}
+
+export interface OrderWithCreator extends Order {
+  creator: User;
 }
 
 export interface OrderWithFurnitures extends Order {

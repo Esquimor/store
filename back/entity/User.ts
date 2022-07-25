@@ -47,7 +47,7 @@ export class User {
     @ManyToOne(() => Organization, organization => organization.users)
     organization: Organization;
     
-    @OneToMany(() => Order, order => order.organization, {
+    @OneToMany(() => Order, order => order.creator, {
         cascade: true,
     })
     orders: Order[];
@@ -71,5 +71,9 @@ export class User {
 
     isAdmin() {
         return this.role === ROLE.ADMIN;
+    }
+
+    isValidator() {
+        return this.role === ROLE.VALIDATOR;
     }
 }

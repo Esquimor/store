@@ -26,4 +26,9 @@ export default class Form {
   public hasError(): boolean {
     return !this.hasSuccess();
   };
+
+  public getErrors() {
+    // @ts-ignore
+    return this.form.error.issues
+  }
 }
