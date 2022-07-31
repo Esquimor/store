@@ -9,14 +9,14 @@ export default class OrderDao extends Dao<Order> {
     super(Order)
   }
 
-  async getByOrganizationWithFurnitures(organization: Organization):Promise<Order[] | null> {
-    const items = await getConnection().getRepository(this.entity).find({ organization, relations: ["furnitures"] });
+  async getByOrganizationWithItemsWithFurnitureVersionWithFurniture(organization: Organization):Promise<Order[] | null> {
+    const items = await getConnection().getRepository(this.entity).find({ organization, relations: ["items", "items.furnitureVersion", "items.furnitureVersion.furniture"] });
     if (!items) return null;
     return (items as unknown as Order[]);
   }
   
-  async getByIdWithOrganizationAndCreatorAndFurnitures(id: string) {
-    const item = await getConnection().getRepository(this.entity).findOne(id, { relations: ["furnitures", "creator", "organization"]});
+  async getByIdWithOrganizationAndCreatorAndItemsWithFurnitureVersionWithFurniture(id: string) {
+    const item = await getConnection().getRepository(this.entity).findOne(id, { relations: ["items", "items.furnitureVersion", "items.furnitureVersion.furniture", "creator", "organization"]});
     if (!item) return null;
     return item;
   }

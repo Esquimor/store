@@ -9,7 +9,7 @@ export default class FurnitureRequest {
     return Api.post("/furniture", payload)
   }
 
-  static GetForMe(): Promise<{furnitures: Furniture[]}>
+  static Get(): Promise<{furnitures: Furniture[]}>
   {
     return Api.get("/furniture")
   }

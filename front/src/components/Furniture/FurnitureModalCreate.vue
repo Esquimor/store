@@ -1,5 +1,5 @@
 <template>
-  <q-btn color="primary" label="Add a Order" @click="open = true" />
+  <q-btn color="primary" label="Add a Furniture" @click="open = true" />
   <q-dialog v-model="open" >
     <q-card style="width: 700px; max-width: 80vw;">
       <q-card-section>
@@ -50,7 +50,7 @@ const open = ref(false)
 const onSubmit = () => {
   void FurnitureRequest.Create({name: name.value, description: description.value})
     .then(({ furniture }) => {
-      void $store.dispatch(`furniture/${FurnitureActionTypes.ADD_FURNITURE}`, furniture)
+      void $store.dispatch(`furniture/${FurnitureActionTypes.ADD_FURNITURE_WITH_LATEST_FURNITURE_VERSION}`, furniture)
       $q.notify({
         color: "green-4",
         textColor: "white",

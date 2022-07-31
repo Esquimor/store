@@ -2,10 +2,21 @@
   <q-header elevated>
     <q-toolbar>
       <q-toolbar-title >
-        <q-btn flat label="Funiture" :to="{ name: 'home'}" />
+        <q-btn flat label="Order" :to="{ name: 'home'}" />
+        <q-btn flat label="Funitures" :to="{ name: 'furniture'}" />
       </q-toolbar-title>
 
       <div>
+        <q-btn
+          round
+          color="white"
+          text-color="primary"
+          icon="list_alt"
+          class="q-mr-md"
+          :to="{ name: 'basket'}"
+        >
+          <q-badge color="red" floating>{{nbArticlesInBasket}}</q-badge>
+        </q-btn>
         <q-btn
           round
           color="white"
@@ -35,12 +46,13 @@
   </q-header>
 </template>
 
-<script>
-export default {
-  name: "LayoutHeader"
-}
+<script lang="ts" setup>
+import { useStore } from "../../store"
+import { computed } from "vue";
+
+const $store = useStore()
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+const nbArticlesInBasket = computed(() => $store.getters["basket/getNbArticlesInBasket"] as number)
+
 </script>
-
-<style>
-
-</style>

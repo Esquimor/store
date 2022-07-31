@@ -1,12 +1,12 @@
-import { Furniture } from "../../../../commons/Interface/Furniture";
+import { FurnitureWithLatestFurnitureVersion } from "../../../../commons/Interface/Furniture";
 
 export interface FurnitureStateInterface {
-  furnitures: Furniture[];
+  furnituresWithLastestFurnitureVersion: FurnitureWithLatestFurnitureVersion[];
 }
 
 function state(): FurnitureStateInterface {
   return {
-    furnitures: [],
+    furnituresWithLastestFurnitureVersion: [],
   }
 };
 

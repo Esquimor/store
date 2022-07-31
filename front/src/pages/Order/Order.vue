@@ -25,7 +25,7 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <Furnitures :furnitures="order.furnitures" />
+          <Items :items="order.items" />
         </q-card-section>
       </q-card>
     </div>
@@ -38,7 +38,7 @@ import { onMounted, computed } from "vue";
 import OrderRequest from "../../request/OrderRequest";
 import { OrderActionTypes } from "../../store/order/action-types";
 import { useStore } from "../../store/index";
-import Furnitures from "../../components/Furniture/Furnitures.vue";
+import Items from "../../components/Item/Items.vue";
 import OrderBadge from "../../components/Order/OrderBadge.vue";
 import { ORDER_STATUS } from "../../../../commons/Interface/Order";
 

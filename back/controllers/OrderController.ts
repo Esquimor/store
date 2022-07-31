@@ -3,11 +3,11 @@ import OrderDao from '../dao/OrderDao';
 import { RequestAuth } from '../middleware/auth';
 import { RequestOrder } from "../middleware/orderAccessById";
 import FormCreateOrderWithFurnitures from "../form/Order/FormCreateOrderWithFurnitures";
-import { Furniture } from '../entity/Furniture';
 import { Order } from '../entity/Order';
 import { ORDER_STATUS } from '../../commons/Interface/Order';
-import { FURNITURE_STATUS } from '../../commons/Interface/Furniture';
+import { ITEM_STATUS } from '../../commons/Interface/Item';
 import FormUpdateOrder from "../form/Order/FormUpdateOrder";
+import { Item } from '../entity/Item';
 
 export default class OrderController {
 
@@ -16,9 +16,9 @@ export default class OrderController {
   public async createWithFurnitures(req: RequestAuth, res: Response) {
     const query = (req.body as unknown as {
       name: string;
-      furnitures: {
-        name: string;
-        description?: string;
+      items: {
+        furnitureVersionId: string;
+        quantity: number;
       }[]
     });
     const form = new FormCreateOrderWithFurnitures(query);
@@ -28,16 +28,16 @@ export default class OrderController {
     }
 
     // Create Furnitures
-    const furnitures = query.furnitures.map(fur => {
-      const furniture = new Furniture();
-      furniture.name = fur.name;
-      furniture.description = fur.description;
-      return furniture;
+    const items = query.items.map(ite => {
+      const item = new Item();
+      item.furnitureVersionId = ite.furnitureVersionId as unknown as number;
+      item.quantity = ite.quantity;
+      return item;
     });
 
     // Create Order;
     const order = new Order();
-    order.furnitures = furnitures;
+    order.items = items;
     order.name = query.name;
     
     const user = req.user;
@@ -50,13 +50,13 @@ export default class OrderController {
       return;
     }
     res.json({
-      order: orderSaved.orderForResponseWithFurnituresAndCreator()
+      order: orderSaved.orderForResponseWithItemsAndCreator()
     })
   }
 
   public async get(req: RequestAuth, res: Response) {
     const user = req.user;
-    const orders = await this.orderDao.getByOrganizationWithFurnitures(user.organization);
+    const orders = await this.orderDao.getByOrganizationWithItemsWithFurnitureVersionWithFurniture(user.organization);
     if (!orders) {
       res.status(400).json({message: 'orders not found'});
       return;
@@ -67,7 +67,7 @@ export default class OrderController {
   public getById(req: RequestOrder, res: Response) {
     const order = req.order
     res.json({ 
-      order: order.orderForResponseWithFurnituresAndCreator()
+      order: order.orderForResponseWithItemsAndCreator()
     })
   }
 
@@ -94,7 +94,7 @@ export default class OrderController {
     }
 
     res.json({ 
-      order: savedOrder.orderForResponseWithFurnituresAndCreator()
+      order: savedOrder.orderForResponseWithItemsAndCreator()
     })
   }
 
@@ -102,9 +102,9 @@ export default class OrderController {
     const order = req.order
 
     order.status = ORDER_STATUS.VALIDATED;
-    order.furnitures.map(furn => {
-      if (furn.status === FURNITURE_STATUS.WANTED) {
-        furn.status = FURNITURE_STATUS.VALIDED
+    order.items.map(item => {
+      if (item.status === ITEM_STATUS.WANTED) {
+        item.status = ITEM_STATUS.VALIDED
       }
     })
 
@@ -116,7 +116,7 @@ export default class OrderController {
     }
 
     res.json({ 
-      order: savedOrder.orderForResponseWithFurnituresAndCreator()
+      order: savedOrder.orderForResponseWithItemsAndCreator()
     })
   }
 }

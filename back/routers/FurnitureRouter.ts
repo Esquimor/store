@@ -8,5 +8,6 @@ export default class FurnitureRouter {
     app
       .route('/furniture')
       .post(auth, this.furnitureController.create.bind(this.furnitureController))
+      .get(auth, this.furnitureController.get.bind(this.furnitureController))
   }
 }

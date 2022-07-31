@@ -15,7 +15,7 @@ export const orderAccessById = async (req: RequestOrder, res, next) => {
 
   const orderDao: OrderDao = new OrderDao();
   
-  const order = await orderDao.getByIdWithOrganizationAndCreatorAndFurnitures(params.id) as Order
+  const order = await orderDao.getByIdWithOrganizationAndCreatorAndItemsWithFurnitureVersionWithFurniture(params.id) as Order
   if (!order) {
     res.status(400).json({message: 'order not found'});
     return;

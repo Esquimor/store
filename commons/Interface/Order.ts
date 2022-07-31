@@ -1,5 +1,6 @@
 import { Furniture } from "./Furniture";
 import { User } from "./User";
+import { ItemWithFurnitureVersionWithFurniture } from "./Item";
 
 export enum ORDER_STATUS {
   CREATED = "CREATED",
@@ -8,6 +9,7 @@ export enum ORDER_STATUS {
   FINISHED = "FINISHED",
   ERROR = "ERROR"
 }
+export interface OrderWithItemWithFurnitureVersionWithFurnitureAndCreator extends OrderWithCreator, OrderWithItemWithFurnitureVersionWithFurniture {}
 
 export interface OrderWithFurnituresAndCreator extends OrderWithCreator, OrderWithFurnitures {}
 
@@ -17,6 +19,10 @@ export interface OrderWithCreator extends Order {
 
 export interface OrderWithFurnitures extends Order {
   furnitures: Furniture[];
+}
+
+export interface OrderWithItemWithFurnitureVersionWithFurniture extends Order {
+  items: ItemWithFurnitureVersionWithFurniture[]
 }
 
 export interface Order {

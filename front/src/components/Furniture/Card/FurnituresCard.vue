@@ -1,0 +1,28 @@
+<template>
+  <div class="q-pa-md row wrap q-col-gutter-md full-width">
+    <div 
+      class="col-3"
+      v-for="furniture in props.furnitures"
+      :key="furniture.id"
+    >
+      <FurnitureCard
+        :furniture="furniture"
+        @add="$emit('add', furniture)"
+      />
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { defineProps } from "vue";
+import { FurnitureWithLatestFurnitureVersion } from "../../../../../commons/Interface/Furniture";
+import FurnitureCard from "./FurnitureCard.vue";
+
+const props = defineProps<{
+  furnitures: FurnitureWithLatestFurnitureVersion[]
+}>()
+</script>
+
+<style>
+
+</style>

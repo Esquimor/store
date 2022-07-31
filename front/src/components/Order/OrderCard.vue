@@ -17,12 +17,12 @@
 <script lang="ts" setup>
 import { defineProps} from "vue";
 import { useRouter } from "vue-router"
-import { OrderWithFurnitures } from "../../../../commons/Interface/Order";
+import { OrderWithItemWithFurnitureVersionWithFurniture } from "../../../../commons/Interface/Order";
 
 const router = useRouter()
 
 const props = defineProps<{
-  order: OrderWithFurnitures
+  order: OrderWithItemWithFurnitureVersionWithFurniture
 }>()
 
 const goToOrder = async () => {

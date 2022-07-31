@@ -15,6 +15,16 @@ const routes: RouteRecordRaw[] = [
         name: "order",
         component: () => import("pages/Order/Order.vue")
       },
+      {
+        path: "furniture",
+        name: "furniture",
+        component: () => import("pages/Furniture/Furniture.vue")
+      },
+      {
+        path: "basket",
+        name: "basket",
+        component: () => import("pages/Basket/Basket.vue")
+      },
     ],
     meta: {
       requireAuth: true

@@ -3,7 +3,7 @@ import { StateInterface } from "../index";
 import { FurnitureStateInterface } from "./state";
 
 const getters: GetterTree<FurnitureStateInterface, StateInterface> = {
-  furnitures: (state) => state.furnitures,
+  furnituresWithLastestFurnitureVersion: (state) => state.furnituresWithLastestFurnitureVersion,
 };
 
 export default getters;

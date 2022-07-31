@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'ty
 import { Organization } from './Organization';
 import { User } from './User';
 import { ORDER_STATUS } from "../../commons/Interface/Order"
-import { Furniture } from './Furniture';
+import { Item } from './Item';
 
 @Entity()
 export class Order {
@@ -30,14 +30,14 @@ export class Order {
     @ManyToOne(() => User, user => user.orders)
     creator: User;
     
-    @OneToMany(() => Furniture, furniture => furniture.order, {
+    @OneToMany(() => Item, item => item.order, {
       cascade: true,
     })
-    furnitures: Furniture[];
+    items: Item[];
 
-    orderForResponseWithFurnituresAndCreator() {
+    orderForResponseWithItemsAndCreator() {
       return {
-        furnitures: this.furnitures, 
+        items: this.items, 
         id: this.id, 
         name: this.name, 
         status: this.status, 

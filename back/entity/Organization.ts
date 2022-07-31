@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Furniture } from './Furniture';
 import { Order } from './Order';
 import { User } from './User';
 
@@ -20,4 +21,9 @@ export class Organization {
         cascade: true,
     })
     orders: Order[];
+
+    @OneToMany(() => Furniture, furniture => furniture.organization, {
+        cascade: true,
+    })
+    furnitures: Furniture[];
 }

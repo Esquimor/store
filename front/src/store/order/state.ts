@@ -1,8 +1,8 @@
-import { OrderWithFurnitures, OrderWithFurnituresAndCreator } from "../../../../commons/Interface/Order";
+import { OrderWithItemWithFurnitureVersionWithFurniture, OrderWithItemWithFurnitureVersionWithFurnitureAndCreator } from "../../../../commons/Interface/Order";
 
 export interface OrderStateInterface {
-  orders: OrderWithFurnitures[];
-  order: OrderWithFurnituresAndCreator | null;
+  orders: OrderWithItemWithFurnitureVersionWithFurniture[];
+  order: OrderWithItemWithFurnitureVersionWithFurnitureAndCreator | null;
 }
 
 function state(): OrderStateInterface {
