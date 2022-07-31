@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'ty
 import { ROLE } from '../../commons/Interface/Role';
 import { Furniture } from './Furniture';
 import { FurnitureVersion } from './FurnitureVersion';
+import { Inventory } from './Inventory';
 import { Order } from './Order';
 import { Organization } from './Organization';
 
@@ -57,6 +58,11 @@ export class User {
         cascade: true,
     })
     furnitureVersions: FurnitureVersion[];
+    
+    @OneToMany(() => Inventory, inventory => inventory.user, {
+      cascade: true,
+    })
+    inventories: Inventory[];
 
     initializeNewUser({ email, password, organization }: { email: string; password: string, organization: Organization}) {
         this.email = email;

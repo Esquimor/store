@@ -26,7 +26,7 @@ export default class Dao<T> {
     return newElement;
   }
 
-  async deleteById(id: string) {
+  async deleteById(id: string|number) {
     const success = await getConnection().getRepository(this.entity).delete(id);
     if(!success) return false;
     return true;

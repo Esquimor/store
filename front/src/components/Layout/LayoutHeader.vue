@@ -4,6 +4,7 @@
       <q-toolbar-title >
         <q-btn flat label="Order" :to="{ name: 'home'}" />
         <q-btn flat label="Funitures" :to="{ name: 'furniture'}" />
+        <q-btn flat label="Inventory" :to="{ name: 'inventory'}" />
       </q-toolbar-title>
 
       <div>

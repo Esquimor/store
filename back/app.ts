@@ -8,6 +8,7 @@ import UserRouter from './routers/UserRouter';
 import OrganizationRouter from './routers/OrganizationRouter';
 import FurnitureRouter from './routers/FurnitureRouter';
 import OrderRouter from './routers/OrderRouter';
+import InventoryRouter from './routers/InventoryRouter';
 const cors = require("cors");
 const dotenv = require("dotenv");
 
@@ -19,6 +20,7 @@ class App {
   public routerFurniture: FurnitureRouter = new FurnitureRouter();
   public routeOrganization: OrganizationRouter = new OrganizationRouter();
   public routeOrder: OrderRouter = new OrderRouter();
+  public routerInventory: InventoryRouter = new InventoryRouter();
 
   constructor() {
     this.app = express();
@@ -29,6 +31,7 @@ class App {
     this.routerFurniture.routes(this.app);
     this.routeOrganization.routes(this.app);
     this.routeOrder.routes(this.app);
+    this.routerInventory.routes(this.app);
   }
 
   private config(): void {
