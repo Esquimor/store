@@ -11,7 +11,7 @@ export default class InventoryRequest {
 
   static Create(payload: { furnitureVersionId: string; quantity: number }): Promise<{inventory: Inventory}>
   {
-    return Api.put("/inventory", payload)
+    return Api.post("/inventory", payload)
   }
 
   static Update(idInventory: string, payload: { quantity: number }): Promise<{inventory: Inventory}>

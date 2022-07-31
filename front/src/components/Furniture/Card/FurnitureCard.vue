@@ -12,7 +12,8 @@
     <q-separator />
 
     <q-card-actions align="right">
-      <q-btn flat @click="$emit('add')">Add to order</q-btn>
+      <q-btn flat @click="$emit('addInventory')">Add to inventory</q-btn>
+      <q-btn flat @click="$emit('addOrder')">Add to order</q-btn>
     </q-card-actions>
   </q-card>
 </template>

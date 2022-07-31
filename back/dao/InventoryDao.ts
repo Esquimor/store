@@ -9,9 +9,15 @@ export default class InventoryDao extends Dao<Inventory> {
     super(Inventory)
   }
 
-  async getByUser(user: User):Promise<Inventory[] | null> {
-    const items = await getConnection().getRepository(this.entity).find({ user });
+  async getByUserWithFurnitureVersion(user: User):Promise<Inventory[] | null> {
+    const items = await getConnection().getRepository(this.entity).find({ user, relations: ["furnitureVersion"] });
     if (!items) return null;
     return (items as unknown as Inventory[]);
+  }
+
+  async getByIdAndByUser(furnitureVersionId: string|number, user: User): Promise<Inventory|null> {
+    const item = await getConnection().getRepository(this.entity).findOne({ user, furnitureVersionId });
+    if (!item) return null;
+    return (item as unknown as Inventory);
   }
 }

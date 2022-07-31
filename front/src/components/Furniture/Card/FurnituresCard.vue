@@ -7,7 +7,8 @@
     >
       <FurnitureCard
         :furniture="furniture"
-        @add="$emit('add', furniture)"
+        @addInventory="$emit('addInventory', furniture)"
+        @addOrder="$emit('addOrder', furniture)"
       />
     </div>
   </div>

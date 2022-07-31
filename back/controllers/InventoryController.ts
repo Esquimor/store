@@ -13,7 +13,7 @@ export default class InventoryController {
   public async get(req: RequestAuth, res: Response) {
     const user = req.user;
 
-    const inventories = await InventoryController.inventoryDao.getByUser(user)
+    const inventories = await InventoryController.inventoryDao.getByUserWithFurnitureVersion(user)
     if (!inventories) {
       res.status(400).json({ message: "error"})
       return;
@@ -34,20 +34,36 @@ export default class InventoryController {
 
     const user = req.user;
 
-    const inventory = new Inventory()
-    inventory.user = user;
-    inventory.furnitureVersionId = query.furnitureVersionId as number;
-    inventory.quantity = query.quantity
+    // look if a inventory with same id has already by define for user
+    const alreadyInventory = await InventoryController.inventoryDao.getByIdAndByUser(query.furnitureVersionId, user)
 
-    const createdInventory = await InventoryController.inventoryDao.create(inventory);
-    if (!createdInventory) {
-      res.status(400).json({ message: "error"})
-      return;
+    if (alreadyInventory) {
+      alreadyInventory.quantity = alreadyInventory.quantity + query.quantity;
+  
+      const updatedInventory = await InventoryController.inventoryDao.update(alreadyInventory);
+      if (!updatedInventory) {
+        res.status(400).json({ message: "error"})
+        return;
+      }
+  
+      res.json({
+        inventory: updatedInventory.inventoryForResponseWithFurnitureVersion(),
+      })
+    } else {
+      const inventory = new Inventory()
+      inventory.user = user;
+      inventory.furnitureVersionId = query.furnitureVersionId as number;
+      inventory.quantity = query.quantity
+  
+      const createdInventory = await InventoryController.inventoryDao.create(inventory);
+      if (!createdInventory) {
+        res.status(400).json({ message: "error"})
+        return;
+      }
+      res.json({
+        inventory: createdInventory.inventoryForResponseWithFurnitureVersion(),
+      })
     }
-
-    res.json({
-      inventory: createdInventory.inventoryForResponseWithFurnitureVersion(),
-    })
   }
 
   public async update(req: RequestInventory, res: Response) {
