@@ -10,11 +10,13 @@ import organization from "./organization"
 import furniture from "./furniture"
 import order from "./order"
 import basket from "./basket"
+import inventory from "./inventory"
 import { UserStateInterface } from "./user/state"
 import { OrganizationStateInterface } from "./organization/state"
 import { FurnitureStateInterface } from "./furniture/state"
 import { OrderStateInterface } from "./order/state"
 import { BasketStateInterface } from "./basket/state"
+import { InventoryStateInterface } from "./inventory/state"
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -33,7 +35,8 @@ export interface StateInterface {
   organization: OrganizationStateInterface,
   furniture: FurnitureStateInterface,
   order: OrderStateInterface,
-  basket: BasketStateInterface
+  basket: BasketStateInterface,
+  inventory: InventoryStateInterface
 }
 
 // provide typings for `this.$store`
@@ -53,7 +56,8 @@ export default store(function (/* { ssrContext } */) {
       organization,
       furniture,
       order,
-      basket
+      basket,
+      inventory
     },
 
     // enable strict mode (adds overhead!)

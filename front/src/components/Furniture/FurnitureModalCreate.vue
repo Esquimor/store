@@ -36,7 +36,7 @@
 import { ref } from "vue";
 import { useQuasar } from "quasar"
 import { useStore } from "../../store/index"
-import FurnitureRequest from "../../request/FunitureRequest";
+import FurnitureRequest from "../../request/FurnitureRequest";
 import { FurnitureActionTypes } from "../../store/furniture/action-types";
 
 const $q = useQuasar()

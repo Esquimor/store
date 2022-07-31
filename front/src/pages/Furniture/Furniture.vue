@@ -13,12 +13,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useStore } from "../../store/index";
 import FurnitureModalCreate from "../../components/Furniture/FurnitureModalCreate.vue"
 import FurnituresCard from "../../components/Furniture/Card/FurnituresCard.vue";
-import { onMounted } from "vue";
-import FurnitureRequest from "../../request/FunitureRequest";
+import FurnitureRequest from "../../request/FurnitureRequest";
 import { FurnitureActionTypes } from "../../store/furniture/action-types";
 import { FurnitureWithLatestFurnitureVersion } from "../../../../commons/Interface/Furniture";
 import { BasketActionTypes } from "../../store/basket/action-types";
@@ -37,9 +36,4 @@ onMounted(() => {
 const addInBasket = (furniture: FurnitureWithLatestFurnitureVersion) => {
   void $store.dispatch(`basket/${BasketActionTypes.ADD_ARTICLE}`, { quantity: 1, furniture_version: furniture.furnitureVersions[0]})
 }
-
 </script>
-
-<style>
-
-</style>
