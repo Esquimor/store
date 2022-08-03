@@ -6,6 +6,9 @@ import { BasketMutationTypes } from "./mutation-types";
 import { BasketStateInterface } from "./state";
 
 const actions: ActionTree<BasketStateInterface, StateInterface> = {
+  [BasketActionTypes.RESET_BASKET]({ commit }) {
+    commit(BasketMutationTypes.RESET_ARTICLES)
+  },
   [BasketActionTypes.ADD_ARTICLE]({ commit }, article: Article) {
     commit(BasketMutationTypes.ADD_ARTICLE, article)
   },

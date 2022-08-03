@@ -7,6 +7,9 @@ import { OrganizationMutationTypes } from "./mutation-types";
 import { OrganizationStateInterface } from "./state";
 
 const actions: ActionTree<OrganizationStateInterface, StateInterface> = {
+  [OrganizationActionTypes.RESET_ORGANIZATION] ({ commit }) {
+    commit(OrganizationMutationTypes.RESET_ORGANIZATION)
+  },
   [OrganizationActionTypes.SET_ORGANIZATION]({ commit }, organization: Organization) {
     commit(OrganizationMutationTypes.SET_ORGANIZATION, organization)
   },

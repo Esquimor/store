@@ -12,6 +12,30 @@ export default class UserRequest {
     return Api.post("/auth", payload)
   }
 
+  static PasswordForgotten(payload: { email: string })
+    : Promise<boolean>
+  {
+    return Api.post("/passwordForgotten", payload) 
+  }
+
+  static ResetPassword(payload: { password: string; code: string; email: string })
+    : Promise<{ token: string; user: User, organization: Organization}>
+  {
+    return Api.post("/resetPassword", payload)
+  }
+
+  static Register(payload: { email: string, password: string, organization: string})
+    : Promise<{token: string, user: User, organization: Organization}>
+  {
+    return Api.post("/register", payload)
+  }
+
+  static RegisterValidated(payload: { email: string; code: string})
+    : Promise<{ token: string; user: User, organization: Organization}>
+  {
+    return Api.post("/registerValidated", payload)
+  }
+
   static Me()
     : Promise<{ user: User, organization: Organization}>
   {
@@ -21,12 +45,6 @@ export default class UserRequest {
   static Update({ firstname, lastname}: { firstname: string; lastname: string;}): Promise<{user: User}>
   {
     return Api.patch("/user", { firstname, lastname})
-  }
-
-  static Register(payload: { email: string, password: string, organization: string})
-    : Promise<{token: string, user: User, organization: Organization}>
-  {
-    return Api.post("/register", payload)
   }
 
   static CreateUserInSameOrganization(payload: { email: string; firstname?: string, lastname?: string, role: ROLE})

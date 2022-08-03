@@ -14,5 +14,15 @@ export default class AuthRouter {
     app
       .route("/me")
       .post(auth, this.authController.me)
+    app
+      .route("/passwordForgotten")
+      .post(this.authController.passwordForgotten)
+    app
+      .route("/resetPassword")
+      .post(this.authController.resetPassword)
+
+    app
+      .route("/registerValidated")
+      .post(this.authController.registerValidated)
   }
 }

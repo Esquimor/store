@@ -4,6 +4,9 @@ import { OrderMutationTypes } from "./mutation-types";
 import { OrderStateInterface } from "./state";
 
 const mutation: MutationTree<OrderStateInterface> = {
+  [OrderMutationTypes.RESET_ORDER] (state: OrderStateInterface) {
+    state.orders = []
+  },
   [OrderMutationTypes.SET_ORDERS] (state: OrderStateInterface, payload: OrderWithItemWithFurnitureVersionWithFurniture[]) {
     state.orders = payload;
   },

@@ -1,7 +1,7 @@
 <template>
   <login-layout>
     <q-card-section>
-      <div class="text-h6">{{$t('user.login')}}</div>
+      <div class="text-h6">Reset Password</div>
     </q-card-section>
     <q-card-section>
       <q-form
@@ -11,26 +11,27 @@
         >
         <q-input
           filled
-          v-model="email"
-          label="Email"
-          lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
-        />
-
-        <q-input
-          filled
           v-model="password"
           label="Password"
           lazy-rules
           :rules="[ val => val && val.length > 0 || 'Please type something']"
         />
 
+        <q-input
+          filled
+          v-model="confirm"
+          label="Confirm Password"
+          lazy-rules
+          :rules="[
+            val => val && val.length > 0 || 'Please type something',
+            val => val === password || 'Password doesn\'t match'
+          ]"
+        />
+
         <div>
           <q-btn label="Submit" type="submit" color="primary"/>
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
-      <q-btn class="q-mt-md" flat color="primary" size="sm" label="Password forget ?" :to="{name: 'passwordForgotten'}"/>
     </q-card-section>
   </login-layout>
 </template>
@@ -38,6 +39,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar"
+import { useRoute } from "vue-router"
 import LoginLayout from "../layouts/LoginLayout.vue";
 import { useStore } from "../store/index";
 import { UserActionTypes } from "../store/user/action-types";
@@ -46,7 +48,7 @@ import { useRouter } from "vue-router";
 import UserRequest from "../request/UserRequest";
 
 export default defineComponent({
-  name: "LoginIndex",
+  name: "Register",
   components: {
     LoginLayout
    },
@@ -54,12 +56,13 @@ export default defineComponent({
     const $store = useStore()
     const $q = useQuasar()
     const router = useRouter()
+    const route = useRoute()
 
-    const email = ref("")
     const password = ref("")
+    const confirm = ref("")
 
     const onSubmit = () => {
-      void UserRequest.Login({ email: email.value, password: password.value })
+      void UserRequest.ResetPassword({ password: password.value, email:  route.params.email as unknown as string, code: route.params.code as unknown as string })
         .then(({ user, token, organization }) => {
           localStorage.setItem("token", token)
           void $store.dispatch(`user/${UserActionTypes.SET_USER}`, user)
@@ -75,13 +78,13 @@ export default defineComponent({
     }
 
     const onReset = () => {
-      email.value = "";
       password.value = "";
+      confirm.value = "";
     }
 
     return { 
-      email,
       password,
+      confirm,
       onSubmit,
       onReset
      };

@@ -5,6 +5,10 @@ import { OrganizationMutationTypes } from "./mutation-types";
 import { OrganizationStateInterface } from "./state";
 
 const mutation: MutationTree<OrganizationStateInterface> = {
+  [OrganizationMutationTypes.RESET_ORGANIZATION] (state: OrganizationStateInterface) {
+    state.organization = null;
+    state.users = []
+  },
   [OrganizationMutationTypes.SET_ORGANIZATION] (state: OrganizationStateInterface, payload: Organization) {
     state.organization = payload;
   },

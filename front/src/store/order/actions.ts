@@ -6,6 +6,9 @@ import { OrderMutationTypes } from "./mutation-types";
 import { OrderStateInterface } from "./state";
 
 const actions: ActionTree<OrderStateInterface, StateInterface> = {
+  [OrderActionTypes.RESET_ORDER] ({ commit }) {
+    commit(OrderMutationTypes.RESET_ORDER)
+  },
   [OrderActionTypes.SET_ORDERS]({ commit }, orders: OrderWithItemWithFurnitureVersionWithFurniture[]) {
     commit(OrderMutationTypes.SET_ORDERS, orders)
   },

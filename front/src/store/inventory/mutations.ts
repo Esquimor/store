@@ -4,6 +4,9 @@ import { InventoryMutationTypes } from "./mutation-types";
 import { InventoryStateInterface } from "./state";
 
 const mutation: MutationTree<InventoryStateInterface> = {
+  [InventoryMutationTypes.RESET_INVENTORY] (state: InventoryStateInterface) {
+    state.inventories = []
+  },
   [InventoryMutationTypes.SET_INVENTORIES] (state: InventoryStateInterface, payload: InventoryWithFurnitureVersion[]) {
     state.inventories = payload;
   },

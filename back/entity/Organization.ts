@@ -12,6 +12,14 @@ export class Organization {
     @Column()
     name: string;
 
+    @Column({
+        default: "sk"
+    })
+    stripe: string;
+
+    @Column({ type: 'timestamptz', default: "2022-07-30 10:57:03.992001" }) // Recommended
+    strip_end: Date;
+
     @OneToMany(() => User, user => user.organization, {
         cascade: true,
     })

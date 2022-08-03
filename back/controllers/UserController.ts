@@ -72,9 +72,9 @@ export default class UserController {
     newUser.email = query.email;
     newUser.firstname = query.firstname;
     newUser.lastname = query.lastname;
-    newUser.role = query.role
-    newUser.organization = user.organization
-    newUser.newUser = true;
+    newUser.role = query.role;
+    newUser.organization = user.organization;
+    newUser.setTimer()
 
     const userCreated = await this.userDao.create(newUser);
     if (!userCreated) {

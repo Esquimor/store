@@ -1,6 +1,8 @@
+import dayjs = require('dayjs');
+import shortUUID = require('short-uuid');
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ROLE } from '../../commons/Interface/Role';
-import { Furniture } from './Furniture';
+import { USER_STATUS } from '../../commons/Interface/User';
 import { FurnitureVersion } from './FurnitureVersion';
 import { Inventory } from './Inventory';
 import { Order } from './Order';
@@ -43,8 +45,24 @@ export class User {
     })
     role: ROLE;
 
-    @Column({default: false})
-    newUser: boolean;
+    @Column({
+        type: 'enum',
+        enum: USER_STATUS,
+        default: USER_STATUS.CREATED,
+        nullable: true,
+    })
+    status: USER_STATUS;
+
+    @Column({
+        type: 'timestamptz',
+        nullable: true
+    })
+    timer: Date;
+
+    @Column({
+        nullable: true
+    })
+    code: string;
 
     @ManyToOne(() => Organization, organization => organization.users)
     organization: Organization;
@@ -67,7 +85,13 @@ export class User {
     initializeNewUser({ email, password, organization }: { email: string; password: string, organization: Organization}) {
         this.email = email;
         this.password = password;
-        this.organization = organization
+        this.organization = organization;
+        this.setTimer()
+    }
+
+    setTimer({time} = { time: 7}) {
+        this.timer = dayjs().add(time, 'day').toDate();
+        this.code = shortUUID.generate();
     }
 
     userForResponse() {

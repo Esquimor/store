@@ -4,6 +4,9 @@ import { UserMutationTypes } from "./mutation-types";
 import { UserStateInterface } from "./state";
 
 const mutation: MutationTree<UserStateInterface> = {
+  [UserMutationTypes.RESET_USER] (state: UserStateInterface) {
+    state.user = null;
+  },
   [UserMutationTypes.SET_USER] (state: UserStateInterface, payload: User) {
     state.user = payload;
   }

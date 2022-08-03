@@ -6,6 +6,9 @@ import { UserMutationTypes } from "./mutation-types";
 import { UserStateInterface } from "./state";
 
 const actions: ActionTree<UserStateInterface, StateInterface> = {
+  [UserActionTypes.RESET_USER]({ commit}) {
+    commit(UserMutationTypes.RESET_USER)
+  },
   [UserActionTypes.SET_USER]({ commit }, user: User) {
     commit(UserMutationTypes.SET_USER, user)
   },

@@ -6,6 +6,9 @@ import { FurnitureMutationTypes } from "./mutation-types";
 import { FurnitureStateInterface } from "./state";
 
 const actions: ActionTree<FurnitureStateInterface, StateInterface> = {
+  [FurnitureActionTypes.RESET_FURNITURE]({ commit }) {
+    commit(FurnitureMutationTypes.RESET_FURNITURE)
+  },
   [FurnitureActionTypes.SET_FURNITURES_WITH_LATEST_FURNITURE_VERSION]({ commit }, furnitures: FurnitureWithLatestFurnitureVersion[]) {
     commit(FurnitureMutationTypes.SET_FURNITURES_WITH_LATEST_FURNITURE_VERSION, furnitures)
   },

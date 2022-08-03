@@ -4,6 +4,9 @@ import { FurnitureMutationTypes } from "./mutation-types";
 import { FurnitureStateInterface } from "./state";
 
 const mutation: MutationTree<FurnitureStateInterface> = {
+  [FurnitureMutationTypes.RESET_FURNITURE] (state: FurnitureStateInterface) {
+    state.furnituresWithLastestFurnitureVersion = []
+  },
   [FurnitureMutationTypes.SET_FURNITURES_WITH_LATEST_FURNITURE_VERSION] (state: FurnitureStateInterface, payload: FurnitureWithLatestFurnitureVersion[]) {
     state.furnituresWithLastestFurnitureVersion = payload;
   },
