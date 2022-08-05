@@ -45,7 +45,7 @@ export default class AuthController {
     res.json({
       token: generateToken((user as unknown as User).id),
       user: (user as unknown as User).userForResponse(),
-      organization: user.organization,
+      organization: user.organization.organizationForResponse(),
     });
   }
 
@@ -92,14 +92,14 @@ export default class AuthController {
     res.json({
       token:  generateToken(userCreated.id),
       user: userCreated.userForResponse(),
-      organization: organizationCreated,
+      organization: organizationCreated.organizationForResponse(),
     })
   }
 
   public  me(req: RequestAuth, res: Response) {
     res.json({
       user: req.user.userForResponse(),
-      organization: req.user.organization,
+      organization: req.user.organization.organizationForResponse(),
     })
   }
 
@@ -155,7 +155,7 @@ export default class AuthController {
     res.json({
       token:  generateToken(userPatchSaved.id),
       user: userPatchSaved.userForResponse(),
-      organization: userPatchSaved.organization,
+      organization: userPatchSaved.organization.organizationForResponse(),
     })
   }
 
@@ -184,7 +184,7 @@ export default class AuthController {
     res.json({
       token:  generateToken(userPatchSaved.id),
       user: userPatchSaved.userForResponse(),
-      organization: userPatchSaved.organization,
+      organization: userPatchSaved.organization.organizationForResponse(),
     })
   }
 }

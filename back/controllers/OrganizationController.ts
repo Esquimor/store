@@ -24,7 +24,7 @@ export default class OrganizationController {
       res.status(400).json({message: 'an error has occured'});
       return;
     }
-    res.json({ organization: organizationSaved })
+    res.json({ organization: organizationSaved.organizationForResponse() })
   }
 
   public async getUsersOfMyOrganization(req: RequestAuth, res: Response) { 

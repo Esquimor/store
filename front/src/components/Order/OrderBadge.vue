@@ -4,6 +4,7 @@
 
 <script lang="ts" setup>
 import { ORDER_STATUS } from "../../../../commons/Interface/Order"
+import { getColorForOrderStatus } from "../../../../commons/Technical/Order"
 import Badge from "../Global/Ui/Badge.vue";
 
 const props = defineProps<{
@@ -13,27 +14,27 @@ const props = defineProps<{
 const status = [
   {
     value: ORDER_STATUS.CREATED,
-    color: "blue",
+    color: getColorForOrderStatus(ORDER_STATUS.CREATED),
     label: "Created"
   },
   {
     value: ORDER_STATUS.VALIDATED,
-    color: "yellow",
+    color: getColorForOrderStatus(ORDER_STATUS.VALIDATED),
     label: "Validated"
   },
   {
     value: ORDER_STATUS.ORDERED,
-    color: "purple",
+    color: getColorForOrderStatus(ORDER_STATUS.ORDERED),
     label: "Ordered"
   },
   {
     value: ORDER_STATUS.FINISHED,
-    color: "green",
+    color: getColorForOrderStatus(ORDER_STATUS.FINISHED),
     label: "In Work"
   },
   {
     value: ORDER_STATUS.ERROR,
-    color: "red",
+    color: getColorForOrderStatus(ORDER_STATUS.ERROR),
     label: "In Work"
   },
 ]

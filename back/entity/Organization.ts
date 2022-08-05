@@ -34,4 +34,11 @@ export class Organization {
         cascade: true,
     })
     furnitures: Furniture[];
+
+    organizationForResponse() {
+        return {
+            id: this.id,
+            name: this.name
+        }
+    }
 }
