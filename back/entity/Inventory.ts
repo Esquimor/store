@@ -1,5 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { FurnitureVersion } from './FurnitureVersion';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Address } from './Address';
+import { Item } from './Item';
+import { Organization } from './Organization';
+import { Placement } from './Placement';
+import { Tag } from './Tag';
 import { User } from './User';
 
 @Entity()
@@ -8,26 +12,38 @@ export class Inventory {
     @PrimaryGeneratedColumn('uuid')
     id: number;
 
-    @Column({
-      default: 1
+    @ManyToOne(() => Organization, organization => organization.inventories, {
+      nullable: true
     })
-    quantity: number;
+    organization: Organization;
 
-    @ManyToOne(() => User, user => user.inventories)
+    @ManyToOne(() => User, user => user.inventories, {
+      nullable: true
+    })
     user: User;
 
-    @ManyToOne(() => FurnitureVersion, furnitureVersion => furnitureVersion.items)
-    @JoinColumn({ name: "furnitureVersionId" })
-    furnitureVersion: FurnitureVersion;
+    @ManyToMany(() => Tag)
+    @JoinTable()
+    tags: Tag[];
+    
+    @OneToMany(() => Item, item => item.inventory, {
+      cascade: true,
+    })
+    items: Item[];
 
-    @Column({ nullable: false })
-    furnitureVersionId: number;
+    @ManyToOne(() => Address, address => address.inventories, {
+      nullable: true
+    })
+    address: Address;
+
+    @ManyToOne(() => Placement, placement => placement.inventories, {
+      nullable: true
+    })
+    placement: Placement;
 
     inventoryForResponseWithFurnitureVersion() {
       return {
         id: this.id,
-        quantity: this.quantity,
-        furnitureVersion: this.furnitureVersion
       }
     }
 }

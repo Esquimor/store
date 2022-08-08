@@ -1,18 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 import { ITEM_STATUS } from "../../commons/Interface/Item"
 import { FurnitureVersion } from './FurnitureVersion';
+import { Inventory } from './Inventory';
 import { Order } from './Order';
+import { Variation } from './Variation';
 
 @Entity()
 export class Item {
 
     @PrimaryGeneratedColumn('uuid')
     id: number;
-
-    @Column({
-      default: 1
-    })
-    quantity: number;
 
     @Column({
         type: 'enum',
@@ -22,8 +19,15 @@ export class Item {
     })
     status: ITEM_STATUS;
 
-    @ManyToOne(() => Order, order => order.items)
+    @ManyToOne(() => Order, order => order.items, {
+      nullable: true
+    })
     order: Order;
+
+    @ManyToOne(() => Inventory, inventory => inventory.items, {
+      nullable: true
+    })
+    inventory: Inventory;
 
     @ManyToOne(() => FurnitureVersion, furnitureVersion => furnitureVersion.items)
     @JoinColumn({ name: "furnitureVersionId" })
@@ -31,4 +35,8 @@ export class Item {
 
     @Column({ nullable: false })
     furnitureVersionId: number;
+    
+    @ManyToMany(() => Variation)
+    @JoinColumn()
+    variations: Variation[]
 }

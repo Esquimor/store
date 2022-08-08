@@ -1,7 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, CreateDateColumn, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
+import { Attribut } from './Attribut';
+import { Category } from './Category';
 import { Furniture } from './Furniture';
 import { Item } from './Item';
+import { Tag } from './Tag';
 import { User } from './User';
+import { Variation } from './Variation';
 
 @Entity()
 export class FurnitureVersion {
@@ -28,6 +32,21 @@ export class FurnitureVersion {
 
     @ManyToOne(() => User, user => user.furnitureVersions)
     user: User;
+
+    @ManyToMany(() => Tag)
+    @JoinTable()
+    tags: Tag[];
+
+    @ManyToOne(() => Category, category => category.furnitureVersions)
+    category: Category;
+    
+    @ManyToMany(() => Attribut)
+    @JoinColumn()
+    attributs: Attribut[]
+    
+    @ManyToMany(() => Variation)
+    @JoinColumn()
+    variations: Variation[]
 
     furnitureVersionForResponse() {
         return {

@@ -1,12 +1,14 @@
 import dayjs = require('dayjs');
 import shortUUID = require('short-uuid');
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import { ROLE } from '../../commons/Interface/Role';
 import { USER_STATUS } from '../../commons/Interface/User';
+import { Address } from './Address';
 import { FurnitureVersion } from './FurnitureVersion';
 import { Inventory } from './Inventory';
 import { Order } from './Order';
 import { Organization } from './Organization';
+import { Placement } from './Placement';
 
 @Entity()
 export class User {
@@ -81,6 +83,18 @@ export class User {
       cascade: true,
     })
     inventories: Inventory[];
+
+    @OneToOne(() => Address, {
+        nullable: true
+    })
+    @JoinColumn()
+    address: Address;
+
+    @OneToOne(() => Placement, {
+        nullable: true
+    })
+    @JoinColumn()
+    placement: Placement;
 
     initializeNewUser({ email, password, organization }: { email: string; password: string, organization: Organization}) {
         this.email = email;

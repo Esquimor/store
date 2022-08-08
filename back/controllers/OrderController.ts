@@ -28,12 +28,15 @@ export default class OrderController {
     }
 
     // Create Furnitures
-    const items = query.items.map(ite => {
-      const item = new Item();
-      item.furnitureVersionId = ite.furnitureVersionId as unknown as number;
-      item.quantity = ite.quantity;
-      return item;
-    });
+    const items = query.items.reduce((acc, ite) => {
+      let ites = [];
+      for(let i =0; i < ite.quantity; i++) {
+        const item = new Item();
+        item.furnitureVersionId = ite.furnitureVersionId as unknown as number;
+        ites = [...ites, item]
+      }
+      return [...acc, ...ites];
+    }, []);
 
     // Create Order;
     const order = new Order();

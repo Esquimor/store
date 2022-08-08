@@ -3,6 +3,8 @@ import { Organization } from './Organization';
 import { User } from './User';
 import { ORDER_STATUS } from "../../commons/Interface/Order"
 import { Item } from './Item';
+import { Address } from './Address';
+import { Placement } from './Placement';
 
 @Entity()
 export class Order {
@@ -34,6 +36,16 @@ export class Order {
       cascade: true,
     })
     items: Item[];
+
+    @ManyToOne(() => Address, address => address.orders, {
+      nullable: true
+    })
+    address: Address;
+
+    @ManyToOne(() => Placement, placement => placement.orders, {
+      nullable: true
+    })
+    placement: Placement;
 
     orderForResponseWithItemsAndCreator() {
       return {

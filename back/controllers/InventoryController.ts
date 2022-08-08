@@ -34,36 +34,17 @@ export default class InventoryController {
 
     const user = req.user;
 
-    // look if a inventory with same id has already by define for user
-    const alreadyInventory = await InventoryController.inventoryDao.getByIdAndByUser(query.furnitureVersionId, user)
+    const inventory = new Inventory()
+    inventory.user = user;
 
-    if (alreadyInventory) {
-      alreadyInventory.quantity = alreadyInventory.quantity + query.quantity;
-  
-      const updatedInventory = await InventoryController.inventoryDao.update(alreadyInventory);
-      if (!updatedInventory) {
-        res.status(400).json({ message: "error"})
-        return;
-      }
-  
-      res.json({
-        inventory: updatedInventory.inventoryForResponseWithFurnitureVersion(),
-      })
-    } else {
-      const inventory = new Inventory()
-      inventory.user = user;
-      inventory.furnitureVersionId = query.furnitureVersionId as number;
-      inventory.quantity = query.quantity
-  
-      const createdInventory = await InventoryController.inventoryDao.create(inventory);
-      if (!createdInventory) {
-        res.status(400).json({ message: "error"})
-        return;
-      }
-      res.json({
-        inventory: createdInventory.inventoryForResponseWithFurnitureVersion(),
-      })
+    const createdInventory = await InventoryController.inventoryDao.create(inventory);
+    if (!createdInventory) {
+      res.status(400).json({ message: "error"})
+      return;
     }
+    res.json({
+      inventory: createdInventory.inventoryForResponseWithFurnitureVersion(),
+    })
   }
 
   public async update(req: RequestInventory, res: Response) {
@@ -76,7 +57,6 @@ export default class InventoryController {
     }
 
     const inventory = req.inventory;
-    inventory.quantity = body.quantity;
 
     const savedInventory = await InventoryController.inventoryDao.update(inventory);
     if (!savedInventory) {

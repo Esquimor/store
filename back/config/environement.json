@@ -2,21 +2,21 @@
   "development": {
     "username": "postgres",
     "password": "root",
-    "database": "store",
+    "database": "personnel",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "root",
     "password": null,
-    "database": "bienvenue_test",
+    "database": "personnel",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
     "password": null,
-    "database": "bienvenue_prod",
+    "database": "personnel",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }
