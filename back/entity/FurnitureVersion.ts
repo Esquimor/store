@@ -19,7 +19,9 @@ export class FurnitureVersion {
     @Column()
     name: string;
 
-    @Column("text")
+    @Column("text", {
+        nullable: true
+    })
     description: string;
 
     @OneToMany(() => Item, item => item.furnitureVersion, {

@@ -8,7 +8,7 @@ export interface RequestAuth extends Request {
 }
 
 export const auth = async (req, res, next) => {
-  const token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || req.cookies.token;
+  const token = (req.headers.authorization && req.headers.authorization.split(' ')[1]) || "";
 
   const jwtDecoded = decodeToken(token)
 

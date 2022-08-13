@@ -11,19 +11,19 @@ export default class Dao<T> {
   async getAll() {
     const items = await getConnection().getRepository(this.entity).find();
     if (!items) return null;
-    return items;
+    return (items as unknown as T[]);
   }
   
   async getById(id: string) {
     const item = await getConnection().getRepository(this.entity).findOne(id);
     if (!item) return null;
-    return item;
+    return (item as unknown as T);
   }
 
   async create(element: T) {
     const newElement = await getConnection().getRepository(this.entity).save(element);
     if (!newElement) return null;
-    return newElement;
+    return (newElement as unknown as T);
   }
 
   async deleteById(id: string|number) {
@@ -35,6 +35,6 @@ export default class Dao<T> {
   async update(item: T) {
     const itemUpdated = await getConnection().getRepository(this.entity).save(item);
     if (!itemUpdated) return null;
-    return itemUpdated;
+    return (itemUpdated as unknown as T);
   }
 }

@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne } from 'typeorm';
 import { Category } from './Category';
 import { FurnitureVersion } from './FurnitureVersion';
+import { Organization } from './Organization';
 import { Variation } from './Variation';
 
 @Entity()
@@ -23,4 +24,6 @@ export class Attribut {
   @ManyToMany(() => FurnitureVersion)
   furnitureVersions: FurnitureVersion[]
 
+  @ManyToOne(() => Organization, organization => organization.attributs)
+  organization: Organization;
 }

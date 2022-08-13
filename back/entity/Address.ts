@@ -65,4 +65,18 @@ export class Address {
       cascade: true,
     })
     orders: Order[];
+
+    addressForResponse() {
+      return {
+          id: this.id,
+          name: this.name,
+          number: this.number,
+          ligne1: this.ligne1,
+          ligne2: this.ligne2,
+          city: this.city,
+          zipCode: this.zipCode,
+          country: this.country,
+          comment: this.comment
+      }
+  }
 }

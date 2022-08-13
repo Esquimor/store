@@ -16,13 +16,13 @@ export const inventoryAccessById = async (req: RequestInventory, res, next) => {
   const inventoryDao: InventoryDao = new InventoryDao();
   
 
-  const inventory = await inventoryDao.getById(params.id) as Inventory;
+  const inventory = await inventoryDao.getByIdWithOrganization(params.id) as Inventory;
   if (!inventory) {
     res.status(400).json({ message: "error"})
     return;
   }
 
-  if (inventory.user.id !== req.user.id) {
+  if (inventory.organization.id !== req.user.organization.id) {
     res.status(400).json({message: 'unauthorized'});
     return;
   }

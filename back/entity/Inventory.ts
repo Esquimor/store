@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { Address } from './Address';
 import { Item } from './Item';
 import { Organization } from './Organization';
@@ -11,6 +11,11 @@ export class Inventory {
 
     @PrimaryGeneratedColumn('uuid')
     id: number;
+
+    @Column({
+      nullable: true
+    })
+    name: string;
 
     @ManyToOne(() => Organization, organization => organization.inventories, {
       nullable: true
@@ -41,9 +46,32 @@ export class Inventory {
     })
     placement: Placement;
 
-    inventoryForResponseWithFurnitureVersion() {
+    setTags(tags: Tag[]) {
+      this.tags = tags;
+    }
+
+    addTag(tag: Tag) {
+      if (!this.tags) {
+        this.tags = []
+      }
+      this.tags = [...this.tags, tag]
+    }
+
+    setItems(items: Item[]) {
+      this.items = items;
+    }
+
+    addItem(item: Item) {
+      if (!this.items) {
+        this.items = []
+      }
+      this.items = [...this.items, item]
+    }
+
+    inventoryForResponse() {
       return {
         id: this.id,
+        name: this.name
       }
     }
 }

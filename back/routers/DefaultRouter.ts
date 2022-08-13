@@ -1,4 +1,3 @@
-import {Request, Response} from 'express';
 import UserController from '../controllers/UserController';
 
 export default class DefaultRouter {

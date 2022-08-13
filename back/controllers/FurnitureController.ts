@@ -10,8 +10,8 @@ export default class FurnitureController {
   private static furnitureDao: FurnitureDao = new FurnitureDao();
 
   public async create(req: RequestAuth, res: Response) {
-    const query = (req.body as unknown as { name?: string, description?: string});
-    const form = new FormCreateFurniture(query);
+    const body = (req.body as unknown as { name?: string, description?: string});
+    const form = new FormCreateFurniture(body);
     if (form.hasError()) {
       res.status(400).json({message: "missing param"})
       return;
@@ -22,8 +22,8 @@ export default class FurnitureController {
     furniture.organization = user.organization;
 
     const furnitureVersion = new FurnitureVersion()
-    furnitureVersion.name = query.name;
-    furnitureVersion.description = query.description;
+    furnitureVersion.name = body.name;
+    furnitureVersion.description = body.description;
     furnitureVersion.user = user;
 
     furniture.addFurnitureVersion(furnitureVersion)

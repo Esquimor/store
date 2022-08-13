@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import { Address } from './Address';
+import { Attribut } from './Attribut';
+import { Category } from './Category';
 import { Furniture } from './Furniture';
 import { Inventory } from './Inventory';
 import { Order } from './Order';
@@ -58,6 +60,16 @@ export class Organization {
       cascade: true,
     })
     inventories: Inventory[];
+    
+    @OneToMany(() => Category, category => category.organization, {
+      cascade: true,
+    })
+    categories: Category[];
+    
+    @OneToMany(() => Attribut, attribut => attribut.organization, {
+      cascade: true,
+    })
+    attributs: Attribut[];
 
     organizationForResponse() {
         return {

@@ -6,8 +6,12 @@ export default class FormCreateInventory extends Form {
   constructor(formBody: any) {
     super();
     const schema = z.object({
-      furnitureVersionId: z.union([z.string(), z.number()]),
-      quantity: z.number(),
+      name: z.string(),
+      userId: z.string().optional(),
+      tagsId: z.array(z.string()).optional(),
+      itemsId: z.array(z.string()).optional(),
+      addressId: z.string().optional(),
+      placementId: z.string().optional()
     });
     this.buildForm(schema, formBody)
   }

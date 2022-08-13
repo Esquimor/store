@@ -9,6 +9,12 @@ import OrganizationRouter from './routers/OrganizationRouter';
 import FurnitureRouter from './routers/FurnitureRouter';
 import OrderRouter from './routers/OrderRouter';
 import InventoryRouter from './routers/InventoryRouter';
+import AddressRouter from './routers/AddressRouter';
+import PlacementRouter from './routers/PlacementRouter';
+import TagRouter from './routers/TagRouter';
+import CategoryRouter from './routers/CategoryRouter';
+import AttributRouter from './routers/AttributRouter';
+import VariationRouter from './routers/VariationRouter';
 const cors = require("cors");
 const dotenv = require("dotenv");
 
@@ -21,6 +27,12 @@ class App {
   public routeOrganization: OrganizationRouter = new OrganizationRouter();
   public routeOrder: OrderRouter = new OrderRouter();
   public routerInventory: InventoryRouter = new InventoryRouter();
+  public routerAddress: AddressRouter = new AddressRouter();
+  public routerPlacement: PlacementRouter = new PlacementRouter();
+  public routerTag: TagRouter = new TagRouter();
+  public routerCategory: CategoryRouter = new CategoryRouter();
+  public routerAttribut: AttributRouter = new AttributRouter();
+  public routerVariation: VariationRouter = new VariationRouter();
 
   constructor() {
     this.app = express();
@@ -32,6 +44,12 @@ class App {
     this.routeOrganization.routes(this.app);
     this.routeOrder.routes(this.app);
     this.routerInventory.routes(this.app);
+    this.routerAddress.routes(this.app);
+    this.routerPlacement.routes(this.app);
+    this.routerTag.routes(this.app);
+    this.routerCategory.routes(this.app);
+    this.routerAttribut.routes(this.app);
+    this.routerVariation.routes(this.app);
   }
 
   private config(): void {

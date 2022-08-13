@@ -13,4 +13,11 @@ export class Tag {
 
     @ManyToOne(() => Organization, organization => organization.tags)
     organization: Organization;
+
+    tagForResponse() {
+        return {
+            id: this.id,
+            name: this.name
+        }
+    }
 }

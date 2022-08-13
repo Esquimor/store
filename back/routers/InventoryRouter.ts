@@ -14,7 +14,7 @@ export default class InventoryRouter {
       
     app
     .route('/inventory/:id')
-      .patch(auth, inventoryAccessById, this.inventoryController.update.bind(this.inventoryController))
+      .put(auth, inventoryAccessById, this.inventoryController.update.bind(this.inventoryController))
       .delete(auth, inventoryAccessById, this.inventoryController.delete.bind(this.inventoryController))
   }
 }

@@ -15,10 +15,10 @@ export default class OrderRouter {
     app
       .route("/order/:id")
       .get(auth, orderAccessById, this.orderController.getById.bind(this.orderController))
-      .patch(auth, canUpdateOrder, orderAccessById, this.orderController.update.bind(this.orderController))
+      .put(auth, canUpdateOrder, orderAccessById, this.orderController.update.bind(this.orderController))
 
     app
       .route("/order/:id/validate")
-      .patch(auth, canUpdateOrder, orderAccessById, this.orderController.validate.bind(this.orderController))
+      .put(auth, canUpdateOrder, orderAccessById, this.orderController.validate.bind(this.orderController))
   }
 }

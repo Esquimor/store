@@ -5,6 +5,11 @@ import InventoryDao from "../dao/InventoryDao"
 import FormCreateInventory from "../form/Inventory/FormCreateInventory";
 import FormUpdateInventory from "../form/Inventory/FormUpdateInventory";
 import { Inventory } from '../entity/Inventory';
+import { Tag } from '../entity/Tag';
+import { Item } from '../entity/Item';
+import { Address } from '../entity/Address';
+import { Placement } from '../entity/Placement';
+import { User } from '../entity/User';
 
 export default class InventoryController {
 
@@ -13,20 +18,27 @@ export default class InventoryController {
   public async get(req: RequestAuth, res: Response) {
     const user = req.user;
 
-    const inventories = await InventoryController.inventoryDao.getByUserWithFurnitureVersion(user)
+    const inventories = await InventoryController.inventoryDao.getByUserWithItemsWithFurnitureVersion(user)
     if (!inventories) {
       res.status(400).json({ message: "error"})
       return;
     }
 
     res.json({
-      inventories: inventories.map(inventory => inventory.inventoryForResponseWithFurnitureVersion()),
+      inventories: inventories.map(inventory => inventory.inventoryForResponse()),
     })
   }
 
   public async create(req: RequestAuth, res: Response) {
-    const query = (req.body as unknown as { furnitureVersionId: string|number, quantity: number;});
-    const form = new FormCreateInventory(query);
+    const body = (req.body as unknown as { 
+      name: string;
+      userId? :number;
+      tagsId?: (number)[];
+      itemsId?: (number)[];
+      addressId?: number;
+      placementId?: number;
+    });
+    const form = new FormCreateInventory(body);
     if (form.hasError()) {
       res.status(400).json({message: "missing param"})
       return;
@@ -35,7 +47,42 @@ export default class InventoryController {
     const user = req.user;
 
     const inventory = new Inventory()
-    inventory.user = user;
+    inventory.organization = user.organization;
+    inventory.name = body.name;
+    
+    if (body.userId) {
+      const user = new User();
+      user.id = body.userId;
+      inventory.user = user;
+    }
+
+    if (body.tagsId) {
+      body.tagsId.forEach((tagId) => {
+        const tag = new Tag();
+        tag.id = tagId;
+        inventory.addTag(tag)
+      })
+    }
+
+    if (body.itemsId) {
+      body.itemsId.forEach((itemId) => {
+        const item = new Item();
+        item.id = itemId;
+        inventory.addItem(item)
+      })
+    }
+
+    if (body.addressId) {
+      const address = new Address();
+      address.id = body.addressId;
+      inventory.address = address;
+    }
+
+    if (body.placementId) {
+      const placement = new Placement();
+      placement.id = body.placementId;
+      inventory.placement = placement;
+    }
 
     const createdInventory = await InventoryController.inventoryDao.create(inventory);
     if (!createdInventory) {
@@ -43,12 +90,19 @@ export default class InventoryController {
       return;
     }
     res.json({
-      inventory: createdInventory.inventoryForResponseWithFurnitureVersion(),
+      inventory: createdInventory.inventoryForResponse(),
     })
   }
 
   public async update(req: RequestInventory, res: Response) {
-    const body = (req.body as unknown as { quantity: number });
+    const body = (req.body as unknown as { 
+      name: string;
+      userId? :number;
+      tagsId?: (number)[];
+      itemsId?: (number)[];
+      addressId?: number;
+      placementId?: number;
+    });
 
     const form = new FormUpdateInventory(body);
     if (form.hasError()) {
@@ -58,6 +112,44 @@ export default class InventoryController {
 
     const inventory = req.inventory;
 
+    if (body.name) {
+      inventory.name = body.name;
+    }
+    
+    if (body.userId) {
+      const user = new User();
+      user.id = body.userId;
+      inventory.user = user;
+    }
+
+    if (body.tagsId) {
+      body.tagsId.forEach((tagId) => {
+        const tag = new Tag();
+        tag.id = tagId;
+        inventory.addTag(tag)
+      })
+    }
+
+    if (body.itemsId) {
+      body.itemsId.forEach((itemId) => {
+        const item = new Item();
+        item.id = itemId;
+        inventory.addItem(item)
+      })
+    }
+
+    if (body.addressId) {
+      const address = new Address();
+      address.id = body.addressId;
+      inventory.address = address;
+    }
+
+    if (body.placementId) {
+      const placement = new Placement();
+      placement.id = body.placementId;
+      inventory.placement = placement;
+    }
+
     const savedInventory = await InventoryController.inventoryDao.update(inventory);
     if (!savedInventory) {
       res.status(400).json({ message: "error"})
@@ -65,7 +157,7 @@ export default class InventoryController {
     }
 
     res.json({
-      inventory: savedInventory.inventoryForResponseWithFurnitureVersion(),
+      inventory: savedInventory.inventoryForResponse(),
     })
   }
 
