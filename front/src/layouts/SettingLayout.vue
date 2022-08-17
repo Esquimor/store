@@ -27,6 +27,18 @@
             </q-item-section>
             <q-item-section>{{$t("setting.users")}}</q-item-section>
           </q-item>
+          <q-item clickable v-ripple :to="{ name: 'settings-address'}">
+            <q-item-section avatar>
+              <q-icon color="primary" name="place" />
+            </q-item-section>
+            <q-item-section>Address</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple :to="{ name: 'settings-inventory'}">
+            <q-item-section avatar>
+              <q-icon color="primary" name="warehouse" />
+            </q-item-section>
+            <q-item-section>Inventory</q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>

@@ -57,6 +57,7 @@ import { FurnitureActionTypes } from "../../store/furniture/action-types";
 import { InventoryActionTypes } from "../../store/inventory/action-types";
 import { OrderActionTypes } from "../../store/order/action-types";
 import { UserActionTypes } from "../../store/user/action-types";
+import { AddressActionTypes } from "src/store/address/action-types";
 
 const $store = useStore()
 const router = useRouter()
@@ -71,6 +72,7 @@ const logout = async () => {
   void $store.dispatch(`order/${OrderActionTypes.RESET_ORDER}`)
   void $store.dispatch(`organization/${OrganizationActionTypes.RESET_ORGANIZATION}`)
   void $store.dispatch(`user/${UserActionTypes.RESET_USER}`)
+  void $store.dispatch(`address/${AddressActionTypes.RESET_ADDRESS}`)
   await router.push({ name: "login" })
 }
 </script>

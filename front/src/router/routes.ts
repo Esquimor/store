@@ -54,6 +54,16 @@ const routes: RouteRecordRaw[] = [
         path: "/users",
         name: "settings-users",
         component: () => import("pages/Settings/Users.vue")
+      },
+      {
+        path: "/address",
+        name: "settings-address",
+        component: () => import("pages/Settings/Address.vue")
+      },
+      {
+        path: "/inventory",
+        name: "settings-inventory",
+        component: () => import("pages/Settings/Inventory.vue")
       }
     ],
     meta: {
