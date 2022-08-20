@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md row wrap q-col-gutter-md full-width">
     <div 
-      class="col-3"
+      class="col-6 q-pa-md"
       v-for="inventory in props.inventories"
       :key="inventory.id"
     >
@@ -13,12 +13,11 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from "vue";
-import { InventoryWithFurnitureVersion } from "../../../../../commons/Interface/Inventory";
+import { Inventory } from "../../../../../commons/Interface/Inventory";
 import InventoryCard from "./InventoryCard.vue";
 
 const props = defineProps<{
-  inventories: InventoryWithFurnitureVersion[]
+  inventories: Inventory[]
 }>()
 </script>
 

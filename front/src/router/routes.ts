@@ -41,44 +41,59 @@ const routes: RouteRecordRaw[] = [
     component: () => import("layouts/SettingLayout.vue"),
     children: [
       {
-        path: "/account",
+        path: "/settings/account",
         name: "settings-account",
         component: () => import("pages/Settings/Account.vue")
       },
       {
-        path: "/organizarion",
+        path: "/settings/organizarion",
         name: "settings-organization",
         component: () => import("pages/Settings/Organization.vue")
       },
       {
-        path: "/users",
+        path: "/settings/users",
         name: "settings-users",
         component: () => import("pages/Settings/Users.vue")
       },
       {
-        path: "/address",
+        path: "/settings/address",
         children: [
           {
-            path: "",
+            path: "/settings/address",
             name: "settings-address",
             component: () => import("pages/Settings/Address/Address.vue")
           },
           {
-            path: "/new",
+            path: "/settings/address/new",
             name: "settings-address-new",
             component: () => import("pages/Settings/Address/AddressNew.vue")
           },
           {
-            path: "/update/:id",
+            path: "/settings/address/update/:id",
             name: "settings-address-edit",
             component: () => import("pages/Settings/Address/AddressEdit.vue")
           }
         ]
       },
       {
-        path: "/inventory",
-        name: "settings-inventory",
-        component: () => import("pages/Settings/Inventory.vue")
+        path: "/settings/inventory",
+        children: [
+          {
+            path: "/settings/inventory",
+            name: "settings-inventory",
+            component: () => import("pages/Settings/Inventory/Inventory.vue")
+          },
+          {
+            path: "/settings/inventory/new",
+            name: "settings-inventory-new",
+            component: () => import("pages/Settings/Inventory/InventoryNew.vue")
+          },
+          {
+            path: "/settings/inventory/edit/:id",
+            name: "settings-inventory-edit",
+            component: () => import("pages/Settings/Inventory/InventoryEdit.vue")
+          }
+        ]
       }
     ],
     meta: {

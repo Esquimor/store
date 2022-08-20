@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Inventory } from "app/../commons/Interface/Inventory";
+import { Inventory, InventoryDefault } from "app/../commons/Interface/Inventory";
 import Api from "./Api";
 
 export default class InventoryRequest {
@@ -9,7 +9,7 @@ export default class InventoryRequest {
     return Api.get("/inventory")
   }
 
-  static Create(payload: { furnitureVersionId: string; quantity: number }): Promise<{inventory: Inventory}>
+  static Create(payload: InventoryDefault): Promise<{inventory: Inventory}>
   {
     return Api.post("/inventory", payload)
   }

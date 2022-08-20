@@ -1,7 +1,7 @@
-import { InventoryWithFurnitureVersion } from "../../../../commons/Interface/Inventory";
+import { Inventory } from "../../../../commons/Interface/Inventory";
 
 export interface InventoryStateInterface {
-  inventories: InventoryWithFurnitureVersion[];
+  inventories: Inventory[];
 }
 
 function state(): InventoryStateInterface {

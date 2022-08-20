@@ -131,7 +131,7 @@ function onSubmit(values: AddressDefaultWithPlacementsDefault) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   void AddressRequest.Update(route.params.id as string, {...values, placements: removedEmptyPlacements})
     .then(({address}) => {
-      void $store.dispatch(`address/${AddressActionTypes.ADD_ADDRESS}`, address)
+      void $store.dispatch(`address/${AddressActionTypes.UPDATE_ADDRESS}`, address)
       $q.notify({
         color: "green-4",
         textColor: "white",

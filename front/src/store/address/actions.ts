@@ -17,6 +17,9 @@ const actions: ActionTree<AddressStateInterface, StateInterface> = {
   },
   [AddressActionTypes.REMOVE_ADDRESS]({ commit }, addressId: string) {
     commit(AddressMutationTypes.REMOVE_ADDRESS, addressId)
+  },
+  [AddressActionTypes.UPDATE_ADDRESS]({ commit }, address: AddressWithPlacements) {
+    commit(AddressMutationTypes.UPDATE_ADDRESS, address)
   }
 };
 

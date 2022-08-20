@@ -15,6 +15,12 @@ const mutation: MutationTree<AddressStateInterface> = {
   },
   [AddressMutationTypes.REMOVE_ADDRESS] (state: AddressStateInterface, payload: string) {
     state.addresses = state.addresses.filter((address) => address.id !== payload)
+  },
+  [AddressMutationTypes.UPDATE_ADDRESS] (state: AddressStateInterface, payload: AddressWithPlacements) {
+    state.addresses = state.addresses.map(address => {
+      if (address.id !== payload.id) return address;
+      return payload
+    })
   }
 };
 
