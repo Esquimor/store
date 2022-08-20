@@ -94,6 +94,11 @@ const routes: RouteRecordRaw[] = [
             component: () => import("pages/Settings/Inventory/InventoryEdit.vue")
           }
         ]
+      },
+      {
+        path: "/settings/tag",
+        name: "settings-tag",
+        component: () => import("pages/Settings/Tag.vue")
       }
     ],
     meta: {

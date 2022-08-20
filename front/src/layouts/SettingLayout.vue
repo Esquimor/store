@@ -39,6 +39,12 @@
             </q-item-section>
             <q-item-section>Inventory</q-item-section>
           </q-item>
+          <q-item clickable v-ripple :to="{ name: 'settings-tag'}">
+            <q-item-section avatar>
+              <q-icon color="primary" name="label" />
+            </q-item-section>
+            <q-item-section>Tag</q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
