@@ -1,7 +1,7 @@
-import { Address } from "../../../../commons/Interface/Address";
+import { AddressWithPlacements } from "../../../../commons/Interface/Address";
 
 export interface AddressStateInterface {
-  addresses: Address[]
+  addresses: AddressWithPlacements[]
 }
 
 function state(): AddressStateInterface {

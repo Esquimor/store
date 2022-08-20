@@ -49,7 +49,7 @@ export class Address {
     comment: string;
 
     @OneToMany(() => Placement, placement => placement.address, {
-        cascade: true,
+      cascade: true
     })
     placements: Placement[];
 
@@ -58,13 +58,22 @@ export class Address {
     
     @OneToMany(() => Inventory, inventory => inventory.address, {
       cascade: true,
+      onDelete: "SET NULL"
     })
     inventories: Inventory[];
     
     @OneToMany(() => Order, order => order.address, {
       cascade: true,
+      onDelete: "SET NULL"
     })
     orders: Order[];
+
+    addPlacement(placement: Placement) {
+      if (!this.placements) {
+        this.placements = []
+      }
+      this.placements = [...this.placements, placement]
+    }
 
     addressForResponse() {
       return {
@@ -76,7 +85,8 @@ export class Address {
           city: this.city,
           zipCode: this.zipCode,
           country: this.country,
-          comment: this.comment
+          comment: this.comment,
+          placements: this.placements?.map(placement => placement.placementForResponse()) || []
       }
   }
 }

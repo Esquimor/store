@@ -57,8 +57,23 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: "/address",
-        name: "settings-address",
-        component: () => import("pages/Settings/Address.vue")
+        children: [
+          {
+            path: "",
+            name: "settings-address",
+            component: () => import("pages/Settings/Address/Address.vue")
+          },
+          {
+            path: "/new",
+            name: "settings-address-new",
+            component: () => import("pages/Settings/Address/AddressNew.vue")
+          },
+          {
+            path: "/update/:id",
+            name: "settings-address-edit",
+            component: () => import("pages/Settings/Address/AddressEdit.vue")
+          }
+        ]
       },
       {
         path: "/inventory",

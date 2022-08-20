@@ -73,7 +73,7 @@
                       <div 
                           class="full-width">
                         <QInputWithValidation
-                          :name="`placements[${idx}].name`"
+                          :name="`placements[${idx}]`"
                           label="Name"
                         />
                       </div>
@@ -108,15 +108,18 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import { useStore } from "../../store/index"
 import { useQuasar } from "quasar"
 import { Form, FieldArray } from "vee-validate";
 import * as yup from "yup";
 import QInputWithValidation from "../Global/Form/QInputWithValidation.vue"
 import { AddressDefaultWithPlacementsDefault } from "app/../commons/Interface/Address";
-import AddressRequest from "src/request/AddressRequest";
+import AddressRequest from "../../request/AddressRequest";
+import { AddressActionTypes } from "../../store/address/action-types";
 
 const $q = useQuasar()
 const open = ref(false)
+const $store = useStore()
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -127,9 +130,7 @@ const schema = yup.object({
   zipCode: yup.string().optional(),
   country: yup.string().optional(),
   comment: yup.string().optional(),
-  placements: yup.array().of(yup.object({
-    name: yup.string().required().label("Name"),
-  }))
+  placements: yup.array().of(yup.string())
 });
 
 const initialValues = {
@@ -141,15 +142,14 @@ const initialValues = {
   zipCode: "",
   country: "",
   comment: "",
-  placements: [{
-    name: "",
-  }]
+  placements: [""]
 }
 
 function onSubmit(values: AddressDefaultWithPlacementsDefault) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   void AddressRequest.Create(values)
-    .then(() => {
+    .then(({address}) => {
+      void $store.dispatch(`address/${AddressActionTypes.ADD_ADDRESS}`, address)
       $q.notify({
         color: "green-4",
         textColor: "white",

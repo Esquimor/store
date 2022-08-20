@@ -18,7 +18,7 @@ export default class AddressController {
   public async get(req: RequestAuth, res: Response) {
     const user = req.user;
 
-    const addresses = await AddressController.addressDao.getAddressesByOrganization(user.organization)
+    const addresses = await AddressController.addressDao.getAddressesByOrganizationWithPlacements(user.organization)
     if (!addresses) {
       res.status(400).json({ message: "error"})
       return;
@@ -39,10 +39,11 @@ export default class AddressController {
       zipCode?: string|null;
       country?: string|null;
       comment?: string|null;
+      placements?: {name: string}[]|null;
     });
     const form = new FormCreateAddress(body);
     if (form.hasError()) {
-      res.status(400).json({message: "missing param"})
+      res.status(400).json({message: "missing param", erros: form.getErrors()})
       return;
     }
 
@@ -56,6 +57,14 @@ export default class AddressController {
     address.country = body.country
     address.comment = body.comment
     address.organization = req.user.organization;
+
+    if (body.placements) {
+      body.placements.forEach(({ name }) => {
+        const placement = new Placement();
+        placement.name = name;
+        address.addPlacement(placement)
+      })
+    }
 
     const addressSaved = await AddressController.addressDao.create(address);
     if (!addressSaved) {
@@ -75,6 +84,7 @@ export default class AddressController {
       zipCode?: string|null;
       country?: string|null;
       comment?: string|null;
+      placements?: {name: string; id?: number}[]|null;
     });
 
     const form = new FormUpdateAddress(body);
@@ -83,7 +93,40 @@ export default class AddressController {
       return;
     }
 
-    const address = replaceObjectValueFromToObject(body, req.address) as Address;
+    const address = req.address
+    if (body.name) {
+      address.name = body.name;
+    }
+    if (body.number) {
+      address.number = body.number;
+    }
+    if (body.ligne1) {
+      address.ligne1 = body.ligne1;
+    }
+    if (body.ligne2) {
+      address.ligne2 = body.ligne2;
+    }
+    if (body.city) {
+      address.city = body.city;
+    }
+    if (body.zipCode) {
+      address.zipCode = body.zipCode;
+    }
+    if (body.country) {
+      address.country = body.country;
+    }
+    if (body.comment) {
+      address.comment = body.comment;
+    }
+
+    if (body.placements) {
+      body.placements.forEach(({ id, name }) => {
+        const placement = new Placement();
+        placement.id = id;
+        placement.name = name;
+        address.addPlacement(placement)
+      })
+    }
 
     const savedAddress = await AddressController.addressDao.update(address);
     if (!savedAddress) {

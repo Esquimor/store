@@ -1,15 +1,21 @@
-import { Address } from "app/../commons/Interface/Address";
+import { AddressWithPlacements } from "app/../commons/Interface/Address";
 import { MutationTree } from "vuex";
 import { AddressMutationTypes } from "./mutation-types";
 import { AddressStateInterface } from "./state";
 
 const mutation: MutationTree<AddressStateInterface> = {
-  [AddressMutationTypes.ADD_ADDRESS] (state: AddressStateInterface, payload: Address) {
+  [AddressMutationTypes.ADD_ADDRESS] (state: AddressStateInterface, payload: AddressWithPlacements) {
     state.addresses = [...state.addresses, payload];
   },
   [AddressMutationTypes.RESET_ADDRESS] (state: AddressStateInterface) {
     state.addresses = []
   },
+  [AddressMutationTypes.SET_ADDRESSES] (state: AddressStateInterface, payload: AddressWithPlacements[]) {
+    state.addresses = payload
+  },
+  [AddressMutationTypes.REMOVE_ADDRESS] (state: AddressStateInterface, payload: string) {
+    state.addresses = state.addresses.filter((address) => address.id !== payload)
+  }
 };
 
 export default mutation;

@@ -12,7 +12,9 @@ export class Placement {
   @Column()
   name: string;
 
-  @ManyToOne(() => Address, address => address.placements)
+  @ManyToOne(() => Address, address => address.placements, {
+    onDelete: "CASCADE"
+  })
   @JoinColumn({ name: "addressId" })
   address: Address;
 

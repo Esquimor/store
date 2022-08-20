@@ -13,7 +13,11 @@ export default class FormUpdateAddress extends Form {
       city: z.string().optional(),
       zipCode: z.string().optional(),
       country: z.string().optional(),
-      comment: z.string().optional()
+      comment: z.string().optional(),
+      placements: z.object({
+        id: z.string().optional(),
+        name: z.string(),
+      }).array().optional()
     });
     this.buildForm(schema, formBody)
   }
