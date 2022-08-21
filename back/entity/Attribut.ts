@@ -26,4 +26,11 @@ export class Attribut {
 
   @ManyToOne(() => Organization, organization => organization.attributs)
   organization: Organization;
+
+  addVariation(variation: Variation) {
+    if (!this.variations) {
+      this.variations = []
+    }
+    this.variations = [...this.variations, variation]
+  }
 }

@@ -60,6 +60,7 @@ import { UserActionTypes } from "../../store/user/action-types";
 import { AddressActionTypes } from "../../store/address/action-types";
 import { TagActionTypes } from "../../store/tag/action-types";
 import { CategoryActionTypes } from "../../store/category/action-types";
+import { AttributActionTypes } from "../../store/attribut/action-types";
 
 const $store = useStore()
 const router = useRouter()
@@ -77,6 +78,7 @@ const logout = async () => {
   void $store.dispatch(`address/${AddressActionTypes.RESET_ADDRESS}`)
   void $store.dispatch(`tag/${TagActionTypes.RESET_TAG}`)
   void $store.dispatch(`category/${CategoryActionTypes.RESET_CATEGORY}`)
+  void $store.dispatch(`attribut/${AttributActionTypes.RESET_ATTRIBUT}`)
   await router.push({ name: "login" })
 }
 </script>

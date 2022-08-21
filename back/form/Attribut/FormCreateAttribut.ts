@@ -7,6 +7,9 @@ export default class FormCreateAttribut extends Form {
     super();
     const schema = z.object({
       name: z.string(),
+      variations: z.object({
+        name: z.string()
+      }).array().optional()
     });
     this.buildForm(schema, formBody)
   }

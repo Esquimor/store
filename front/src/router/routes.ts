@@ -104,6 +104,11 @@ const routes: RouteRecordRaw[] = [
         path: "/settings/category",
         name: "settings-category",
         component: () => import("pages/Settings/Category.vue")
+      },
+      {
+        path: "/settings/attribut",
+        name: "settings-attribut",
+        component: () => import("pages/Settings/Attribut.vue")
       }
     ],
     meta: {

@@ -16,7 +16,7 @@ export default class AttributController {
   public async get(req: RequestAuth, res: Response) {
     const user = req.user;
 
-    const attributs = await AttributController.attributDao.getAttributsByOrganization(user.organization)
+    const attributs = await AttributController.attributDao.getAttributsByOrganizationWithVariations(user.organization)
     if (!attributs) {
       res.status(400).json({ message: "error"})
       return;
@@ -30,6 +30,9 @@ export default class AttributController {
   public async create(req: RequestAuth, res: Response) {
     const body = (req.body as unknown as { 
       name: string;
+      variations: {
+        name: string;
+      }[]
     });
     const form = new FormCreateAttribut(body);
     if (form.hasError()) {
@@ -42,6 +45,14 @@ export default class AttributController {
     const attribut = new Attribut()
     attribut.organization = user.organization;
     attribut.name = body.name;
+
+    if (body.variations) {
+      body.variations.map((variationBody) => {
+        const variation = new Variation();
+        variation.name = variationBody.name;
+        attribut.addVariation(variation);
+      })
+    }
 
     const createdAttribut = await AttributController.attributDao.create(attribut);
     if (!createdAttribut) {
@@ -56,6 +67,10 @@ export default class AttributController {
   public async update(req: RequestAttribut, res: Response) {
     const body = (req.body as unknown as { 
       name?: string;
+      variations: {
+        id?: number;
+        name: string;
+      }[]
     });
 
     const form = new FormUpdateAttribut(body);
@@ -68,6 +83,15 @@ export default class AttributController {
 
     if (body.name) {
       attribut.name = body.name;
+    }
+
+    if (body.variations) {
+      body.variations.map((variationBody) => {
+        const variation = new Variation();
+        variation.id = variationBody.id;
+        variation.name = variationBody.name;
+        attribut.addVariation(variation);
+      })
     }
     
     const savedAttribut = await AttributController.attributDao.update(attribut);

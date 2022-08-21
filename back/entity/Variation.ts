@@ -12,7 +12,9 @@ export class Variation {
     @Column()
     name: string;
 
-    @ManyToOne(() => Attribut, attribut => attribut.variations)
+    @ManyToOne(() => Attribut, attribut => attribut.variations, {
+        onDelete: "CASCADE"
+      })
     attribut: Attribut;
 
     @ManyToMany(() => FurnitureVersion)

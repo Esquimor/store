@@ -51,6 +51,12 @@
             </q-item-section>
             <q-item-section>Category</q-item-section>
           </q-item>
+          <q-item clickable v-ripple :to="{ name: 'settings-attribut'}">
+            <q-item-section avatar>
+              <q-icon color="primary" name="list" />
+            </q-item-section>
+            <q-item-section>Attribut</q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
