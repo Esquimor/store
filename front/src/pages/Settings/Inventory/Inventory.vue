@@ -12,21 +12,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { useStore } from "../../../store/index";
 import LayoutSettings from "../../../components/Settings/LayoutSettings.vue";
-import InventoryRequest from "../../../request/InventoryRequest";
-import { InventoryActionTypes } from "../../../store/inventory/action-types";
 import InventoriesCard from "src/components/Inventory/InventoriesCard.vue";
 
 const $store = useStore()
 
 const inventories = computed(() => $store.state.inventory.inventories)
-
-onMounted(() => {
-  void InventoryRequest.Get()
-    .then(({ inventories }) => {
-      void $store.dispatch(`inventory/${InventoryActionTypes.SET_INVENTORIES}`, inventories)
-    })
-})
 </script>

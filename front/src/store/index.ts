@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { store } from "quasar/wrappers"
 import { InjectionKey } from "vue"
 import {
@@ -25,6 +28,16 @@ import { AddressStateInterface } from "./address/state"
 import { TagStateInterface } from "./tag/state"
 import { CategoryStateInterface } from "./category/state"
 import { AttributStateInterface } from "./attribut/state"
+import TagRequest from "src/request/TagRequest"
+import AddressRequest from "src/request/AddressRequest"
+import InventoryRequest from "src/request/InventoryRequest"
+import AttributRequest from "src/request/AttributRequest"
+import CategoryRequest from "src/request/CategoryRequest"
+import { TagMutationTypes } from "./tag/mutation-types"
+import { AddressMutationTypes } from "./address/mutation-types"
+import { InventoryMutationTypes } from "./inventory/mutation-types"
+import { AttributMutationTypes } from "./attribut/mutation-types"
+import { CategoryMutationTypes } from "./category/mutation-types"
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -39,6 +52,7 @@ import { AttributStateInterface } from "./attribut/state"
  */
 
 export interface StateInterface {
+  loadingBootStrap: boolean;
   user: UserStateInterface,
   organization: OrganizationStateInterface,
   furniture: FurnitureStateInterface,
@@ -78,7 +92,47 @@ export default store(function (/* { ssrContext } */) {
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
-    strict: !!process.env.DEBUGGING
+    strict: !!process.env.DEBUGGING,
+
+    state: {
+      loadingBootStrap: true
+    },
+
+    getters: {
+      loadingBootStrap: (state: StateInterface) => state.loadingBootStrap
+    },
+
+    actions: {
+      bootstrap({ commit }) {
+        commit("startLoadingBootstrap")
+        const promises = [
+          TagRequest.Get(),
+          AddressRequest.Get(),
+          InventoryRequest.Get(),
+          AttributRequest.Get(),
+          CategoryRequest.GetTree(),
+        ];
+        void Promise.all(promises).then(([tags, addresses, inventories, attributs, categories]) => {
+          commit(`tag/${TagMutationTypes.SET_TAGS}`, tags.tags)
+          commit(`address/${AddressMutationTypes.SET_ADDRESSES}`, addresses.addresses)
+          commit(`inventory/${InventoryMutationTypes.SET_INVENTORIES}`, inventories.inventories)
+          commit(`attribut/${AttributMutationTypes.SET_ATTRIBUTS}`, attributs.attributs)
+          commit(`category/${CategoryMutationTypes.SET_CATEGORIES_TREE}`, categories.categories)
+        })
+        .finally(() => {
+          commit("endLoadingBootstrap")
+        })
+      }
+    },
+
+    mutations: {
+      startLoadingBootstrap(state: StateInterface) {
+        state.loadingBootStrap = true
+      },
+      endLoadingBootstrap(state: StateInterface) {
+        state.loadingBootStrap = false
+      },
+    }
   })
 
   return Store;

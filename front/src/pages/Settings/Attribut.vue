@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 import { useQuasar } from "quasar"
-import { onMounted, computed } from "vue";
+import { computed } from "vue";
 import AttributRequest from "../../request/AttributRequest";
 import { useStore } from "../../store/index";
 import LayoutSettings from "../../components/Settings/LayoutSettings.vue";
@@ -56,13 +56,6 @@ const $q = useQuasar()
 const $store = useStore()
 
 const attributs = computed(() => $store.state.attribut.attributs)
-
-onMounted(() => {
-  void AttributRequest.Get()
-    .then((data) => {
-      void $store.dispatch(`attribut/${AttributActionTypes.SET_ATTRIBUTS}`, data.attributs)
-    })
-})
 
 const columns = [
   {

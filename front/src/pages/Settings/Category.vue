@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from "quasar"
-import { onMounted, computed } from "vue";
+import { computed } from "vue";
 import { useStore } from "../../store/index";
 import LayoutSettings from "../../components/Settings/LayoutSettings.vue";
 import CategoryRequest from "../../request/CategoryRequest";
@@ -70,13 +70,6 @@ const $store = useStore()
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 const categoriesTree = computed(() => $store.state.category.categoriesTree)
-
-onMounted(() => {
-  void CategoryRequest.GetTree()
-    .then((data) => {
-      void $store.dispatch(`category/${CategoryActionTypes.SET_CATEGORIES_TREE}`, data.categories)
-    })
-})
 
 const remove = (e: Event, category: Category) => {
   e.preventDefault();

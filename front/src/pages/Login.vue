@@ -64,6 +64,7 @@ export default defineComponent({
           localStorage.setItem("token", token)
           void $store.dispatch(`user/${UserActionTypes.SET_USER}`, user)
           void $store.dispatch(`organization/${OrganizationActionTypes.SET_ORGANIZATION}`, organization)
+          void $store.dispatch("bootstrap");
           $q.notify({
             color: "green-4",
             textColor: "white",

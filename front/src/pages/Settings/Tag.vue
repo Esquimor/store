@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from "quasar"
-import { onMounted, computed } from "vue";
+import {  computed } from "vue";
 import TagRequest from "../../request/TagRequest";
 import { useStore } from "../../store/index";
 import LayoutSettings from "../../components/Settings/LayoutSettings.vue";
@@ -56,13 +56,6 @@ const $q = useQuasar()
 const $store = useStore()
 
 const tags = computed(() => $store.state.tag.tags)
-
-onMounted(() => {
-  void TagRequest.Get()
-    .then((data) => {
-      void $store.dispatch(`tag/${TagActionTypes.SET_TAGS}`, data.tags)
-    })
-})
 
 const columns = [
   {
