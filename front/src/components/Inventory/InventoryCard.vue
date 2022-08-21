@@ -10,7 +10,7 @@
       <q-card-actions align="right">
         <q-btn color="negative" icon="delete" label="Delete" @click="onDelete"/>
         <q-btn
-          color="primary"
+          color="secondary"
           icon="edit"
           label="Edit"
           :to="{ name: 'settings-inventory-edit', params: {id: props.inventory.id } }"

@@ -99,6 +99,11 @@ const routes: RouteRecordRaw[] = [
         path: "/settings/tag",
         name: "settings-tag",
         component: () => import("pages/Settings/Tag.vue")
+      },
+      {
+        path: "/settings/category",
+        name: "settings-category",
+        component: () => import("pages/Settings/Category.vue")
       }
     ],
     meta: {

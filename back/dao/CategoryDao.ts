@@ -1,5 +1,5 @@
 import { Category } from '../entity/Category';
-import {getConnection} from 'typeorm';
+import {getConnection, IsNull} from 'typeorm';
 import Dao from './Dao';
 import { Organization } from '../entity/Organization';
 
@@ -19,6 +19,18 @@ export default class CategoryDao extends Dao<Category> {
     const items = await getConnection().getRepository(this.entity).find({organization});
     if (!items) return null;
     return (items as unknown as Category[]);
+  }
+
+  async getByOrganiaztionInTree(organization: Organization) {
+    const ancestor = await getConnection().getRepository(this.entity).findOne({organization,
+      where: { 
+        parent: IsNull()
+      }});
+    if (!ancestor) return null;
+    const items = await getConnection().getTreeRepository(this.entity).findDescendantsTree(ancestor)
+    if (!items) return null;
+    // @ts-ignore
+    return items
   }
   
 }

@@ -24,6 +24,20 @@ export default class CategoryController {
     })
   }
 
+  public async getTree(req: RequestAuth, res: Response) {
+    const user = req.user;
+
+    const categories = await CategoryController.categoryDao.getByOrganiaztionInTree(user.organization)
+    if (!categories) {
+      res.status(400).json({ message: "error"})
+      return;
+    }
+
+    res.json({
+      categories: categories,
+    })
+  }
+
   public async create(req: RequestAuth, res: Response) {
     const body = (req.body as unknown as { 
       name: string;
@@ -54,6 +68,46 @@ export default class CategoryController {
     }
     res.json({
       category: createdCategory
+    })
+  }
+
+  public async createTree(req: RequestAuth, res: Response) {
+    const body = (req.body as unknown as { 
+      name: string;
+      parentId? :number;
+    });
+    const form = new FormCreateCategory(body);
+    if (form.hasError()) {
+      res.status(400).json({message: "missing param"})
+      return;
+    }
+
+    const user = req.user;
+
+    const category = new Category()
+    category.organization = user.organization;
+    category.name = body.name;
+    
+    if (body.parentId) {
+      const parent = new Category();
+      parent.id = body.parentId;
+      category.parent = parent;
+    }
+
+    const createdCategory = await CategoryController.categoryDao.create(category);
+    if (!createdCategory) {
+      res.status(400).json({ message: "error"})
+      return;
+    }
+
+    const categories = await CategoryController.categoryDao.getByOrganiaztionInTree(user.organization)
+    if (!categories) {
+      res.status(400).json({ message: "error"})
+      return;
+    }
+
+    res.json({
+      categories: categories,
     })
   }
 
@@ -92,6 +146,47 @@ export default class CategoryController {
     })
   }
 
+  public async updateTree(req: RequestCategory, res: Response) {
+    const category = req.category;
+
+    const body = (req.body as unknown as { 
+      name?: string;
+      parentId? :number;
+    });
+
+    const form = new FormUpdateCategory(body);
+    if (form.hasError()) {
+      res.status(400).json({message: "missing param"})
+      return;
+    }
+
+    if (body.name) {
+      category.name = body.name;
+    }
+    
+    if (body.parentId) {
+      const parent = new Category();
+      parent.id = body.parentId;
+      category.parent = parent;
+    }
+
+    const savedCategory = await CategoryController.categoryDao.update(category);
+    if (!savedCategory) {
+      res.status(400).json({ message: "error"})
+      return;
+    }
+
+    const categories = await CategoryController.categoryDao.getByOrganiaztionInTree(req.user.organization)
+    if (!categories) {
+      res.status(400).json({ message: "error"})
+      return;
+    }
+
+    res.json({
+      categories: categories,
+    })
+  }
+
   public async delete(req: RequestCategory, res: Response) {
     const category = req.category;
     if (category.hasChildren()) {
@@ -107,6 +202,30 @@ export default class CategoryController {
 
     res.json({
       message: "ok"
+    })
+  }
+
+  public async deleteTree(req: RequestCategory, res: Response) {
+    const category = req.category;
+    if (category.hasChildren()) {
+      res.status(400).json({message: "has children"})
+      return;
+    }
+
+    const isDeletedCategory = await CategoryController.categoryDao.deleteById(category.id);
+    if (!isDeletedCategory) {
+      res.status(400).json({ message: "error"})
+      return;
+    }
+
+    const categories = await CategoryController.categoryDao.getByOrganiaztionInTree(req.user.organization)
+    if (!categories) {
+      res.status(400).json({ message: "error"})
+      return;
+    }
+
+    res.json({
+      categories: categories,
     })
   }
 }

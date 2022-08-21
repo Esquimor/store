@@ -45,6 +45,12 @@
             </q-item-section>
             <q-item-section>Tag</q-item-section>
           </q-item>
+          <q-item clickable v-ripple :to="{ name: 'settings-category'}">
+            <q-item-section avatar>
+              <q-icon color="primary" name="category" />
+            </q-item-section>
+            <q-item-section>Category</q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>

@@ -13,6 +13,7 @@ import basket from "./basket"
 import inventory from "./inventory"
 import address from "./address"
 import tag from "./tag"
+import category from "./category"
 import { UserStateInterface } from "./user/state"
 import { OrganizationStateInterface } from "./organization/state"
 import { FurnitureStateInterface } from "./furniture/state"
@@ -21,6 +22,7 @@ import { BasketStateInterface } from "./basket/state"
 import { InventoryStateInterface } from "./inventory/state"
 import { AddressStateInterface } from "./address/state"
 import { TagStateInterface } from "./tag/state"
+import { CategoryStateInterface } from "./category/state"
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -43,6 +45,7 @@ export interface StateInterface {
   inventory: InventoryStateInterface,
   address: AddressStateInterface,
   tag: TagStateInterface,
+  category: CategoryStateInterface
 }
 
 // provide typings for `this.$store`
@@ -66,6 +69,7 @@ export default store(function (/* { ssrContext } */) {
       inventory,
       address,
       tag,
+      category
     },
 
     // enable strict mode (adds overhead!)

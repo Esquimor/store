@@ -57,7 +57,9 @@ import { FurnitureActionTypes } from "../../store/furniture/action-types";
 import { InventoryActionTypes } from "../../store/inventory/action-types";
 import { OrderActionTypes } from "../../store/order/action-types";
 import { UserActionTypes } from "../../store/user/action-types";
-import { AddressActionTypes } from "src/store/address/action-types";
+import { AddressActionTypes } from "../../store/address/action-types";
+import { TagActionTypes } from "../../store/tag/action-types";
+import { CategoryActionTypes } from "../../store/category/action-types";
 
 const $store = useStore()
 const router = useRouter()
@@ -73,6 +75,8 @@ const logout = async () => {
   void $store.dispatch(`organization/${OrganizationActionTypes.RESET_ORGANIZATION}`)
   void $store.dispatch(`user/${UserActionTypes.RESET_USER}`)
   void $store.dispatch(`address/${AddressActionTypes.RESET_ADDRESS}`)
+  void $store.dispatch(`tag/${TagActionTypes.RESET_TAG}`)
+  void $store.dispatch(`category/${CategoryActionTypes.RESET_CATEGORY}`)
   await router.push({ name: "login" })
 }
 </script>
