@@ -1,7 +1,7 @@
 <template>
   <q-page padding class="row justify-center">
     <div class="col col-lg-8 col-md-10 col-sx-12">
-      <div class="row justify-between items-center">
+      <div class="full-width row justify-between items-center" style="border-bottom: 2px solid black">
         <h2 style="margin-top: 0px; margin-bottom: 0px;">Orders</h2>
       </div>
       <div class="q-pa-md row wrap q-col-gutter-md">
@@ -23,7 +23,7 @@ const $store = useStore()
 
 const orders = computed(() => $store.state.order.orders);
 
-const ordersOrganizeByStatus = orders.value.reduce<{
+const ordersOrganizeByStatus = computed(() => orders.value.reduce<{
   [order: string]: OrderWithItemWithFurnitureVersionWithFurniture[]
 }>((acc, order: OrderWithItemWithFurnitureVersionWithFurniture) => {
   acc[order.status] = [...acc[order.status], order];
@@ -34,7 +34,7 @@ const ordersOrganizeByStatus = orders.value.reduce<{
     [ORDER_STATUS.ORDERED]: [],
     [ORDER_STATUS.FINISHED]: []
   }
-)
+))
 
 onMounted(() => {
   void OrderRequest.GetForMe()

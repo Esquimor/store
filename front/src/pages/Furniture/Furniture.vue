@@ -1,6 +1,9 @@
 <template>
   <q-page padding class="row justify-center">
-    <div class="col col-lg-8 col-md-10 col-sx-12">
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+      <FurnitureDrawer />
+    </q-drawer>
+    <div class="col col-lg-10 col-md-12">
       <div class="row justify-between items-center">
         <h2 style="margin-top: 0px; margin-bottom: 0px;">Furnitures</h2>
         <FurnitureModalCreate />
@@ -21,6 +24,7 @@ import { computed, onMounted } from "vue";
 import { useStore } from "../../store/index";
 import FurnitureModalCreate from "../../components/Furniture/FurnitureModalCreate.vue"
 import FurnituresCard from "../../components/Furniture/Card/FurnituresCard.vue";
+import FurnitureDrawer from "../../components/Furniture/Drawer/FurnitureDrawer.vue";
 import FurnitureRequest from "../../request/FurnitureRequest";
 import { FurnitureActionTypes } from "../../store/furniture/action-types";
 import { FurnitureWithLatestFurnitureVersion } from "../../../../commons/Interface/Furniture";

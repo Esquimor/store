@@ -1,16 +1,18 @@
 <template>
-  <div>
-    <h3 class="q-ma-md text-h6">
-      {{props.orderStatus.label}}
-    </h3>
+  <q-card flat bordered class="q-my-md q-pa-none">
+    <q-card bordered :class="classTitleSection">
+      <h3 class="text-h6 q-ma-none q-pa-md">
+        {{props.orderStatus.label}}
+      </h3>
+    </q-card>
     <div class="q-pa-md row wrap q-col-gutter-md">
-      <OrdersCard :orders="props.orders" :color="props.orderStatus.color" />
+      <OrdersCard :orders="props.orders" />
     </div>
-  </div>
+  </q-card>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { computed } from "vue";
 import { OrderWithItemWithFurnitureVersionWithFurniture, ORDER_STATUS_ITEM_INTERFACE } from "../../../../commons/Interface/Order";
 import OrdersCard from "./OrdersCard.vue";
 
@@ -18,4 +20,8 @@ const props = defineProps<{
   orderStatus: ORDER_STATUS_ITEM_INTERFACE,
   orders: OrderWithItemWithFurnitureVersionWithFurniture[]
 }>()
+
+const classTitleSection = computed(() => {
+  return `bg-${props.orderStatus.color || "primary"} text-white q-pa-none`
+})
 </script>

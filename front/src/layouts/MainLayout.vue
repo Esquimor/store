@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
     <q-inner-loading :showing="loadingBootStrap">
       <q-spinner-gears size="50px" color="primary" />
     </q-inner-loading>

@@ -11,7 +11,7 @@ export enum ORDER_STATUS {
 }
 
 export interface ORDER_STATUS_ITEM_INTERFACE {
-  labe: string;
+  label: string;
   color: string;
 }
 

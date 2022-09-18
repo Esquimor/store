@@ -1,5 +1,5 @@
 <template>
-  <OrderCard class="col-4" v-for="order in props.orders" :key="order.id" :order="order" :color="props.color"/>
+  <OrderCard class="col-4" v-for="order in props.orders" :key="order.id" :order="order"/>
 </template>
 
 <script lang="ts" setup>
@@ -9,6 +9,5 @@ import OrderCard from "./OrderCard.vue"
 
 const props = defineProps<{
   orders: OrderWithItemWithFurnitureVersionWithFurniture[];
-  color?: string;
 }>()
 </script>
