@@ -111,13 +111,15 @@ export default store(function (/* { ssrContext } */) {
           InventoryRequest.Get(),
           AttributRequest.Get(),
           CategoryRequest.GetTree(),
+          CategoryRequest.Get(),
         ];
-        void Promise.all(promises).then(([tags, addresses, inventories, attributs, categories]) => {
+        void Promise.all(promises).then(([tags, addresses, inventories, attributs, categoriesTree, categories]) => {
           commit(`tag/${TagMutationTypes.SET_TAGS}`, tags.tags)
           commit(`address/${AddressMutationTypes.SET_ADDRESSES}`, addresses.addresses)
           commit(`inventory/${InventoryMutationTypes.SET_INVENTORIES}`, inventories.inventories)
           commit(`attribut/${AttributMutationTypes.SET_ATTRIBUTS}`, attributs.attributs)
-          commit(`category/${CategoryMutationTypes.SET_CATEGORIES_TREE}`, categories.categories)
+          commit(`category/${CategoryMutationTypes.SET_CATEGORIES_TREE}`, categoriesTree.categories)
+          commit(`category/${CategoryMutationTypes.SET_CATEGORIES}`, categories.categories)
         })
         .finally(() => {
           commit("endLoadingBootstrap")

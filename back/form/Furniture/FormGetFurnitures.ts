@@ -7,8 +7,9 @@ export default class FormGetFurnitures extends Form {
     super();
     const schema = z.object({
       search: z.string().optional(), 
-      start: z.number().optional(),
-      quantity: z.number().optional(),
+      start: z.string().optional(),
+      quantity: z.string().optional(),
+      category: z.string().optional(),
     });
     this.buildForm(schema, formBody)
   }

@@ -18,23 +18,12 @@
 
 <script lang="ts">
 
-import { defineComponent, ref } from "vue"
+import { defineComponent } from "vue"
 
 export default defineComponent({
   name: "LoginLayout",
 
   components: {
   },
-
-  setup () {
-    const leftDrawerOpen = ref(false)
-
-    return {
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  }
 })
 </script>

@@ -1,4 +1,4 @@
-import { Category, CategoryTree } from "app/../commons/Interface/Category";
+import { Category, CategoryTree, CategoryWithParent } from "app/../commons/Interface/Category";
 import { ActionTree } from "vuex";
 import { StateInterface } from "../index";
 import { CategoryActionTypes } from "./action-types";
@@ -12,7 +12,7 @@ const actions: ActionTree<CategoryStateInterface, StateInterface> = {
   [CategoryActionTypes.ADD_CATEGORY]({ commit }, category: Category) {
     commit(CategoryMutationTypes.ADD_CATEGORY, category)
   },
-  [CategoryActionTypes.SET_CATEGORIES]({ commit }, categories: Category[]) {
+  [CategoryActionTypes.SET_CATEGORIES]({ commit }, categories: CategoryWithParent[]) {
     commit(CategoryMutationTypes.SET_CATEGORIES, categories)
   },
   [CategoryActionTypes.REMOVE_CATEGORY]({ commit }, categoryId: string) {
@@ -23,7 +23,7 @@ const actions: ActionTree<CategoryStateInterface, StateInterface> = {
   },
   [CategoryActionTypes.SET_CATEGORIES_TREE]({ commit }, category: CategoryTree) {
     commit(CategoryMutationTypes.SET_CATEGORIES_TREE, category)
-  }
+  },
 };
 
 export default actions;

@@ -9,8 +9,8 @@ export default class FurnitureRequest {
     return Api.post("/furniture", payload)
   }
 
-  static Get(): Promise<{furnitures: Furniture[]}>
+  static Get(payload: {search?: string; category?: string, start?: number, quantity?: number }): Promise<{furnitures: Furniture[]; count: number }>
   {
-    return Api.get("/furniture")
+    return Api.get("/furniture", payload)
   }
 }

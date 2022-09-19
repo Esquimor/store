@@ -16,7 +16,7 @@ export default class CategoryDao extends Dao<Category> {
   }
 
   async getByOrganiaztion(organization: Organization) {
-    const items = await getConnection().getRepository(this.entity).find({organization});
+    const items = await getConnection().getRepository(this.entity).find({organization, relations: ["parent"]});
     if (!items) return null;
     return (items as unknown as Category[]);
   }

@@ -37,10 +37,11 @@ export default class FurnitureController {
   }
 
   public async get(req: RequestAuth, res: Response) {
-    const query = (req.query as unknown as { 
+    const query = (req.query as unknown as {
       search?: string; 
       start?: number;
       quantity?: number;
+      category?: string;
     });
     const form = new FormGetFurnitures(query);
     if (form.hasError()) {
@@ -50,11 +51,11 @@ export default class FurnitureController {
 
     const user = req.user;
 
-    const furnitures = await FurnitureController.furnitureDao.getFurnituresByOrganizationWithLastestVersion(user.organization);
+    const [furnitures, count] = await FurnitureController.furnitureDao.getFurnituresByOrganizationWithLastestVersion(user.organization, query);
     if (!furnitures) {
       res.status(400).json({message: 'an error has occured'});
       return;
     }
-    res.json({ furnitures })
+    res.json({ furnitures, count })
   }
 }

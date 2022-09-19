@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Category, CategoryDefault, CategoryTree } from "app/../commons/Interface/Category";
+import { Category, CategoryDefault, CategoryTree, CategoryWithParent } from "app/../commons/Interface/Category";
 import Api from "./Api";
 
 export default class CategoryRequest {
 
-  static Get(): Promise<{categories: Category[]}>
+  static Get(): Promise<{categories: CategoryWithParent[]}>
   {
     return Api.get("/category")
   }

@@ -1,14 +1,14 @@
-import { Category, CategoryTree } from "../../../../commons/Interface/Category";
+import { CategoryWithParent, CategoryTree } from "../../../../commons/Interface/Category";
 
 export interface CategoryStateInterface {
-  categories: Category[],
+  categories: CategoryWithParent[],
   categoriesTree: CategoryTree | null,
 }
 
 function state(): CategoryStateInterface {
   return {
     categories: [],
-    categoriesTree: null
+    categoriesTree: null,
   }
 };
 
