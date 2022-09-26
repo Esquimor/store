@@ -20,5 +20,9 @@ export default class OrderRouter {
     app
       .route("/order/:id/validate")
       .put(auth, canUpdateOrder, orderAccessById, this.orderController.validate.bind(this.orderController))
+
+    app
+      .route("/order/status/count")
+      .get(auth, this.orderController.getOrderByStatusCounted.bind(this.orderController))
   }
 }

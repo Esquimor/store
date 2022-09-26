@@ -2,12 +2,15 @@ import {Response} from 'express';
 import { RequestAuth } from "../middleware/auth";
 import FormCreateFurniture from "../form/Furniture/FormCreateFurniture"
 import FurnitureDao from "../dao/FurnitureDao"
+import CategoryDao from "../dao/CategoryDao"
 import { Furniture } from '../entity/Furniture';
 import { FurnitureVersion } from '../entity/FurnitureVersion';
 import FormGetFurnitures from "../form/Furniture/FormGetFurnitures";
+import { Search, Pagination } from "../../commons/Interface/Filter";
 export default class FurnitureController {
 
   private static furnitureDao: FurnitureDao = new FurnitureDao();
+  private static categoryDao: CategoryDao = new CategoryDao();
 
   public async create(req: RequestAuth, res: Response) {
     const body = (req.body as unknown as { name?: string, description?: string});
@@ -37,12 +40,11 @@ export default class FurnitureController {
   }
 
   public async get(req: RequestAuth, res: Response) {
-    const query = (req.query as unknown as {
-      search?: string; 
-      start?: number;
-      quantity?: number;
+    interface Query extends Search, Pagination {
       category?: string;
-    });
+    }
+
+    const query = (req.query as unknown as Query);
     const form = new FormGetFurnitures(query);
     if (form.hasError()) {
       res.status(400).json({message: "missing param"})
@@ -51,7 +53,21 @@ export default class FurnitureController {
 
     const user = req.user;
 
-    const [furnitures, count] = await FurnitureController.furnitureDao.getFurnituresByOrganizationWithLastestVersion(user.organization, query);
+    let categoriesDescendantIds:number[] = []
+
+    if (query.category) {
+      const category = await FurnitureController.categoryDao.getById(query.category);
+      const categoriesDescendants = await FurnitureController.categoryDao.getDescendantsUsingParentCategory(category);
+      categoriesDescendantIds = categoriesDescendants.map(({ id }) => id)
+    }
+
+    const [furnitures, count] = await FurnitureController.furnitureDao.getFurnituresByOrganizationWithLastestVersion(
+      user.organization,
+      {
+        ...query,
+        categories: categoriesDescendantIds
+      }
+    );
     if (!furnitures) {
       res.status(400).json({message: 'an error has occured'});
       return;

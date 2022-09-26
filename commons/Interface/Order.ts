@@ -10,6 +10,8 @@ export enum ORDER_STATUS {
   ERROR = "ERROR"
 }
 
+export type OrdersCounted = Record<ORDER_STATUS, number>
+
 export interface ORDER_STATUS_ITEM_INTERFACE {
   label: string;
   color: string;

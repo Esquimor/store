@@ -10,11 +10,18 @@ export default class InventoryRouter {
       .route('/inventory')
       .get(auth, this.inventoryController.get.bind(this.inventoryController))
       .post(auth, this.inventoryController.create.bind(this.inventoryController))
-    
+
+    app
+      .route("/inventory/me")
+      .get(auth, this.inventoryController.getMe.bind(this.inventoryController))
       
     app
     .route('/inventory/:id')
       .put(auth, inventoryAccessById, this.inventoryController.update.bind(this.inventoryController))
       .delete(auth, inventoryAccessById, this.inventoryController.delete.bind(this.inventoryController))
+
+    app
+      .route("/inventory/count")
+      .get(auth, this.inventoryController.getInventoriesCounted.bind(this.inventoryController))
   }
 }

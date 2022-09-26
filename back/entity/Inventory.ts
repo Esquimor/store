@@ -71,7 +71,11 @@ export class Inventory {
     inventoryForResponse() {
       return {
         id: this.id,
-        name: this.name
+        name: this.name,
+        address: this.address,
+        user: this.user?.userForResponse(),
+        placement: this.placement,
+        items: this.items
       }
     }
 }

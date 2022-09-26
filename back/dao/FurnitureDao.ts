@@ -25,7 +25,7 @@ export default class FurnitureDao extends Dao<Furniture> {
 
   async getFurnituresByOrganizationWithLastestVersion(
     organization: Organization,
-    { start, quantity, search, category }: {start?: number; quantity?: number; search?: string; category?: string } = {start: 0, quantity: 50, search: ""}
+    { start, quantity, search, categories }: {start?: number; quantity?: number; search?: string; categories?: number[] } = {start: 0, quantity: 50, search: ""}
   ):Promise<[Furniture[], number] | null> {
     const [items, itemsCount] = await getConnection().getRepository(this.entity)
       .createQueryBuilder("furniture")
@@ -44,8 +44,8 @@ export default class FurnitureDao extends Dao<Furniture> {
           subQuery = subQuery.andWhere("LOWER(furVersion.name) LIKE LOWER(:search)", { search: `%${ search.toLowerCase() }%` })
         }
 
-        if (isNotEmpty(category)) {
-          subQuery = subQuery.andWhere("furVersion.category = :category", { category })
+        if (isNotEmpty(categories)) {
+          subQuery = subQuery.andWhere("furVersion.category IN (:...categories)", { categories })
         }
         
         return "furnitureVersion.id = " + subQuery.getQuery()

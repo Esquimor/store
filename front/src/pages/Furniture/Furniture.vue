@@ -11,7 +11,6 @@
       <div class="q-pa-md row wrap q-col-gutter-md">
         <FurnituresCard
           :furnitures="furnitures" 
-          @addInventory="addInInventory"
           @addOrder="addInBasket"
         />
       </div>
@@ -34,8 +33,6 @@ import FurnitureRequest from "../../request/FurnitureRequest";
 import { FurnitureActionTypes } from "../../store/furniture/action-types";
 import { FurnitureWithLatestFurnitureVersion } from "../../../../commons/Interface/Furniture";
 import { BasketActionTypes } from "../../store/basket/action-types";
-import InventoryRequest from "../../request/InventoryRequest";
-import { InventoryActionTypes } from "../../store/inventory/action-types";
 import { isEmpty } from "app/../commons/Technical/Empty";
 import { getNbPageByItems } from "app/../commons/Technical/Pagination";
 
@@ -77,7 +74,6 @@ watch(
       quantity: +NB_ITEMS
     })
       .then(({ furnitures, count }) => {
-        console.log(count)
         void $store.dispatch(
           `furniture/${FurnitureActionTypes.SET_FURNITURES_WITH_LATEST_FURNITURE_VERSION}`,
           furnitures
@@ -92,12 +88,5 @@ watch(
 
 const addInBasket = (furniture: FurnitureWithLatestFurnitureVersion) => {
   void $store.dispatch(`basket/${BasketActionTypes.ADD_ARTICLE}`, { quantity: 1, furniture_version: furniture.furnitureVersions[0]})
-}
-
-const addInInventory = (furniture: FurnitureWithLatestFurnitureVersion) => {
-  void InventoryRequest.Create({ quantity: 1, furnitureVersionId: furniture.furnitureVersions[0].id})
-    .then(({ inventory }) => {
-      void $store.dispatch(`inventory/${InventoryActionTypes.ADD_INVENTORY}`, inventory)
-    })
 }
 </script>

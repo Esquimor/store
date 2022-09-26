@@ -115,7 +115,9 @@ export class User {
             firstname: this.firstname,
             lastname: this.lastname,
             phone: this.phone,
-            role: this.role
+            role: this.role,
+            placement: this.placement || null,
+            address: this.address || null
         }
     }
 

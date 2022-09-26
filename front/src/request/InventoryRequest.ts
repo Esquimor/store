@@ -1,12 +1,31 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Inventory, InventoryDefaultWithFurnitureVersionId } from "app/../commons/Interface/Inventory";
+import {
+  Inventory,
+  InventoryDefaultWithFurnitureVersionId,
+  InventoriesCounted
+} from "app/../commons/Interface/Inventory";
 import Api from "./Api";
+import { Search, Pagination } from "app/../commons/Interface/Filter";
+
+interface GetQuery extends Search, Pagination {
+}
+
+interface GetForMeQuery extends Search, Pagination {
+  user?: boolean;
+  address?: boolean;
+  placement?: boolean;
+}
 
 export default class InventoryRequest {
 
-  static Get(): Promise<{inventories: Inventory[]}>
+  static Get(payload: GetQuery): Promise<{inventories: Inventory[], count: number}>
   {
-    return Api.get("/inventory")
+    return Api.get("/inventory", payload)
+  }
+
+  static GetForMe(payload: GetForMeQuery): Promise<{inventories: Inventory[], count: number}>
+  {
+    return Api.get("/inventory/me", payload)
   }
 
   static Create(payload: InventoryDefaultWithFurnitureVersionId): Promise<{inventory: Inventory}>
@@ -22,5 +41,10 @@ export default class InventoryRequest {
   static Delete(idInventory: string): Promise<unknown>
   {
     return Api.delete(`/inventory/${idInventory}`)
+  }
+
+  static GetInventoriesCounted(): Promise<{count: InventoriesCounted}>
+  {
+    return Api.get("/inventory/count")
   }
 }

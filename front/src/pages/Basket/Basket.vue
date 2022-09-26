@@ -5,6 +5,32 @@
         <h2 style="margin-top: 0px; margin-bottom: 0px;">Basket</h2>
       </div>
       <q-card class="q-pa-md">
+        <q-btn-group spread>
+          <q-btn
+            :outline="action !== ACTION.CREATE_ORDER"
+            label="Create a new Order"
+            @click="() => setAction(ACTION.CREATE_ORDER)"
+            color="primary"
+          />
+          <q-btn
+            :outline="action !== ACTION.EXISTING_ORDER"
+            label="Add to existing Order" 
+            @click="() => setAction(ACTION.EXISTING_ORDER)"
+            color="primary"
+          />
+          <q-btn
+            :outline="action !== ACTION.CREATE_INVENTORY"
+            label="Create an Inventory" 
+            @click="() => setAction(ACTION.CREATE_INVENTORY)"
+            color="primary"
+          />
+          <q-btn
+            :outline="action !== ACTION.EXISTING_INVENTORY"
+            label="Add to existing Inventory" 
+            @click="() => setAction(ACTION.EXISTING_INVENTORY)"
+            color="primary"
+          />
+        </q-btn-group>
         <q-section>
           <q-input
             filled
@@ -65,10 +91,22 @@ import { OrderActionTypes } from "../../store/order/action-types";
 const $q = useQuasar()
 const $store = useStore()
 
+enum ACTION {
+  CREATE_ORDER = "create_order",
+  EXISTING_ORDER = "existing_order",
+  CREATE_INVENTORY = "create_inventory",
+  EXISTING_INVENTORY = "existing_inventory"
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 const articles = computed(() => $store.getters["basket/articles"] as Article[])
 
 const name = ref("")
+const action = ref(ACTION.CREATE_ORDER);
+
+const setAction = (value: ACTION) => {
+  action.value = value
+}
 
 const columns = [
   {

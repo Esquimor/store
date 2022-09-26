@@ -3,11 +3,13 @@ import OrderDao from '../dao/OrderDao';
 import { RequestAuth } from '../middleware/auth';
 import { RequestOrder } from "../middleware/orderAccessById";
 import FormCreateOrderWithFurnitures from "../form/Order/FormCreateOrderWithFurnitures";
+import FormGetOrders from "../form/Order/FormGetOrders";
 import { Order } from '../entity/Order';
 import { ORDER_STATUS } from '../../commons/Interface/Order';
 import { ITEM_STATUS } from '../../commons/Interface/Item';
 import FormUpdateOrder from "../form/Order/FormUpdateOrder";
 import { Item } from '../entity/Item';
+import { Search, Pagination } from "../../commons/Interface/Filter";
 
 export default class OrderController {
 
@@ -58,13 +60,36 @@ export default class OrderController {
   }
 
   public async get(req: RequestAuth, res: Response) {
+    interface Query extends Search, Pagination {
+      status?: ORDER_STATUS;
+      created_by?: string;
+    }
+
+    const query = (req.query as unknown as Query);
+    const form = new FormGetOrders(query);
+    if (form.hasError()) {
+      res.status(400).json({message: "missing param"})
+      return;
+    }
+
     const user = req.user;
-    const orders = await this.orderDao.getByOrganizationWithItemsWithFurnitureVersionWithFurniture(user.organization);
+    const [orders, count] = await this.orderDao.getByOrganizationWithItemsWithFurnitureVersionWithFurniture(
+      user.organization,
+      query
+    );
     if (!orders) {
       res.status(400).json({message: 'orders not found'});
       return;
     }
-    res.json({orders})
+    res.json({orders, count})
+  }
+
+  public async getOrderByStatusCounted(req: RequestAuth, res: Response) {
+    const user = req.user;
+    const promises = Object.values(ORDER_STATUS).map((curr) => this.orderDao.getCountedOrderByOrganizationAndByStatus(user.organization, curr))
+    const result = await Promise.all(promises)
+    const counted = Object.values(ORDER_STATUS).reduce((acc, curr, index) => ({...acc, [curr]: result[index]}), {})
+    res.json({counted})
   }
 
   public getById(req: RequestOrder, res: Response) {

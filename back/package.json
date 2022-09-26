@@ -23,6 +23,7 @@
     "dayjs": "^1.10.7",
     "dotenv": "^14.2.0",
     "express": "^4.17.1",
+    "express-query-boolean": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "node-mailjet": "^5.1.1",
     "nodemon": "^2.0.19",

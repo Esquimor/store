@@ -2,9 +2,17 @@
   <q-header elevated>
     <q-toolbar>
       <q-toolbar-title >
+        <q-btn
+          round
+          color="white"
+          text-color="primary"
+          icon="home"
+          class="q-mr-md"
+          :to="{ name: 'home'}"
+        />
         <q-btn flat label="Order" :to="{ name: 'home'}" />
-        <q-btn flat label="Funitures" :to="{ name: 'furniture'}" />
         <q-btn flat label="Inventory" :to="{ name: 'inventory'}" />
+        <q-btn flat label="Funitures" :to="{ name: 'furniture'}" />
       </q-toolbar-title>
 
       <div>

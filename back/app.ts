@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as boolParser from "express-query-boolean";
 import 'reflect-metadata';
 import DefaultRouter from './routers/DefaultRouter';
 import { createConnection } from 'typeorm';
@@ -60,6 +61,7 @@ class App {
     createConnection()
 
     this.app.use(bodyParser.json());
+    this.app.use(boolParser());
     // CORS
     this.app.use(cors());
   }

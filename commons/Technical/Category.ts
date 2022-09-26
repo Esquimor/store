@@ -33,7 +33,7 @@ export const getCategoryByUsingIdWithAncestorsAndChildrenFirstlevel = (categoryI
 
   return {
     category: category ? category : null,
-    ancestors: category ? getCategoryAncestors(category, categories) : [],
+    ancestors: category ? getCategoryAncestors(category, categories).reverse() : [],
     children: getCategoryChildrenFirstLevelByUsingCategoryId(categoryId, categories)
   }
 }

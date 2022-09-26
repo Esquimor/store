@@ -33,4 +33,10 @@ export default class CategoryDao extends Dao<Category> {
     return items
   }
   
+
+  async getDescendantsUsingParentCategory(parentCategory: Category) {
+    const descendants = await getConnection().getTreeRepository(this.entity).findDescendants(parentCategory)
+    if (!descendants) return null;
+    return (descendants as unknown as Category[]);
+  }
 }
