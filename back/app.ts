@@ -2,6 +2,8 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as boolParser from "express-query-boolean";
 import 'reflect-metadata';
+import { graphqlHTTP } from 'express-graphql'
+import { buildSchema } from 'graphql'
 import DefaultRouter from './routers/DefaultRouter';
 import { createConnection } from 'typeorm';
 import AuthRouter from './routers/AuthRouter';
@@ -16,8 +18,12 @@ import TagRouter from './routers/TagRouter';
 import CategoryRouter from './routers/CategoryRouter';
 import AttributRouter from './routers/AttributRouter';
 import VariationRouter from './routers/VariationRouter';
+const server = require('./schema')
 const cors = require("cors");
 const dotenv = require("dotenv");
+
+// The `listen` method launches a web server.
+server.start()
 
 class App {
   public app: express.Application;
