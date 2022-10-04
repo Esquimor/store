@@ -1,0 +1,14 @@
+enum ITEM_STATUS {
+  WANTED
+  DECLINED
+  VALIDED
+}
+
+type Item {
+  id: String
+  status: ITEM_STATUS
+}
+
+type Query {
+  items: [Item]
+}

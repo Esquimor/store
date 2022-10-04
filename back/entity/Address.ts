@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Inventory } from './Inventory';
 import { Order } from './Order';
 import { Organization } from './Organization';
@@ -54,7 +54,11 @@ export class Address {
     placements: Placement[];
 
     @ManyToOne(() => Organization, organization => organization.addresses)
+    @JoinColumn({ name: "organizationId" })
     organization: Organization;
+
+    @Column({ nullable: false })
+    organizationId: number;
     
     @OneToMany(() => Inventory, inventory => inventory.address, {
       cascade: true,

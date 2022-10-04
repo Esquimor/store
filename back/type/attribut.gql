@@ -1,0 +1,11 @@
+type Attribut {
+  id: String
+  name: String
+  categories: [Category]
+  furnitureVersions: [FurnitureVersion]
+  organization: Organization
+}
+
+type Query {
+  attributs: [Attribut]
+}

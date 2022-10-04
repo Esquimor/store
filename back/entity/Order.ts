@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Organization } from './Organization';
 import { User } from './User';
 import { ORDER_STATUS } from "../../commons/Interface/Order"
@@ -27,10 +27,18 @@ export class Order {
     status: ORDER_STATUS;
 
     @ManyToOne(() => Organization, organization => organization.orders)
+    @JoinColumn({ name: "organizationId" })
     organization: Organization;
 
+    @Column({ nullable: false })
+    organizationId: number;
+
     @ManyToOne(() => User, user => user.orders)
+    @JoinColumn({ name: "creatorId" })
     creator: User;
+
+    @Column({ nullable: false })
+    creatorId: number;
     
     @OneToMany(() => Item, item => item.order, {
       cascade: true,
@@ -40,12 +48,20 @@ export class Order {
     @ManyToOne(() => Address, address => address.orders, {
       nullable: true
     })
+    @JoinColumn({ name: "addressId" })
     address: Address;
+
+    @Column({ nullable: true })
+    addressId: number;
 
     @ManyToOne(() => Placement, placement => placement.orders, {
       nullable: true
     })
+    @JoinColumn({ name: "placementId" })
     placement: Placement;
+
+    @Column({ nullable: true })
+    placementId: number;
 
     orderForResponseWithItemsAndCreator() {
       return {

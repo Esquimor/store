@@ -107,4 +107,12 @@ export default class InventoryDao extends Dao<Inventory> {
     if (!item) return null;
     return (item as unknown as Inventory);
   }
+
+  async getAllByIdAddress(idAddress: number|string):Promise<Inventory[]|null> {
+    const items = await getConnection().getRepository(this.entity).find({
+      address: idAddress
+    });
+    if (!items) return null;
+    return (items as unknown as Inventory[]);
+  }
 }

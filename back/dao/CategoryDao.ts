@@ -2,6 +2,7 @@ import { Category } from '../entity/Category';
 import {getConnection, IsNull} from 'typeorm';
 import Dao from './Dao';
 import { Organization } from '../entity/Organization';
+import { Attribut } from '../entity/Attribut';
 
 export default class CategoryDao extends Dao<Category> {
 
@@ -32,11 +33,26 @@ export default class CategoryDao extends Dao<Category> {
     // @ts-ignore
     return items
   }
-  
 
   async getDescendantsUsingParentCategory(parentCategory: Category) {
     const descendants = await getConnection().getTreeRepository(this.entity).findDescendants(parentCategory)
     if (!descendants) return null;
     return (descendants as unknown as Category[]);
+  }
+
+  async getDescendantsUsingParentIdy(parentId: number|string) {
+    const descendants = await getConnection().getTreeRepository(this.entity).findDescendants(parentId)
+    if (!descendants) return null;
+    return (descendants as unknown as Category[]);
+  }
+
+  async getAllByIdAttribut(idAttribut: number|string):Promise<Category[]|null> {
+    // @ts-ignore Doesn't recognise right type
+    const items = await getConnection().getRepository(Attribut).findOne({
+      id: idAttribut,
+      relations: ["categories"],
+    });
+    if (!items) return null;
+    return (items.categories as unknown as Category[]);
   }
 }

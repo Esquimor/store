@@ -37,7 +37,7 @@ export class User {
     @Column({
         nullable: true,
     })
-    phone: boolean;
+    phone: string;
 
     @Column({
         type: 'enum',

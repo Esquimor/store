@@ -1,6 +1,5 @@
 type Furniture {
   id: String
-  name: String
 }
 
 type Query {

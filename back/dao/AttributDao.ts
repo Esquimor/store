@@ -2,6 +2,7 @@ import { Attribut } from '../entity/Attribut';
 import {getConnection} from 'typeorm';
 import { Organization } from '../entity/Organization';
 import Dao from './Dao';
+import { Category } from '../entity/Category';
 
 export default class AttributDao extends Dao<Attribut> {
 
@@ -31,5 +32,15 @@ export default class AttributDao extends Dao<Attribut> {
     const item = await getConnection().getRepository(this.entity).findOne(id, {relations: ["organization", "variations"]});
     if (!item) return null;
     return (item as unknown as Attribut);
+  }
+  
+  async getAllByIdCategory(idCategory: number|string):Promise<Attribut[]|null> {
+    // @ts-ignore Doesn't recognise right type
+    const items = await getConnection().getRepository(Category).findOne({
+      id: idCategory,
+      relations: ["attributs"],
+    });
+    if (!items) return null;
+    return (items.attributs as unknown as Attribut[]);
   }
 }

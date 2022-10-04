@@ -50,13 +50,64 @@ export default class OrderDao extends Dao<Order> {
     const [items, count] = await getConnection().getRepository(this.entity)
       .findAndCount({
         organization,
-        relations: ["items", "items.furnitureVersion", "items.furnitureVersion.furniture"],
+        relations: [
+          "items",
+          "items.furnitureVersion",
+          "items.furnitureVersion.furniture",
+        ],
         where,
         take: defaultQuantity,
         skip: (defaultQuantity * defaultStart)
       });
-    if (!items) return null;
     return ([items, count] as unknown as [Order[], number]);
+  }
+
+  
+
+  async getByOrganization(
+    organization: Organization,
+    {
+      search,
+      status,
+      start,
+      quantity,
+      created_by
+    }: {
+      search?: string; 
+      status?: ORDER_STATUS; 
+      start?: number; 
+      quantity?: number;
+      created_by?: string;
+    } = {
+      start: 0,
+      quantity: 50
+    }
+  ):Promise<Order[] | null> {
+    let where = {}
+
+    if (isNotEmpty(search)) {
+      where = {...where, name: Like(`%${search}%`)}
+    }
+
+    if (isNotEmpty(status)) {
+      where = {...where, status}
+    }
+
+    if (isNotEmpty(created_by)) {
+      where = {...where, creator: created_by}
+    }
+
+    const defaultQuantity = quantity || 50;
+    const defaultStart = start || 0;
+
+    const items = await getConnection().getRepository(this.entity)
+      .find({
+        organization,
+        where,
+        take: defaultQuantity,
+        skip: (defaultQuantity * defaultStart)
+      });
+    return (items as unknown as Order[]);
   }
   
   async getByIdWithOrganizationAndCreatorAndItemsWithFurnitureVersionWithFurniture(id: string) {
@@ -68,5 +119,13 @@ export default class OrderDao extends Dao<Order> {
   async getCountedOrderByOrganizationAndByStatus(organization: Organization, status: ORDER_STATUS):Promise<number> {
     const count = await getConnection().getRepository(this.entity).count({organization, status });
     return count;
+  }
+
+  async getAllByIdAddress(idAddress: number|string):Promise<Order[]|null> {
+    const items = await getConnection().getRepository(this.entity).find({
+      addressId: idAddress
+    });
+    if (!items) return null;
+    return (items as unknown as Order[]);
   }
 }

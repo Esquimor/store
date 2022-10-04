@@ -1,0 +1,19 @@
+type Address {
+  id: String
+  name: String
+  number: String
+  ligne1: String
+  ligne2: String
+  city: String
+  zipCode: String
+  country: String
+  comment: String
+  orders: [Order]
+  placements: [Placement]
+  organization: Organization
+  inventories: [Inventory]
+}
+
+type Query {
+  addresses: [Address]
+}

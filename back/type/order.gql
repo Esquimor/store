@@ -1,8 +1,14 @@
 type Order {
   id: String
   name: String
+  items: [Item]
+  organization: Organization
+  creator: User
+  address: Address
+  placement: Placement
 }
 
 type Query {
   orders: [Order]
+  ordersCount: Int
 }

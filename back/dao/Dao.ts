@@ -14,7 +14,7 @@ export default class Dao<T> {
     return (items as unknown as T[]);
   }
   
-  async getById(id: string) {
+  async getById(id: string|number) {
     const item = await getConnection().getRepository(this.entity).findOne(id);
     if (!item) return null;
     return (item as unknown as T);
@@ -22,7 +22,6 @@ export default class Dao<T> {
 
   async create(element: T) {
     const newElement = await getConnection().getRepository(this.entity).save(element);
-    if (!newElement) return null;
     return (newElement as unknown as T);
   }
 

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne, JoinColumn, JoinTable } from 'typeorm';
 import { Category } from './Category';
 import { FurnitureVersion } from './FurnitureVersion';
 import { Organization } from './Organization';
@@ -19,13 +19,19 @@ export class Attribut {
   variations: Variation[];
 
   @ManyToMany(() => Category)
+  @JoinTable()
   categories: Category[]
 
   @ManyToMany(() => FurnitureVersion)
+  @JoinTable()
   furnitureVersions: FurnitureVersion[]
 
   @ManyToOne(() => Organization, organization => organization.attributs)
+  @JoinColumn({ name: "organizationId" })
   organization: Organization;
+
+  @Column({ nullable: false })
+  organizationId: number;
 
   addVariation(variation: Variation) {
     if (!this.variations) {

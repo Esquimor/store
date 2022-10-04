@@ -1,0 +1,4 @@
+type Variation {
+  id: String
+  name: String
+}

@@ -1,0 +1,4 @@
+type Placement {
+  id: String
+  name: String
+}

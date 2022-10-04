@@ -1,0 +1,13 @@
+type Category {
+  id: String
+  name: String
+  parent: Category
+  children: [Category]
+  furnitureVersions: [FurnitureVersion]
+  attributs: [Attribut]
+  organization: Organization
+}
+
+type Query {
+  categories: [Category]
+}

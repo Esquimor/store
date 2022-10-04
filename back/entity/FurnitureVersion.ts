@@ -40,7 +40,11 @@ export class FurnitureVersion {
     tags: Tag[];
 
     @ManyToOne(() => Category, category => category.furnitureVersions)
+    @JoinColumn({ name: "categoryId" })
     category: Category;
+
+    @Column({ nullable: true })
+    categoryId: number;
     
     @ManyToMany(() => Attribut)
     @JoinColumn()

@@ -1,0 +1,5 @@
+type FurnitureVersion {
+  id: String
+  name: String
+  description: String
+}
