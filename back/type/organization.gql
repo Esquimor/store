@@ -1,4 +1,17 @@
 type Organization {
   id: String
   name: String
+  users: [User]
+  orders: [Order]
+  furnitures: [Furniture]
+  addresses: [Address]
+  addressMain: Address
+  tags: [Tag]
+  inventories: [Inventory]
+  categories: [Category]
+  attributs: [Attribut]
+}
+
+type Query {
+  organizations: [Organization]
 }

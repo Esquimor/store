@@ -34,7 +34,7 @@ export default class UserDao extends Dao<User> {
     return (item as unknown as User);
   }
   
-  async getWithOrganizationById(id: string) {
+  async getWithOrganizationById(id: string|number) {
     const item = await getConnection().getRepository(this.entity).findOne(id, { relations: ["organization"] });
     if (!item) return null;
     return item;
@@ -42,6 +42,12 @@ export default class UserDao extends Dao<User> {
 
   async getUsersInOrganization(organization: Organization) {
     const items = await getConnection().getRepository(this.entity).find({ organization });
+    if (!items) return null;
+    return (items as unknown as User);
+  }
+
+  async getUsersInOrganizationByOrganizationId(idOrganization: string|number) {
+    const items = await getConnection().getRepository(this.entity).find({ organization: idOrganization });
     if (!items) return null;
     return (items as unknown as User);
   }

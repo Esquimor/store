@@ -20,12 +20,20 @@ export class Inventory {
     @ManyToOne(() => Organization, organization => organization.inventories, {
       nullable: true
     })
+    @JoinColumn({ name: "organizationId" })
     organization: Organization;
+
+    @Column({ nullable: true })
+    organizationId: number;
 
     @ManyToOne(() => User, user => user.inventories, {
       nullable: true
     })
+    @JoinColumn({ name: "userId" })
     user: User;
+
+    @Column({ nullable: true })
+    userId: number;
 
     @ManyToMany(() => Tag)
     @JoinTable()
@@ -39,12 +47,20 @@ export class Inventory {
     @ManyToOne(() => Address, address => address.inventories, {
       nullable: true
     })
+    @JoinColumn({ name: "addressId" })
     address: Address;
+
+    @Column({ nullable: true })
+    addressId: number;
 
     @ManyToOne(() => Placement, placement => placement.inventories, {
       nullable: true
     })
+    @JoinColumn({ name: "placementId" })
     placement: Placement;
+
+    @Column({ nullable: true })
+    placementId: number;
 
     setTags(tags: Tag[]) {
       this.tags = tags;

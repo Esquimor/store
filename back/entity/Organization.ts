@@ -48,8 +48,11 @@ export class Organization {
     @OneToOne(() => Address, {
         nullable: true
     })
-    @JoinColumn()
+    @JoinColumn({ name: "addressMainId" })
     addressMain: Address;
+
+    @Column({ nullable: true })
+    addressMainId: number;
 
     @OneToMany(() => Tag, tag => tag.organization, {
         cascade: true,

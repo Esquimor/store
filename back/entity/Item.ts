@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
 import { ITEM_STATUS } from "../../commons/Interface/Item"
 import { FurnitureVersion } from './FurnitureVersion';
 import { Inventory } from './Inventory';
@@ -22,12 +22,20 @@ export class Item {
     @ManyToOne(() => Order, order => order.items, {
       nullable: true
     })
+    @JoinColumn({ name: "orderId" })
     order: Order;
+
+    @Column({ nullable: true })
+    orderId: number;
 
     @ManyToOne(() => Inventory, inventory => inventory.items, {
       nullable: true
     })
+    @JoinColumn({ name: "inventoryId" })
     inventory: Inventory;
+
+    @Column({ nullable: true })
+    inventoryId: number;
 
     @ManyToOne(() => FurnitureVersion, furnitureVersion => furnitureVersion.items)
     @JoinColumn({ name: "furnitureVersionId" })
@@ -37,6 +45,6 @@ export class Item {
     furnitureVersionId: number;
     
     @ManyToMany(() => Variation)
-    @JoinColumn()
+    @JoinTable()
     variations: Variation[]
 }

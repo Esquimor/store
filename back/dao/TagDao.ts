@@ -3,15 +3,26 @@ import Dao from './Dao';
 import {getConnection} from 'typeorm';
 import { Organization } from '../entity/Organization';
 import { FurnitureVersion } from '../entity/FurnitureVersion';
+import { Inventory } from '../entity/Inventory';
 
 export default class TagDao extends Dao<Tag> {
 
   constructor() {
     super(Tag)
   }
-
+  
   async getByIdWithOrganization(id: string): Promise<Tag|null> {
     const item = await getConnection().getRepository(this.entity).findOne(id, { relations: ["organization"]});
+    if (!item) return null;
+    return (item as unknown as Tag);
+  }
+  
+  async getByOrganizationId(idOrganization: string|number): Promise<Tag|null> {
+    const item = await getConnection().getRepository(this.entity).find({
+      where: {
+        organizationId: idOrganization,
+      }
+    });
     if (!item) return null;
     return (item as unknown as Tag);
   }
@@ -31,4 +42,16 @@ export default class TagDao extends Dao<Tag> {
     if (!items) return null;
     return (items.tags as unknown as Tag[]);
   }
+
+  async getAllByIdInventory(idInventory: number|string):Promise<Tag[]|null> {
+    // @ts-ignore Doesn't recognise right type
+    const items = await getConnection().getRepository(Inventory).findOne({
+      id: idInventory,
+      relations: ["tags"],
+    });
+    if (!items) return null;
+    return (items.tags as unknown as Tag[]);
+  }
+
+  
 }

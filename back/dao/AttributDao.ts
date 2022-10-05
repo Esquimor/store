@@ -10,6 +10,16 @@ export default class AttributDao extends Dao<Attribut> {
   constructor() {
     super(Attribut)
   }
+  
+  async getByOrganizationId(idOrganization: string|number): Promise<Attribut|null> {
+    const item = await getConnection().getRepository(this.entity).find({
+      where: {
+        organizationId: idOrganization,
+      }
+    });
+    if (!item) return null;
+    return (item as unknown as Attribut);
+  }
 
   async getAttributsByOrganization(organization: Organization): Promise<Attribut[] | null> {
     const items = await getConnection().getRepository(this.entity).find({ organization });

@@ -3,6 +3,7 @@ import {getConnection} from 'typeorm';
 import { Organization } from '../entity/Organization';
 import { FurnitureVersion } from '../entity/FurnitureVersion';
 import Dao from './Dao';
+import { Item } from '../entity/Item';
 
 export default class VariationDao extends Dao<Variation> {
 
@@ -32,6 +33,16 @@ export default class VariationDao extends Dao<Variation> {
     // @ts-ignore Doesn't recognise right type
     const items = await getConnection().getRepository(FurnitureVersion).findOne({
       id: idFurnitureVersion,
+      relations: ["variations"],
+    });
+    if (!items) return null;
+    return (items.variations as unknown as Variation[]);
+  }
+
+  async getAllByIdItem(idItem: number|string):Promise<Variation[]|null> {
+    // @ts-ignore Doesn't recognise right type
+    const items = await getConnection().getRepository(Item).findOne({
+      id: idItem,
       relations: ["variations"],
     });
     if (!items) return null;

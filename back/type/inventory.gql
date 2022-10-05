@@ -1,4 +1,14 @@
 type Inventory {
   id: String
   name: String
+  organization: Organization
+  user: User
+  address: Address
+  placement: Placement
+  tags: [Tag]
+  items: [Item]
+}
+
+type Query {
+  inventories: [Inventory]
 }

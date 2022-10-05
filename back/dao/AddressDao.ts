@@ -15,6 +15,16 @@ export default class AddressDao extends Dao<Address> {
     return (items as unknown as Address[]);
   }
 
+  async getByOrganizationId(idOrganization: string|number): Promise<Address[] | null> {
+    const items = await getConnection().getRepository(this.entity).find({
+      where: {
+        organizationId: idOrganization,
+      }
+    });
+    if (!items) return null;
+    return (items as unknown as Address[]);
+  }
+
   async getAddressesByOrganizationWithPlacements(organization: Organization): Promise<Address[] | null> {
     const items = await getConnection().getRepository(this.entity).find({ organization, relations: ["placements"] });
     if (!items) return null;

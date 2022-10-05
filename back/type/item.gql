@@ -7,6 +7,10 @@ enum ITEM_STATUS {
 type Item {
   id: String
   status: ITEM_STATUS
+  order: Order
+  inventory: Inventory
+  furnitureVersion: FurnitureVersion
+  variations: [Variation]
 }
 
 type Query {

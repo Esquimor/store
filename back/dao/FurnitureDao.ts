@@ -23,6 +23,16 @@ export default class FurnitureDao extends Dao<Furniture> {
     return (items as unknown as Furniture[]);
   }
 
+  async getByOrganizationId(idOrganization: string|number):Promise<Furniture[] | null> {
+    const items = await getConnection().getRepository(this.entity).find({
+      where: {
+        organizationId: idOrganization,
+      }
+    });
+    if (!items) return null;
+    return (items as unknown as Furniture[]);
+  }
+
   async getFurnituresByOrganizationWithLastestVersion(
     organization: Organization,
     { start, quantity, search, categories }: {start?: number; quantity?: number; search?: string; categories?: number[] } = {start: 0, quantity: 50, search: ""}

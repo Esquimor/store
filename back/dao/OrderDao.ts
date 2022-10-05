@@ -11,6 +11,19 @@ export default class OrderDao extends Dao<Order> {
     super(Order)
   }
 
+  async getWithOrganizationId(
+    idOrganization: string|number
+  ):Promise<Order[] | null> {
+
+    const items = await getConnection().getRepository(this.entity)
+      .find({
+        where: {
+          organizationId: idOrganization,
+        }
+      });
+    return (items as unknown as Order[]);
+  }
+
   async getByOrganizationWithItemsWithFurnitureVersionWithFurniture(
     organization: Organization,
     {
@@ -61,8 +74,6 @@ export default class OrderDao extends Dao<Order> {
       });
     return ([items, count] as unknown as [Order[], number]);
   }
-
-  
 
   async getByOrganization(
     organization: Organization,
