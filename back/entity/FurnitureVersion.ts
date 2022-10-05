@@ -30,10 +30,18 @@ export class FurnitureVersion {
     items: Item[];
 
     @ManyToOne(() => Furniture, furniture => furniture.furnitureVersions)
+    @JoinColumn({ name: "furnitureId" })
     furniture: Furniture;
 
+    @Column({ nullable: false })
+    furnitureId: number;
+
     @ManyToOne(() => User, user => user.furnitureVersions)
+    @JoinColumn({ name: "userId" })
     user: User;
+
+    @Column({ nullable: false })
+    userId: number;
 
     @ManyToMany(() => Tag)
     @JoinTable()
@@ -47,11 +55,11 @@ export class FurnitureVersion {
     categoryId: number;
     
     @ManyToMany(() => Attribut)
-    @JoinColumn()
+    @JoinTable()
     attributs: Attribut[]
     
     @ManyToMany(() => Variation)
-    @JoinColumn()
+    @JoinTable()
     variations: Variation[]
 
     furnitureVersionForResponse() {

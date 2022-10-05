@@ -3,6 +3,7 @@ import {getConnection} from 'typeorm';
 import { Organization } from '../entity/Organization';
 import Dao from './Dao';
 import { Category } from '../entity/Category';
+import { FurnitureVersion } from '../entity/FurnitureVersion';
 
 export default class AttributDao extends Dao<Attribut> {
 
@@ -41,6 +42,16 @@ export default class AttributDao extends Dao<Attribut> {
       relations: ["attributs"],
     });
     if (!items) return null;
+    return (items.attributs as unknown as Attribut[]);
+  }
+
+  async getAllByIdFurnitureVersion(idFurnitureVersion: number|string):Promise<Attribut[]|null> {
+    console.log(idFurnitureVersion)
+    // @ts-ignore Doesn't recognise right type
+    const items = await getConnection().getRepository(FurnitureVersion).findOne({
+      id: idFurnitureVersion,
+      relations: ["attributs"],
+    });
     return (items.attributs as unknown as Attribut[]);
   }
 }

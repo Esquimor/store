@@ -2,4 +2,15 @@ type FurnitureVersion {
   id: String
   name: String
   description: String
+  items: [Item]
+  furniture: Furniture
+  user: User
+  tags: [Tag]
+  category: Category
+  attributs: [Attribut]
+  variations: [Variation]
+}
+
+type Query {
+  furnitureVersions: [FurnitureVersion]
 }

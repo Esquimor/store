@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, Column, JoinColumn } from 'typeorm';
 import { FurnitureVersion } from './FurnitureVersion';
 import { Organization } from './Organization';
 
@@ -14,7 +14,11 @@ export class Furniture {
     furnitureVersions: FurnitureVersion[];
 
     @ManyToOne(() => Organization, organization => organization.furnitures)
+    @JoinColumn({ name: "organizationId" })
     organization: Organization;
+
+    @Column({ nullable: false })
+    organizationId: number;
 
     addFurnitureVersion(furnitureVersion: FurnitureVersion) {
         if (!this.furnitureVersions || this.furnitureVersions.length === 0) {

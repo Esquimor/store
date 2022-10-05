@@ -16,4 +16,12 @@ export default class ItemDao extends Dao<Item> {
     return (items as unknown as Item[]);
   }
   
+  async getAllByIdFurnitureVersion(idFurnitureVersion: number|string):Promise<Item[]|null> {
+    const items = await getConnection().getRepository(this.entity).find({
+      furnitureVersion: idFurnitureVersion
+    });
+    if (!items) return null;
+    return (items as unknown as Item[]);
+  }
+  
 }

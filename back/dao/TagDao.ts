@@ -2,6 +2,7 @@ import { Tag } from '../entity/Tag';
 import Dao from './Dao';
 import {getConnection} from 'typeorm';
 import { Organization } from '../entity/Organization';
+import { FurnitureVersion } from '../entity/FurnitureVersion';
 
 export default class TagDao extends Dao<Tag> {
 
@@ -19,5 +20,15 @@ export default class TagDao extends Dao<Tag> {
     const items = await getConnection().getRepository(this.entity).find({ organization });
     if (!items) return null;
     return (items as unknown as Tag[]);
+  }
+
+  async getAllByIdFurnitureVersion(idFurnitureVersion: number|string):Promise<Tag[]|null> {
+    // @ts-ignore Doesn't recognise right type
+    const items = await getConnection().getRepository(FurnitureVersion).findOne({
+      id: idFurnitureVersion,
+      relations: ["tags"],
+    });
+    if (!items) return null;
+    return (items.tags as unknown as Tag[]);
   }
 }

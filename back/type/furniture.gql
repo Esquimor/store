@@ -1,5 +1,7 @@
 type Furniture {
   id: String
+  furnitureVersions: [FurnitureVersion]
+  organization: Organization
 }
 
 type Query {
