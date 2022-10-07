@@ -11,6 +11,17 @@ export default class VariationDao extends Dao<Variation> {
     super(Variation)
   }
 
+  async getVariationsInOrganization(organization: Organization): Promise<Variation[] | null> {
+    const items = await getConnection().getRepository(this.entity)
+      .createQueryBuilder("variation")
+      .leftJoinAndSelect("variation.attribut", "attribut")
+      .andWhere("(attribut.organization = :organization)")
+      .setParameters({ organization: organization.id })
+      .getMany()
+    if (!items) return null;
+    return (items as unknown as Variation[]);
+  }
+
   async getVariationsByAttributInOrganization(attributId: number, organization: Organization): Promise<Variation[] | null> {
     const items = await getConnection().getRepository(this.entity)
       .createQueryBuilder("variation")

@@ -24,6 +24,19 @@ export default class PlacementDao extends Dao<Placement> {
     return (items as unknown as Placement[]);
   }
 
+  async getPlacementInOrganization(
+    organization: Organization
+  ): Promise<Placement[] | null> {
+    const items = await getConnection().getRepository(this.entity)
+      .createQueryBuilder("placement")
+      .leftJoinAndSelect("placement.address", "address")
+      .andWhere("(address.organization = :organization)")
+      .setParameters({ organization: organization.id })
+      .getMany()
+    if (!items) return null;
+    return (items as unknown as Placement[]);
+  }
+
   async getByIdWithAddressWithOrganization(id): Promise<Placement|null> {
     const item = await getConnection().getRepository(this.entity).findOne(id, {relations: ["address", "address.organization"]});
     if (!item) return null;

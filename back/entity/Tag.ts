@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { FurnitureVersion } from './FurnitureVersion';
 import { Organization } from './Organization';
 
@@ -12,7 +12,11 @@ export class Tag {
     name: string;
 
     @ManyToOne(() => Organization, organization => organization.tags)
+    @JoinColumn({ name: "organizationId" })
     organization: Organization;
+
+    @Column({ nullable: true })
+    organizationId: number;
 
     tagForResponse() {
         return {

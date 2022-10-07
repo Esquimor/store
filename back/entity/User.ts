@@ -67,7 +67,11 @@ export class User {
     code: string;
 
     @ManyToOne(() => Organization, organization => organization.users)
+    @JoinColumn({ name: "organizationId" })
     organization: Organization;
+
+    @Column({ nullable: true })
+    organizationId: number;
     
     @OneToMany(() => Order, order => order.creator, {
         cascade: true,
@@ -84,17 +88,23 @@ export class User {
     })
     inventories: Inventory[];
 
-    @OneToOne(() => Address, {
+    @ManyToOne(() => Address, {
         nullable: true
     })
-    @JoinColumn()
+    @JoinColumn({ name: "addressId" })
     address: Address;
 
-    @OneToOne(() => Placement, {
+    @Column({ nullable: true })
+    addressId: number;
+
+    @ManyToOne(() => Placement, {
         nullable: true
     })
-    @JoinColumn()
+    @JoinColumn({ name: "placementId" })
     placement: Placement;
+
+    @Column({ nullable: true })
+    placementId: number;
 
     initializeNewUser({ email, password, organization }: { email: string; password: string, organization: Organization}) {
         this.email = email;

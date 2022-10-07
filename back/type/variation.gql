@@ -1,4 +1,11 @@
 type Variation {
   id: String
   name: String
+  attribut: Attribut
+  furnitureVersions: [FurnitureVersion]
+  items: [Item]
+}
+
+type Query {
+  variations: [Variation]
 }

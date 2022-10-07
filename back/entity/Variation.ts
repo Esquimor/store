@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { Attribut } from './Attribut';
 import { FurnitureVersion } from './FurnitureVersion';
 import { Item } from './Item';
@@ -15,11 +15,17 @@ export class Variation {
     @ManyToOne(() => Attribut, attribut => attribut.variations, {
         onDelete: "CASCADE"
       })
+    @JoinColumn({ name: "attributId" })
     attribut: Attribut;
 
+    @Column({ nullable: true })
+    attributId: number;
+
     @ManyToMany(() => FurnitureVersion)
+    @JoinTable()
     furnitureVersions: FurnitureVersion[]
 
     @ManyToMany(() => Item)
+    @JoinTable()
     items: Item[]
 }

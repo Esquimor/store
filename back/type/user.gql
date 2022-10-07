@@ -4,12 +4,24 @@ type User {
   firstname: String
   lastname: String
   phone: String
+  role: String
+  status: String
+  organization: Organization
+  orders: [Order]
+  furnitureVersions: [FurnitureVersion]
+  inventories: [Inventory]
+  address: Address
+  placement: Placement
 }
 
 type AuthPayload {
   token: String
   user: User
   organization: Organization
+}
+
+type Query {
+  users: [User]
 }
 
 type Mutation {

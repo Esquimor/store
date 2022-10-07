@@ -2,6 +2,7 @@ import { Attribut } from '../entity/Attribut';
 import {getConnection} from 'typeorm';
 import Dao from './Dao';
 import { FurnitureVersion } from '../entity/FurnitureVersion';
+import { Variation } from '../entity/Variation';
 import { Organization } from '../entity/Organization';
 
 export default class FurnitureVersionDao extends Dao<FurnitureVersion> {
@@ -47,4 +48,21 @@ export default class FurnitureVersionDao extends Dao<FurnitureVersion> {
     return (items as unknown as FurnitureVersion[]);
   }
   
+  async getAllByIdUser(idUser: number|string):Promise<FurnitureVersion[]|null> {
+    const items = await getConnection().getRepository(this.entity).find({
+      user: idUser
+    });
+    if (!items) return null;
+    return (items as unknown as FurnitureVersion[]);
+  }
+  
+  async getAllByIdVariation(idVariation: number|string):Promise<FurnitureVersion[]|null> {
+    // @ts-ignore Doesn't recognise right type
+    const items = await getConnection().getRepository(Variation).findOne({
+      id: idVariation,
+      relations: ["furnitureVersions"],
+    });
+    if (!items) return null;
+    return (items.furnitureVersions as unknown as FurnitureVersion[]);
+  }
 }

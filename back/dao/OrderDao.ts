@@ -139,4 +139,20 @@ export default class OrderDao extends Dao<Order> {
     if (!items) return null;
     return (items as unknown as Order[]);
   }
+
+  async getAllByIdPlacement(idPlacement: number|string):Promise<Order[]|null> {
+    const items = await getConnection().getRepository(this.entity).find({
+      placementId: idPlacement
+    });
+    if (!items) return null;
+    return (items as unknown as Order[]);
+  }
+
+  async getAllByIdUser(idUser: number|string):Promise<Order[]|null> {
+    const items = await getConnection().getRepository(this.entity).find({
+      creatorId: idUser
+    });
+    if (!items) return null;
+    return (items as unknown as Order[]);
+  }
 }

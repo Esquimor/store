@@ -1,4 +1,11 @@
 type Placement {
   id: String
   name: String
+  address: Address
+  inventories: [Inventory]
+  orders: [Order]
+}
+
+type Query {
+  placements: [Placement]
 }

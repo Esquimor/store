@@ -1,4 +1,9 @@
 type Tag {
   id: String
   name: String
+  organization: Organization
+}
+
+type Query {
+  tags: [Tag]
 }
