@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /*
  * This file runs in a Node context (it's NOT transpiled by Babel), so use only
  * the ES6 features that are supported by your Node version. https://node.green/
@@ -31,6 +33,7 @@ module.exports = configure(function (ctx) {
     boot: [
       "i18n",
       "axios",
+      "graphql",
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -219,9 +222,23 @@ module.exports = configure(function (ctx) {
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
-      chainWebpack (/* chain */) {
-        // do something with the Electron main process Webpack cfg
-        // extendWebpackMain also available besides this chainWebpackMain
+      chainWebpack(chain) {
+        chain.module.rule("vue")
+          .use("vue-loader")
+          .loader("vue-loader")
+          .tap(options => {
+            options.transpileOptions = {
+              transforms: {
+                dangerousTaggedTemplateString: true
+              }
+            }
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            return options
+          })
+        chain.module.rule("gql")
+          .test(/\.(graphql|gql)$/)
+          .use("graphql-tag/loader")
+          .loader("graphql-tag/loader")
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

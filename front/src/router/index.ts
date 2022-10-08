@@ -1,5 +1,4 @@
 import { route } from "quasar/wrappers";
-import UserRequest from "src/request/UserRequest";
 import { UserActionTypes } from "src/store/user/action-types";
 import { OrganizationActionTypes } from "src/store/organization/action-types";
 import {
@@ -8,8 +7,12 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from "vue-router";
+import { useMutation } from "@vue/apollo-composable"
 import { StateInterface } from "../store";
 import routes from "./routes";
+import { User } from "app/../commons/Interface/User";
+import { Organization } from "app/../commons/Interface/Organization";
+import gql from "graphql-tag";
 
 /*
  * If not building with SSR mode, you can
@@ -45,17 +48,47 @@ export default route<StateInterface>(({ store }) => {
         next({ name: "login" });
         return;
       }
-      void UserRequest.Me()
-        .then(({ user, organization }) => {
-          if (!user) {
-            next({ name: "login" });
-            return;
+      const { mutate: me  } = useMutation(gql`
+        mutation me  {
+          me {
+            user {
+              email
+              firstname
+              id
+              lastname
+              phone
+              role
+              status
+            }
+            organization {
+              id
+              name
+            }
           }
-          void store.dispatch(`user/${UserActionTypes.SET_USER}`, user);
-          void store.dispatch(`organization/${OrganizationActionTypes.SET_ORGANIZATION}`, organization);
-          void store.dispatch("bootstrap");
+        }
+      `)
+
+      me()
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore 
+        .then((
+          {
+            data
+          } : {
+            data: {
+              me :{
+                user: User;
+                organization: Organization;
+              }
+          }
+        }) => {
+          void store.dispatch(`user/${UserActionTypes.SET_USER}`, data.me.user)
+          void store.dispatch(`organization/${OrganizationActionTypes.SET_ORGANIZATION}`, data.me.organization)
           next();
-        }).catch(() => next({ name: "login" }))
+        })
+        .catch(() => {
+          next({ name: "login" })
+        })
     } else {
       next()
     }

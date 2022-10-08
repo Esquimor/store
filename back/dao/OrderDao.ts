@@ -85,7 +85,7 @@ export default class OrderDao extends Dao<Order> {
       created_by
     }: {
       search?: string; 
-      status?: ORDER_STATUS; 
+      status?: ORDER_STATUS | "all"; 
       start?: number; 
       quantity?: number;
       created_by?: string;
@@ -100,7 +100,7 @@ export default class OrderDao extends Dao<Order> {
       where = {...where, name: Like(`%${search}%`)}
     }
 
-    if (isNotEmpty(status)) {
+    if (isNotEmpty(status) && status !== "all") {
       where = {...where, status}
     }
 
@@ -119,6 +119,51 @@ export default class OrderDao extends Dao<Order> {
         skip: (defaultQuantity * defaultStart)
       });
     return (items as unknown as Order[]);
+  }
+
+  async countByOrganization(
+    organization: Organization,
+    {
+      status,
+    }: {
+      status?: ORDER_STATUS | "all"; 
+    } = {
+      status: "all"
+    }
+  ):Promise<number | null> {
+    let where = {}
+    if (isNotEmpty(status) && status !== "all") {
+      where = {...where, status}
+    }
+    const items = await getConnection().getRepository(this.entity)
+      .count({
+        organization,
+        where,
+      });
+    return (items as unknown as number);
+  }
+
+  async countByOrganizationId(
+    organizationId: string | number,
+    {
+      status,
+    }: {
+      status?: ORDER_STATUS | "all"; 
+    } = {
+      status: "all"
+    }
+  ):Promise<number | null> {
+    let where = {}
+    if (isNotEmpty(status) && status !== "all") {
+      where = {...where, status}
+    }
+
+    const items = await getConnection().getRepository(this.entity)
+      .count({
+        organizationId,
+        where,
+      });
+    return (items as unknown as number);
   }
   
   async getByIdWithOrganizationAndCreatorAndItemsWithFurnitureVersionWithFurniture(id: string) {

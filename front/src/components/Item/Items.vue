@@ -18,11 +18,18 @@
 
 <script lang="ts" setup>
 import { defineProps } from "vue";
-import { ItemWithFurnitureVersionWithFurniture } from "../../../../commons/Interface/Item";
+import { ITEM_STATUS } from "../../../../commons/Interface/Item";
 import ItemBadge from "../Item/ItemBadge.vue"
 
 const props = defineProps<{
-  items: ItemWithFurnitureVersionWithFurniture[]
+  items: {
+    status: ITEM_STATUS;
+    id: string;
+    furnitureVersion: {
+      description: string;
+      name: string;
+    }
+  }[]
 }>()
 </script>
 

@@ -6,6 +6,7 @@ import UserDao from '../dao/UserDao';
 import ItemDao from '../dao/ItemDao';
 import AddressDao from '../dao/AddressDao';
 import PlacementDao from '../dao/PlacementDao';
+import { ORDER_STATUS } from '../../commons/Interface/Order';
 
 const orderDao: OrderDao = new OrderDao();
 const organizationDao: OrganizationDao = new OrganizationDao();
@@ -18,6 +19,7 @@ export default  {
   Order: {
     id: (parent: Order) => parent.id,
     name: (parent: Order) => parent.name,
+    status: (parent: Order) => parent.status,
     organization: async (parent: Order) => {
       if (!parent.organizationId) return null
       const organization = await organizationDao.getById(parent.organizationId)
@@ -51,6 +53,10 @@ export default  {
           ),
         )
       }
+      return items
+    },
+    countItems: async (parent: Order) => {
+      const items = await itemDao.countAllByIdOrder(parent.id)
       return items
     },
     address: async (parent: Order) => {
@@ -87,7 +93,11 @@ export default  {
           ),
         )
       }
-      const orders = await orderDao.getByOrganization(user.organization)
+      const orders = await orderDao.getByOrganization(user.organization, {
+        start: args.skip,
+        quantity: args.take,
+        status: args.status
+      })
       if (!orders) {
         return Promise.reject(
           new GraphQLError(
@@ -105,15 +115,35 @@ export default  {
           ),
         )
       }
-      const orders = await orderDao.getByOrganizationWithItemsWithFurnitureVersionWithFurniture(user.organization)
-      if (!orders) {
+      const orders = await orderDao.countByOrganization(user.organization, {
+        status: args.status
+      })
+      return orders
+    },
+    order: async(parent, args, {user}, info) => {
+      if (!user) {
         return Promise.reject(
           new GraphQLError(
             "error",
           ),
         )
       }
-      return orders[1]
+      const order = await orderDao.getById(args.id);
+      if (!order) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (order.organizationId !== user.organization.id) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return order
     },
   },
 }

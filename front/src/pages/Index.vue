@@ -15,14 +15,14 @@
           <q-tab 
             name="all"
           >
-            <q-chip>{{allCounted}}</q-chip> All
+            <q-chip>{{all}}</q-chip> All
           </q-tab>
           <q-tab
             v-for="status in ORDER_STATUS"
             :key="status"
             :name="status"
           >
-            <q-chip>{{countedOrders[status]}}</q-chip> {{ status }}
+          <q-chip>{{ordersCount[status]}}</q-chip> {{ status }}
           </q-tab>
         </q-tabs>
 
@@ -32,7 +32,6 @@
             :rows="orders"
             :columns="columns"
             v-model:pagination="pagination"
-            @request="onRequest"
             :rows-per-page-options="[50]"
             @row-click="onRowClick"
           />
@@ -44,39 +43,22 @@
 
 <script lang="ts" setup>
 import { useRouter } from "vue-router"
-import { onMounted, computed, ref, watch } from "vue";
-import type { Ref } from "vue"
-import { useStore } from "../store/index";
-import OrderRequest from "../request/OrderRequest";
-import { OrderActionTypes } from "../store/order/action-types";
+import { computed, ref, watch } from "vue";
 import {
   ORDER_STATUS,
-  OrdersCounted,
   OrderWithItemWithFurnitureVersionWithFurniture
 } from "../../../commons/Interface/Order";
+import gql from "graphql-tag";
+import { useQuery } from "@vue/apollo-composable";
 
-const $store = useStore()
 const router = useRouter()
 
 const tab = ref("all")
-const loading = ref(false)
 const pagination = ref({
   page: 1,
   rowsNumber : 0, 
   rowsPerPage: 50
 })
-
-// eslint-disable-next-line
-const countedOrders: Ref<OrdersCounted> = ref(
-  // eslint-disable-next-line
-  Object.fromEntries(Object.values(ORDER_STATUS).map(status => [status, 0]))
-) as unknown as OrdersCounted
-
-const orders = computed(() => $store.state.order.orders);
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-const allCounted = computed(() => Object.values(countedOrders.value)
-  .reduce<number>((acc, curr: number) =>  acc + (+curr), 0)
-)
 
 const columns = [
   {
@@ -92,11 +74,10 @@ const columns = [
     align: "left",
   },
   {
-    name: "items",
+    name: "countItems",
     label: "Nb Items",
-    field: "items",
+    field: "countItems",
     align: "left",
-    format: (val: unknown[]) => val.length,
   },
 ]
 
@@ -104,50 +85,79 @@ const onRowClick = async (evt: Event, row: OrderWithItemWithFurnitureVersionWith
   await router.push({ name: "order", params: { id: row.id } })
 }
 
-const onRequest = (props: {
-  pagination: {
-    page: number
-  }
-}) => {
-  const { page } = props.pagination;
-  
-  let payload: {
-    status?: ORDER_STATUS,
-    start: number
-  } = {start: +page - 1}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+const variablesOrders = computed(() => ({
+  status: tab.value,
+  skip: pagination.value.page - 1,
+  take: pagination.value.rowsPerPage,
+  created: ORDER_STATUS.CREATED,
+  validated: ORDER_STATUS.VALIDATED,
+  ordered: ORDER_STATUS.ORDERED,
+  finished: ORDER_STATUS.FINISHED,
+  error: ORDER_STATUS.ERROR,
+}))
 
-  if (tab.value !== "all") {
-    payload = {...payload, status: tab.value as unknown as ORDER_STATUS}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const { result, loading, variables }: {
+  result: {
+    value:{
+      orders: {
+        id: string;
+        name: string;
+        status: ORDER_STATUS;
+        countItems: number
+      }[];
+      ordersCount: number;
+      createdOrdersCount: number;
+      validatedOrdersCount: number;
+      orderedOrdersCount: number;
+      finishedOrdersCount: number;
+      errorOrdersCount: number;
+    }
   }
-  loading.value = true
-  void OrderRequest.GetForMe(payload)
-  .then(({ orders, count }) => {
-    pagination.value.rowsNumber = count
-    void $store.dispatch(`order/${OrderActionTypes.SET_ORDERS}`, orders);
-  })
-  .finally(() => {
-    loading.value = false
-  })
-}
+} = useQuery(gql`
+  query orders (
+    $status: String, 
+    $skip: Int,
+    $take: Int,
+    $created: String,
+    $validated: String,
+    $ordered: String,
+    $finished: String,
+    $error: String,
+  ) {
+    orders (status: $status, take: $take, skip: $skip) {
+      id
+      name
+      status
+      countItems
+    }
+    ordersCount
+    createdOrdersCount: ordersCount(status: $created)
+    validatedOrdersCount: ordersCount(status: $validated)
+    orderedOrdersCount: ordersCount(status: $ordered)
+    finishedOrdersCount: ordersCount(status: $finished)
+    errorOrdersCount: ordersCount(status: $error)
+  }
+`, variablesOrders)
 
-onMounted(() => {
-  onRequest({
-    pagination: pagination.value
-  })
-  void Promise.all([
-    OrderRequest.GetOrderCounted()
-  ])
-    .then(([ { counted }]) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      countedOrders.value = counted as unknown as OrdersCounted
-    })
-})
+const orders = computed(() => result.value?.orders ?? [])
+
+const all = computed(() => result.value?.ordersCount)
+const ordersCount = computed(() => ({
+  [ORDER_STATUS.CREATED]: result?.value?.createdOrdersCount ?? 0,
+  [ORDER_STATUS.VALIDATED]: result?.value?.validatedOrdersCount ?? 0,
+  [ORDER_STATUS.ORDERED]: result?.value?.orderedOrdersCount ?? 0,
+  [ORDER_STATUS.FINISHED]: result?.value?.finishedOrdersCount ?? 0,
+  [ORDER_STATUS.ERROR]: result?.value?.errorOrdersCount ?? 0,
+}))
+
 watch(
-  tab,
-  () => {
-    onRequest({
-    pagination: pagination.value
-  })
+  variablesOrders,
+  (newValue) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    variables.value = newValue
   }
 )
 </script>

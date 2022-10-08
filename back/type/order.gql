@@ -1,7 +1,9 @@
 type Order {
   id: String
   name: String
+  status: String
   items: [Item]
+  countItems: Int
   organization: Organization
   creator: User
   address: Address
@@ -9,6 +11,7 @@ type Order {
 }
 
 type Query {
-  orders: [Order]
-  ordersCount: Int
+  orders(skip: Int, take: Int, status: String): [Order]
+  ordersCount(status: String): Int
+  order(id: String): Order
 }

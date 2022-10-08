@@ -23,10 +23,17 @@ export default class ItemDao extends Dao<Item> {
 
   async getAllByIdOrder(idOrder: number|string):Promise<Item[]|null> {
     const items = await getConnection().getRepository(this.entity).find({
-      order: idOrder
+      orderId: idOrder
     });
     if (!items) return null;
     return (items as unknown as Item[]);
+  }
+
+  async countAllByIdOrder(idOrder: number|string):Promise<number|null> {
+    const items = await getConnection().getRepository(this.entity).count({
+      orderId: idOrder
+    });
+    return (items as unknown as number);
   }
   
   async getAllByIdFurnitureVersion(idFurnitureVersion: number|string):Promise<Item[]|null> {

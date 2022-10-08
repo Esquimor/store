@@ -217,6 +217,19 @@ export default  {
         user: userCreated.userForResponse(),
         organization: organizationCreated.organizationForResponse(),
       }
+    },
+    me: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return {
+        user: user,
+        organization: user.organization,
+      }
     }
   }
 }

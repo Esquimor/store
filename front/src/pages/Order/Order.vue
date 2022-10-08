@@ -1,6 +1,6 @@
 <template>
   <q-page padding class="row justify-center">
-    <div v-if="!order">loader</div>
+    <div v-if="loading">loader</div>
     <div v-else class="col col-lg-8 col-md-10 col-sx-12">
       <q-card class="q-pa-xs row justify-between items-center">
         <div class="col col-4">
@@ -15,12 +15,7 @@
           <div class="col col-4">
             <div class="text-h6">Furnitures</div>
           </div>
-          <div v-if="canUpdateStatusOrder" class="col col-1">
-            <q-btn v-if="order.status === ORDER_STATUS.CREATED" color="primary" label="Valid" @click="onValid"/>
-            <q-btn v-if="order.status === ORDER_STATUS.VALIDATED" color="primary" label="Order" @click="onUpdate({status: ORDER_STATUS.ORDERED})"/>
-            <q-btn v-if="order.status === ORDER_STATUS.ORDERED" color="primary" label="Finish" @click="onUpdate({status: ORDER_STATUS.FINISHED})"/>
-          </div>
-          <div v-else class="col col-1">
+          <div class="col col-1">
             <OrderBadge :status="order.status" />
           </div>
         </q-card-section>
@@ -35,20 +30,18 @@
 <script lang="ts" setup>
 import { useRoute } from "vue-router"
 import { onMounted, computed } from "vue";
+import gql from "graphql-tag";
+import { useQuery } from "@vue/apollo-composable";
 import OrderRequest from "../../request/OrderRequest";
 import { OrderActionTypes } from "../../store/order/action-types";
 import { useStore } from "../../store/index";
 import Items from "../../components/Item/Items.vue";
 import OrderBadge from "../../components/Order/OrderBadge.vue";
 import { ORDER_STATUS } from "../../../../commons/Interface/Order";
+import { ITEM_STATUS } from "app/../commons/Interface/Item";
 
 const route = useRoute()
 const $store = useStore()
-
-const order = computed(() => $store.state.order.order)
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const canUpdateStatusOrder = computed(() => $store.getters["user/canChangeOrderStatus"] as boolean)
 
 onMounted(() => {
   void OrderRequest.GetById(route.params.id as unknown as string)
@@ -57,20 +50,47 @@ onMounted(() => {
     })
 })
 
-const onValid = () => {
-  void OrderRequest.ValidateOrder(route.params.id as unknown as string)
-    .then(({ order }) => {
-      void $store.dispatch(`order/${OrderActionTypes.SET_ORDER}`, order)
-    })
-}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const { result, loading }: {
+  result: {
+    value:{
+      order: {
+        id: string;
+        name: string;
+        status: ORDER_STATUS;
+        items: {
+          id: string;
+          status: ITEM_STATUS;
+          furnitureVersion: {
+            name: string;
+            description: string;
+          }
+        }[]
+      }
+    }
+  }
+} = useQuery(gql`
+  query order (
+    $id: String
+  ) {
+    order (id: $id) {
+      name
+      status
+      items {
+        id
+        status
+        furnitureVersion {
+          name
+          description
+        }
+      }
+    }
+  }
+`, {
+  id: route.params.id
+})
 
-const onUpdate = (payload: {status: ORDER_STATUS}) => {
-  void OrderRequest.UpdateOrder(route.params.id as unknown as string, payload)
-    .then(({ order }) => {
-      void $store.dispatch(`order/${OrderActionTypes.SET_ORDER}`, order)
-    })
-}
+
+const order = computed(() => result.value?.order)
 </script>
-<style>
-
-</style>

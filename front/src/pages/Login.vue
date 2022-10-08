@@ -38,12 +38,15 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar"
+import { useMutation } from "@vue/apollo-composable"
+import gql from "graphql-tag"
 import LoginLayout from "../layouts/LoginLayout.vue";
+import { User } from "app/../commons/Interface/User";
+import { Organization } from "app/../commons/Interface/Organization";
 import { useStore } from "../store/index";
 import { UserActionTypes } from "../store/user/action-types";
 import { OrganizationActionTypes } from "../store/organization/action-types";
 import { useRouter } from "vue-router";
-import UserRequest from "../request/UserRequest";
 
 export default defineComponent({
   name: "LoginIndex",
@@ -58,13 +61,51 @@ export default defineComponent({
     const email = ref("")
     const password = ref("")
 
-    const onSubmit = () => {
-      void UserRequest.Login({ email: email.value, password: password.value })
-        .then(({ user, token, organization }) => {
-          localStorage.setItem("token", token)
-          void $store.dispatch(`user/${UserActionTypes.SET_USER}`, user)
-          void $store.dispatch(`organization/${OrganizationActionTypes.SET_ORGANIZATION}`, organization)
-          void $store.dispatch("bootstrap");
+    
+    const { mutate: login  } = useMutation(gql`
+      mutation login ($email: String!, $password: String!) {
+        login (email: $email, password: $password) {
+          token
+          user {
+            email
+            firstname
+            id
+            lastname
+            phone
+            role
+            status
+          }
+          organization {
+            id
+            name
+          }
+        }
+      }
+    `)
+
+    const onSubmit = async () => {
+      await login({
+        email: email.value,
+        password: password.value
+      })
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore 
+        .then((
+          {
+            data
+          } : {
+            data: {
+              login :{
+                token: string;
+                user: User;
+                organization: Organization;
+              }
+          }
+        }) => {
+          
+          localStorage.setItem("token", data.login.token)
+          void $store.dispatch(`user/${UserActionTypes.SET_USER}`, data.login.user)
+          void $store.dispatch(`organization/${OrganizationActionTypes.SET_ORGANIZATION}`, data.login.organization)
           $q.notify({
             color: "green-4",
             textColor: "white",
@@ -73,6 +114,7 @@ export default defineComponent({
           })
           void router.push({name: "home"})
         })
+        .catch(e => console.log(e))
     }
 
     const onReset = () => {
@@ -84,7 +126,7 @@ export default defineComponent({
       email,
       password,
       onSubmit,
-      onReset
+      onReset,
      };
   }
 });
