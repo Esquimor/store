@@ -90,19 +90,17 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router"
-import { useStore } from "../../../store/index"
 import { useQuasar } from "quasar"
 import { Form, FieldArray } from "vee-validate";
 import * as yup from "yup";
 import { AddressDefaultWithPlacementsDefault } from "../../../../../commons/Interface/Address";
-import AddressRequest from "../../../request/AddressRequest";
-import { AddressActionTypes } from "../../../store/address/action-types";
 import LayoutSettings from "../../../components/Settings/LayoutSettings.vue";
 import QInputWithValidation from "../../../components/Global/Form/QInputWithValidation.vue"
 import { isNotEmpty } from "../../../../../commons/Technical/Empty";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const $q = useQuasar()
-const $store = useStore()
 const router = useRouter()
 
 const schema = yup.object({
@@ -133,23 +131,75 @@ const initialValues = {
   }]
 }
 
-function onSubmit(values: AddressDefaultWithPlacementsDefault) {
+const { mutate: createAddress } = useMutation(gql`
+  mutation createAddress (
+    $name: String
+    $number: String
+    $ligne1: String
+    $ligne2: String
+    $city: String
+    $zipCode: String
+    $country: String
+    $comment: String
+  ) {
+    createAddress (
+      name: $name
+      number: $number
+      ligne1: $ligne1
+      ligne2: $ligne2
+      city: $city
+      zipCode: $zipCode
+      country: $country
+      comment: $comment
+    ) {
+      id
+    }
+  }
+`)
 
+const { mutate: createPlacementsForAddress } = useMutation(gql`
+  mutation createPlacementsForAddress (
+    $addressId: String
+    $placements: [PlacementCreate]
+  ) {
+    createPlacementsForAddress(addressId: $addressId, placements: $placements) {
+      id
+    }
+  }
+`)
+
+const onSubmit = (values: AddressDefaultWithPlacementsDefault) => {
   const removedEmptyPlacements = values.placements.filter(placement => isNotEmpty(placement.name))
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  void AddressRequest.Create({...values, placements: removedEmptyPlacements})
-    .then(({address}) => {
-      void $store.dispatch(`address/${AddressActionTypes.ADD_ADDRESS}`, address)
-      $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Submitted"
+  
+  createAddress(values)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore 
+    .then((
+      {
+        data
+      } : {
+        data: {
+          createAddress :{
+            id: string;
+          }
+        }
+      }
+    ) => {
+      createPlacementsForAddress({
+        addressId: data.createAddress.id,
+        placements: removedEmptyPlacements
       })
+        .then(() => {
+          $q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Submitted"
+          })
+          void router.push({ name: "settings-address" })
+        })
+        .catch((e) => console.log(e))
     })
-    .finally(() => {
-      void router.push({ name: "settings-address" })
-    })
+    .catch((e) => console.log(e))
 }
 </script>

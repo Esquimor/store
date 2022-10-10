@@ -17,7 +17,7 @@
       <q-separator inset/>
 
       <q-card-actions align="right">
-        <q-btn color="negative" icon="delete" label="Delete" @click="onDelete"/>
+        <q-btn color="negative" icon="delete" label="Delete" @click="() => $emit('onDelete', props.address.id)"/>
         <q-btn
           color="secondary"
           icon="edit"
@@ -30,36 +30,18 @@
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from "quasar"
-import { useStore } from "../../store/index";
-import { AddressWithPlacements } from "../../../../commons/Interface/Address";
-import AddressRequest from "../../request/AddressRequest";
-import { AddressActionTypes } from "../../store/address/action-types";
-
-const $q = useQuasar()
-const $store = useStore()
 
 const props = defineProps<{
-  address: AddressWithPlacements;
+  address: {
+    id: string;
+    country: string;
+    city: string;
+    comment: string;
+    ligne1: string;
+    ligne2: string;
+    name: string;
+    number: string;
+    zipCode: string;
+  };
 }>();
-
-const onDelete = () => {
-  $q.dialog({
-    title: "Confirm",
-    message: "Would you like to delete this address ?",
-    cancel: true,
-    persistent: true
-  }).onOk(() => {
-  void AddressRequest.Delete(props.address.id)
-    .then(() => {
-      void $store.dispatch(`address/${AddressActionTypes.REMOVE_ADDRESS}`, props.address.id)
-      $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Deleted"
-      })
-    })
-  })
-}
 </script>

@@ -22,11 +22,10 @@
 import { ref, defineProps} from "vue";
 import { useQuasar } from "quasar"
 import { useDialogPluginComponent } from "quasar"
-import { useStore } from "../../../store/index";
-import UserRequest from "../../../request/UserRequest";
 import { ROLE } from "../../../../../commons/Interface/Role";
-import { OrganizationActionTypes } from "../../../store/organization/action-types";
 import { User } from "../../../../../commons/Interface/User";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const props = defineProps<{
   user: User
@@ -42,24 +41,30 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 const role = ref(props.user.role)
 
-const $store = useStore();
 const $q = useQuasar()
 
+const { mutate: updateUser } = useMutation(gql`
+  mutation updateUser ($role: String!, $id: String) {
+    updateUser (role: $role, id: $id) {
+      id
+    }
+  }
+`)
+
 const onSubmit = () => {
-  void UserRequest.UpdateUserRoleInSameOrganization({
-    role: role.value,
-    userId: props.user.id
-  })
-    .then(({ user }) => {
-      void $store.dispatch(`organization/${OrganizationActionTypes.UPDATE_USER_IN_ORGANIZATION}`, user)
+  updateUser({
+    id: props.user.id,
+    role: role.value
+  }).then(() => {
       $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Updated"
-      })
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Updated"
+        })
       onDialogOK()
     })
+    .catch((e) => console.log(e))
 }
 
 </script>

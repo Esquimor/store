@@ -7,6 +7,7 @@ import AddressDao from "../dao/AddressDao";
 import TagDao from "../dao/TagDao";
 import ItemDao from "../dao/ItemDao";
 import InventoryDao from "../dao/InventoryDao";
+import { User } from "../entity/User";
 
 const organizationDao: OrganizationDao = new OrganizationDao();
 const userDao: UserDao = new UserDao();
@@ -100,7 +101,27 @@ export default  {
           ),
         )
       }
-      const items = await inventoryDao.getByOrganization(user.organization)
+      let params = {};
+
+      switch (args.type) {
+        case "ME":
+          params = {
+            userId: user.id
+          };
+          break;
+        case "ADDRESS":
+          params = {
+            addressId: user.addressId
+          };
+          break;
+        case "PLACEMENT":
+          params = {
+            placementId: user.placementId
+          };
+          break;
+      }
+
+      const items = await inventoryDao.getByOrganization(user.organization, params)
       if (!items) {
         return Promise.reject(
           new GraphQLError(
@@ -109,6 +130,62 @@ export default  {
         )
       }
       return items
+    },
+    inventoriesCount: async(parent, args, {user}: {user: User}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      let params = {};
+
+      switch (args.type) {
+        case "ME":
+          params = {
+            userId: user.id
+          };
+          break;
+        case "ADDRESS":
+          params = {
+            addressId: user.addressId
+          };
+          break;
+        case "PLACEMENT":
+          params = {
+            placementId: user.placementId
+          };
+          break;
+      }
+
+      const inventory = await inventoryDao.countByOrganization(user.organization, params)
+      return inventory
+    },
+    inventory: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const inventory = await inventoryDao.getById(args.id)
+      if (!inventory) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (inventory.organizationId !== user.organization.id) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return inventory
     },
   },
 }

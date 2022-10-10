@@ -45,7 +45,7 @@ export default class PlacementDao extends Dao<Placement> {
 
   async getAllByIdAddress(idAddress: number|string):Promise<Placement[]|null> {
     const items = await getConnection().getRepository(this.entity).find({
-      address: idAddress
+      addressId: idAddress
     });
     if (!items) return null;
     return (items as unknown as Placement[]);

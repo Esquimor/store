@@ -5,6 +5,8 @@ import { Address } from "../entity/Address";
 import InventoryDao from "../dao/InventoryDao";
 import OrderDao from "../dao/OrderDao";
 import AddressDao from "../dao/AddressDao";
+import FormCreateAddress from "../form/Address/FormCreateAddress";
+import FormUpdateAddress from "../form/Address/FormUpdateAddress";
 
 const placementDao: PlacementDao = new PlacementDao();
 const organizationDao: OrganizationDao = new OrganizationDao();
@@ -88,5 +90,196 @@ export default  {
       }
       return addresses
     },
+    address: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (!args.id) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const address = await addressDao.getById(args.id)
+      if (!address) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (address.organizationId !== user.organizationId) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return address
+    },
   },
+  Mutation: {
+    createAddress: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const body = (args as unknown as { 
+        name: string;
+        number: string|null;
+        ligne1: string|null;
+        ligne2: string|null;
+        city: string|null;
+        zipCode: string|null;
+        country: string|null;
+        comment: string|null;
+      });
+      const form = new FormCreateAddress(body);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const address = new Address();
+      address.name = body.name;
+      address.number = body.number
+      address.ligne1 = body.ligne1
+      address.ligne2 = body.ligne2
+      address.city = body.city
+      address.zipCode = body.zipCode
+      address.country = body.country
+      address.comment = body.comment
+      address.organization = user.organization;
+  
+      const addressSaved = await addressDao.create(address);
+      if (!addressSaved) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return addressSaved
+    },
+    updateAddress: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const body = (args as unknown as { 
+        name?: string|null;
+        number?: string|null;
+        ligne1?: string|null;
+        ligne2?: string|null;
+        city?: string|null;
+        zipCode?: string|null;
+        country?: string|null;
+        comment?: string|null;
+        placements?: {name: string; id?: number}[]|null;
+      });
+
+      const form = new FormUpdateAddress(body);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const address = await addressDao.getById(args.id)
+      if (!address) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (address.organizationId !== user.organizationId) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (body.name) {
+        address.name = body.name;
+      }
+      if (body.number) {
+        address.number = body.number;
+      }
+      if (body.ligne1) {
+        address.ligne1 = body.ligne1;
+      }
+      if (body.ligne2) {
+        address.ligne2 = body.ligne2;
+      }
+      if (body.city) {
+        address.city = body.city;
+      }
+      if (body.zipCode) {
+        address.zipCode = body.zipCode;
+      }
+      if (body.country) {
+        address.country = body.country;
+      }
+      if (body.comment) {
+        address.comment = body.comment;
+      }
+      const savedAddress = await addressDao.update(address);
+      if (!savedAddress) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return savedAddress
+    },
+    deleteAddress: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (!args.id) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const address = await addressDao.getById(args.id)
+      if (!address) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (address.organizationId !== user.organizationId) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const isDeletedAddress = await addressDao.deleteById(address.id);
+      return isDeletedAddress
+    }
+  }
 }

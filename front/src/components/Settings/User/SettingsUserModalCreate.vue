@@ -44,10 +44,9 @@
 import { ref} from "vue";
 import { useQuasar } from "quasar"
 import { useDialogPluginComponent } from "quasar"
-import { useStore } from "../../../store/index";
-import UserRequest from "../../../request/UserRequest";
 import { ROLE } from "../../../../../commons/Interface/Role";
-import { OrganizationActionTypes } from "../../../store/organization/action-types";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const options = Object.values(ROLE)
 
@@ -62,26 +61,32 @@ const firstname = ref("");
 const lastname = ref("");
 const role = ref(ROLE.NORMAL)
 
-const $store = useStore();
 const $q = useQuasar()
 
+const { mutate: createUser } = useMutation(gql`
+  mutation createUser ($firstname: String!, $lastname: String!, $email: String!, $role: String!) {
+    createUser (firstname: $firstname, lastname: $lastname, email: $email, role: $role) {
+      id
+    }
+  }
+`)
+
 const onSubmit = () => {
-  void UserRequest.CreateUserInSameOrganization({
+  createUser({
     firstname: firstname.value,
     lastname: lastname.value,
     email: email.value,
     role: role.value
-  })
-    .then(({ user }) => {
-      void $store.dispatch(`organization/${OrganizationActionTypes.ADD_USER_IN_ORGANIZATION}`, user)
+  }).then(() => {
       $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Submitted"
-      })
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Updated"
+        })
       onDialogOK()
     })
+    .catch((e) => console.log(e))
 }
 
 </script>

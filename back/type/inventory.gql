@@ -9,6 +9,15 @@ type Inventory {
   items: [Item]
 }
 
+enum Inventory_Type {
+  ALL
+  ME
+  ADDRESS
+  PLACEMENT
+}
+
 type Query {
-  inventories: [Inventory]
+  inventories(type: String): [Inventory]
+  inventoriesCount(type: Inventory_Type): Int
+  inventory(id: String): Inventory
 }

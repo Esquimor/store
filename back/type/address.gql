@@ -16,4 +16,30 @@ type Address {
 
 type Query {
   addresses: [Address]
+  address(id: String): Address
+}
+
+type Mutation {
+  createAddress(
+    name: String
+    number: String
+    ligne1: String
+    ligne2: String
+    city: String
+    zipCode: String
+    country: String
+    comment: String
+  ): Address
+  updateAddress(
+    id: String
+    name: String
+    number: String
+    ligne1: String
+    ligne2: String
+    city: String
+    zipCode: String
+    country: String
+    comment: String
+  ): Address
+  deleteAddress(id: String): Boolean
 }

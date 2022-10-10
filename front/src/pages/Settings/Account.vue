@@ -1,8 +1,7 @@
 <template>
-  <layout-settings-form
+  <LayoutSettingsForm
     :title="$t('setting.my_personal_information')"
-    @submit="onSubmit"
-    @reset="onReset"
+    :submit="onSubmit"
   >
     <q-input
       class="col-6"
@@ -16,55 +15,75 @@
       :label="$t('label.lastname')"
       lazy-rules
     />
-  </layout-settings-form>
+  </LayoutSettingsForm>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { ref, watch } from "vue";
 import { useQuasar } from "quasar"
-import { useStore } from "../../store/index";
-import { UserActionTypes } from "../../store/user/action-types";
-import UserRequest from "../../request/UserRequest";
+import { useQuery, useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 import LayoutSettingsForm from "../../components/Settings/LayoutSettingsForm.vue";
 
-export default defineComponent({
-  components: { LayoutSettingsForm },
-  name: "SettingsUser",
-  setup() {
-    const $store = useStore();
-    const $q = useQuasar()
+const $q = useQuasar()
 
-    const firstname = ref($store.state.user.user?.firstname || "");
-    const lastname = ref($store.state.user.user?.lastname || "");
+const firstname = ref("");
+const lastname = ref("");
 
-    const onSubmit = () => {
-      void UserRequest.Update({ firstname: firstname.value, lastname: lastname.value })
-        .then(({ user }) => {
-          void $store.dispatch(`user/${UserActionTypes.SET_USER}`, user)
-          $q.notify({
-            color: "green-4",
-            textColor: "white",
-            icon: "cloud_done",
-            message: "Submitted"
-          })
-        })
-    }
-
-    const onReset = () => {
-      firstname.value = $store.state.user.user?.firstname || "";
-      lastname.value = $store.state.user.user?.lastname || "";
-    }
-
-    return {
-      firstname,
-      lastname,
-      onSubmit,
-      onReset
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const { result, loading }: {
+  result: {
+    value:{
+      me: {
+        id: string;
+        firstname: string;
+        lastname: string;
+      }
     }
   }
-})
+} = useQuery(gql`
+  query me {
+    me {
+      firstname
+      lastname
+    }
+  }
+`)
+
+watch(
+  result,
+  () => {
+    if (!loading) return;
+    firstname.value = result.value.me.firstname
+    lastname.value = result.value.me.lastname
+  }
+)
+
+const { mutate: updateMe  } = useMutation(gql`
+  mutation updateMe ($lastname: String!, $firstname: String!) {
+    updateMe(lastname: $lastname, firstname: $firstname) {
+      lastname
+      firstname
+    }
+  }
+`)
+
+const onSubmit = async () => {
+  await updateMe({
+    lastname: lastname.value,
+    firstname: firstname.value
+  })
+    .then(() => {
+      $q.notify({
+        color: "green-4",
+        textColor: "white",
+        icon: "cloud_done",
+        message: "Submitted"
+      })
+    })
+    .catch(e => {
+      console.log(e)
+    })
+}
 </script>
-
-<style>
-
-</style>

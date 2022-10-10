@@ -9,6 +9,7 @@ import CategoryDao from "../dao/CategoryDao";
 import AttributDao from "../dao/AttributDao";
 import OrganizationDao from "../dao/OrganizationDao";
 import { Organization } from "../entity/Organization";
+import FormPatchOrganization from "../form/Organization/FormPatchOrganization";
 
 const userDao: UserDao = new UserDao();
 const orderDao: OrderDao = new OrderDao();
@@ -125,16 +126,46 @@ export default  {
     },
   },
   Query: {
-    organizations: async(parent, args, {user}) => {
-      const organizations = await organizationDao.getAll()
-      if (!organizations) {
+    myOrganization: async(parent, args, {user}) => {
+      if (!user) {
         return Promise.reject(
           new GraphQLError(
             "error",
           ),
         )
       }
-      return organizations
+      return user.organization
     },
   },
+  Mutation: {
+    updateMyOrganization: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const query = (args as unknown as { name?: string });
+      const form = new FormPatchOrganization(query);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const organizationPatched = user.organization;
+      organizationPatched.name = query.name;
+      const organizationSaved = await organizationDao.update(organizationPatched);
+      if (!organizationSaved) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return organizationSaved
+    },
+  }
 }

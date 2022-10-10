@@ -1,13 +1,12 @@
 <template>
   <layout-settings :title="title">
-    <q-form @submit="submit" @reset="reset" class="row q-col-gutter-lg">
+    <q-form @submit="submit" class="row q-col-gutter-lg">
       <div class="row q-col-gutter-lg col-12">
         <slot />
       </div>
       <div class="row q-col-gutter-lg col-12">
         <div class="col-6">
           <q-btn :label="$t('label.submit')" type="submit" color="primary" />
-          <q-btn :label="$t('label.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </div>
     </q-form>
@@ -24,7 +23,6 @@ export default defineComponent({
   props: {
     title: String,
     submit: Function,
-    reset: Function
   }
 })
 </script>

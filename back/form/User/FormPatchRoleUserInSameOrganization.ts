@@ -8,7 +8,7 @@ export default class FormPatchRoleUserInSameOrganization extends Form {
     super();
     const schema = z.object({
       role: z.enum(Object.values(ROLE) as [string, ...string[]]),
-      userId: z.string(),
+      id: z.string(),
     });
     this.buildForm(schema, formBody)
   }

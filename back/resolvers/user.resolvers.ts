@@ -9,6 +9,10 @@ import InventoryDao from '../dao/InventoryDao';
 import { User } from '../entity/User';
 import FormAuth from "../form/Auth/FormAuth";
 import FormRegister from "../form/Auth/FormRegister";
+import FormPatchUser from "../form/User/FormPatchUser";
+import FormDeleteUserInSameOrganization from "../form/User/FormDeleteUserInSameOrganization";
+import FormCreateUserInSameOrganization from "../form/User/FormCreateUserInSameOrganization"
+import FormPatchRoleUserInSameOrganization from "../form/User/FormPatchRoleUserInSameOrganization";
 import FormPasswordForgotten from "../form/Auth/FormPasswordForgotten";
 import FormResetPassword from "../form/Auth/FormResetPassword";
 import FormRegisterValidated from "../form/Auth/FormRegisterValidated";
@@ -19,6 +23,7 @@ import { Organization } from '../entity/Organization';
 import { createCustomer, createSubscription } from "../technical/stripe";
 import { USER_STATUS } from '../../commons/Interface/User';
 import { GraphQLError } from 'graphql';
+import { ROLE } from '../../commons/Interface/Role';
 
 const userDao: UserDao = new UserDao();
 const organizationDao: OrganizationDao = new OrganizationDao();
@@ -126,6 +131,16 @@ export default  {
       }
       return users
     },
+    me: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return user
+    }
   },
   Mutation: {
     login: async (parent, args, context, info) => {
@@ -230,6 +245,182 @@ export default  {
         user: user,
         organization: user.organization,
       }
+    },
+    updateMe: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const query = (args as unknown as { firstname?: string, lastname?: string});
+      const form = new FormPatchUser(query);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const userPatched = user;
+      userPatched.firstname = query.firstname;
+      userPatched.lastname = query.lastname;
+      const userPatchSaved = await userDao.update(userPatched);
+      if (!userPatchSaved) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return userPatchSaved;
+    },
+    deleteUser: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (user.role !== ROLE.ADMIN) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const query = (args as unknown as { id: string; });
+      const form = new FormDeleteUserInSameOrganization(query);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const userToDelete = await userDao.getById(args.id);
+      if (userToDelete?.organizationId !== user.organizationId) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const isDeleted = await userDao.deleteById(args.id);
+      if (!isDeleted) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return true
+    },
+    createUser: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (user.role !== ROLE.ADMIN) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const query = (args as unknown as { email: string, firstname: string; lastname: string; role: ROLE});
+      const form = new FormCreateUserInSameOrganization(query);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      
+      const existingUser = await userDao.getByEmail(query.email);
+      if (existingUser) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const newUser = new User();
+      newUser.email = query.email;
+      newUser.firstname = query.firstname;
+      newUser.lastname = query.lastname;
+      newUser.role = query.role;
+      newUser.organization = user.organization;
+      newUser.setTimer()
+
+      const userCreated = await userDao.create(newUser);
+      if (!userCreated) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return userCreated;
+    },
+    updateUser: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (user.role !== ROLE.ADMIN) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const query = (args as unknown as { role: ROLE; id: string; });
+      const form = new FormPatchRoleUserInSameOrganization(query);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const userToPatch = await userDao.getWithOrganizationById(query.id) as User;
+      if (!userToPatch) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+
+      if (user.organization.id !== userToPatch.organization.id) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+
+      userToPatch.role = query.role;
+
+      const userPatchSaved = await userDao.update(userToPatch);
+      if (!userPatchSaved) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return userPatchSaved
     }
   }
 }

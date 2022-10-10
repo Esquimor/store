@@ -27,10 +27,20 @@ type Me {
 
 type Query {
   users: [User]
+  me: User
 }
 
 type Mutation {
   signup(email: String!, password: String!, organization: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
   me: Me
+  updateMe(firstname: String, lastname: String): User
+  deleteUser(id: String): Boolean
+  createUser(
+    firstname: String
+    lastname: String
+    email: String
+    role: String
+  ): User
+  updateUser(id: String, role: String): User
 }

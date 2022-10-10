@@ -1,9 +1,10 @@
 <template>
-  <LayoutSettings title="Add Address">
+  <LayoutSettings title="Edit Address">
+    <div>
     <Form
       :validation-schema="schema"
       @submit="onSubmit"
-      :initial-values="initialValues"
+      ref="myForm"
     >
       <q-card-section class="row wrap justify-between">
         <QInputWithValidation
@@ -51,14 +52,13 @@
 
       <FieldArray name="placements" v-slot="{ fields, push, remove }">
         <q-card-section
-          v-for="(field, idx) in fields"
+          v-for="(field, idx) in fields || []"
           :key="field.key"
         >
           <q-card class="full-width" flat bordered>
             <q-card-section>
               <q-card-section horizontal>
-                <div 
-                    class="full-width">
+                <div class="full-width">
                   <QInputWithValidation
                     :name="`placements[${idx}].name`"
                     label="Name"
@@ -73,7 +73,7 @@
           </q-card>
         </q-card-section>
         <q-card-actions class="q-pl-lg">
-          <q-btn label="Add" color="primary"  @click="push({ description: '', name: '' })" />
+          <q-btn label="Add" color="primary"  @click="push({ name: '' })" />
         </q-card-actions>
       </FieldArray>
         
@@ -84,26 +84,24 @@
           <q-btn color="primary" type="submit" label="Submit"/>
         </q-card-actions>
       </q-toolbar>
-    </Form>
+    </Form></div>
   </LayoutSettings>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { watch, ref } from "vue"
 import { useRouter, useRoute } from "vue-router"
-import { useStore } from "../../../store/index"
 import { useQuasar } from "quasar"
 import { Form, FieldArray } from "vee-validate";
 import * as yup from "yup";
 import { AddressDefaultWithPlacementsDefault } from "../../../../../commons/Interface/Address";
-import AddressRequest from "../../../request/AddressRequest";
-import { AddressActionTypes } from "../../../store/address/action-types";
 import LayoutSettings from "../../../components/Settings/LayoutSettings.vue";
 import QInputWithValidation from "../../../components/Global/Form/QInputWithValidation.vue"
 import { isNotEmpty } from "../../../../../commons/Technical/Empty";
+import { useQuery, UseQueryReturn, useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const $q = useQuasar()
-const $store = useStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -116,31 +114,126 @@ const schema = yup.object({
   zipCode: yup.string().optional(),
   country: yup.string().optional(),
   comment: yup.string().optional(),
-  placements: yup.array().of(yup.object({
-    name: yup.string()
+  placements: yup.array().of(yup.object().shape({
+    id: yup.string().optional(),
+    name: yup.string().optional()
   }))
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-const initialValues = computed(() => $store.getters["address/getAddressById"](route.params.id) as number)
+const { result }: UseQueryReturn<{
+  address: {
+    id: string;
+    country: string;
+    city: string;
+    comment: string;
+    ligne1: string;
+    ligne2: string;
+    name: string;
+    number: string;
+    zipCode: string;
+    placements: {
+      id: string;
+      name: string
+    }[];
+  };
+}, {
+  id: string
+}> = useQuery(gql`
+  query address($id: String) {
+    address(id: $id) {
+      id
+      country
+      city
+      comment
+      ligne1
+      ligne2
+      name
+      number
+      zipCode
+      placements {
+        id
+        name
+      }
+    }
+  }
+`, {
+  id: route.params.id
+})
+
+const myForm = ref(null);
+
+watch(
+  result,
+  () => {
+    // Sanitize Placements
+    const placements = result.value?.address?.placements.map(placement => ({id: placement.id, name: placement.name}))
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    myForm.value.setValues({...result.value?.address, placements})
+  }
+)
+
+const { mutate: updateAddress } = useMutation(gql`
+  mutation updateAddress (
+    $id: String
+    $name: String
+    $number: String
+    $ligne1: String
+    $ligne2: String
+    $city: String
+    $zipCode: String
+    $country: String
+    $comment: String
+  ) {
+    updateAddress (
+      id: $id
+      name: $name
+      number: $number
+      ligne1: $ligne1
+      ligne2: $ligne2
+      city: $city
+      zipCode: $zipCode
+      country: $country
+      comment: $comment
+    ) {
+      id
+    }
+  }
+`)
+
+const { mutate: updatePlacementsForAddress } = useMutation(gql`
+  mutation updatePlacementsForAddress (
+    $addressId: String
+    $placements: [PlacementUpdate]
+  ) {
+    updatePlacementsForAddress(addressId: $addressId, placements: $placements) {
+      id
+    }
+  }
+`)
 
 function onSubmit(values: AddressDefaultWithPlacementsDefault) {
-
+  console.log(values)
   const removedEmptyPlacements = values.placements.filter(placement => isNotEmpty(placement.name))
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  void AddressRequest.Update(route.params.id as string, {...values, placements: removedEmptyPlacements})
-    .then(({address}) => {
-      void $store.dispatch(`address/${AddressActionTypes.UPDATE_ADDRESS}`, address)
-      $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Submitted"
+  updateAddress({
+    ...values,
+    id: route.params.id
+  })
+    .then(() => {
+      updatePlacementsForAddress({
+        addressId: route.params.id,
+        placements: removedEmptyPlacements
       })
+        .then(() => {
+          $q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Submitted"
+          })
+          void router.push({ name: "settings-address" })
+        })
+        .catch((e) => console.log(e))
     })
-    .finally(() => {
-      void router.push({ name: "settings-address" })
-    })
+    .catch((e) => console.log(e))
 }
 </script>

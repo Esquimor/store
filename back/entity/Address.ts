@@ -16,37 +16,37 @@ export class Address {
     @Column({
       nullable: true
     })
-    number: string;
+    number: string | null;
 
     @Column({
       nullable: true
     })
-    ligne1: string;
+    ligne1: string | null;
 
     @Column({
       nullable: true
     })
-    ligne2: string;
+    ligne2: string | null;
 
     @Column({
       nullable: true
     })
-    city: string;
+    city: string | null;
 
     @Column({
       nullable: true
     })
-    zipCode: string;
+    zipCode: string | null;
 
     @Column({
       nullable: true
     })
-    country: string;
+    country: string | null;
 
     @Column({
       nullable: true
     })
-    comment: string;
+    comment: string | null;
 
     @OneToMany(() => Placement, placement => placement.address, {
       cascade: true

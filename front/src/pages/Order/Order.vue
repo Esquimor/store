@@ -29,26 +29,15 @@
 
 <script lang="ts" setup>
 import { useRoute } from "vue-router"
-import { onMounted, computed } from "vue";
+import { computed } from "vue";
 import gql from "graphql-tag";
 import { useQuery } from "@vue/apollo-composable";
-import OrderRequest from "../../request/OrderRequest";
-import { OrderActionTypes } from "../../store/order/action-types";
-import { useStore } from "../../store/index";
 import Items from "../../components/Item/Items.vue";
 import OrderBadge from "../../components/Order/OrderBadge.vue";
 import { ORDER_STATUS } from "../../../../commons/Interface/Order";
 import { ITEM_STATUS } from "app/../commons/Interface/Item";
 
 const route = useRoute()
-const $store = useStore()
-
-onMounted(() => {
-  void OrderRequest.GetById(route.params.id as unknown as string)
-    .then(({ order }) => {
-      void $store.dispatch(`order/${OrderActionTypes.SET_ORDER}`, order)
-    })
-})
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -90,7 +79,6 @@ const { result, loading }: {
 `, {
   id: route.params.id
 })
-
 
 const order = computed(() => result.value?.order)
 </script>

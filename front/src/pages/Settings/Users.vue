@@ -4,10 +4,10 @@
       <q-btn color="primary" icon="add" label="Add User" @click="create" />
     </template>
     <q-table
-      title="Treats"
       :rows="users"
       :columns="columns"
       row-key="name"
+      :loading="loading"
     >
       <template v-slot:body="props">
           <q-tr :props="props">
@@ -34,7 +34,7 @@
 
                       <q-item-section>Edit</q-item-section>
                     </q-item>
-                    <q-item clickable @click="deleteUser(props.row)" v-close-popup v-if="user.id !== props.row.id">
+                    <q-item clickable @click="deleteUser(props.row)" v-close-popup v-if="meId !== props.row.id">
                       <q-item-section avatar>
                         <q-icon color="primary" name="delete" />
                       </q-item-section>
@@ -53,29 +53,45 @@
 
 <script lang="ts" setup>
 import { useQuasar } from "quasar"
-import { onMounted, computed } from "vue";
-import OrganizationRequest from "../../request/OrganizationRequest";
-import { useStore } from "../../store/index";
+import { computed } from "vue";
 import LayoutSettings from "../../components/Settings/LayoutSettings.vue";
 import SettingsUserModalCreate from "../../components/Settings/User/SettingsUserModalCreate.vue";
 import SettingsUserModalEdit from "../../components/Settings/User/SettingsUserModalEdit.vue";
-import { OrganizationActionTypes } from "../../store/organization/action-types";
 import { User } from "../../../../commons/Interface/User";
-import UserRequest from "../../request/UserRequest";
+import { useQuery, useMutation, UseQueryReturn } from "@vue/apollo-composable";
+import gql from "graphql-tag";
+import { ROLE } from "app/../commons/Interface/Role";
 
 const $q = useQuasar()
-const $store = useStore()
 
-const user = computed(() => $store.state.user.user)
+const { result, loading, refetch }: UseQueryReturn<{
+  users: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    role: ROLE;
+  };
+  me: {
+    id: string;
+  }
+}, undefined> = useQuery(gql`
+  query users {
+    users {
+      firstname
+      lastname
+      email
+      id
+      role
+    }
+    me {
+      id
+    }
+  }
+`)
 
-const users = computed(() => $store.state.organization.users)
-
-onMounted(() => {
-  void OrganizationRequest.GetUsersForMyOrganization()
-    .then((data) => {
-      void $store.dispatch(`organization/${OrganizationActionTypes.SET_USERS_IN_ORGANIZATION}`, data.users)
-    })
-})
+const users = computed(() => result.value?.users ?? [])
+const meId = computed(() => result.value?.me.id ?? "")
 
 const columns = [
   {
@@ -114,6 +130,9 @@ const columns = [
 const create = () => {
   $q.dialog({
     component: SettingsUserModalCreate,
+  }).onOk(() => {
+    refetch?.()
+      .catch(e => console.log(e))
   })
 }
 
@@ -122,9 +141,18 @@ const updateRole = (user: User) => {
     component: SettingsUserModalEdit,
     componentProps: {
       user
-    }
+    },
+  }).onOk(() => {
+    refetch?.()
+      .catch(e => console.log(e))
   })
 }
+
+const { mutate: deleteUserMutation  } = useMutation(gql`
+  mutation deleteUser ($id: String!) {
+    deleteUser (id: $id)
+  }
+`)
 
 const deleteUser = (user: User) => {
   $q.dialog({
@@ -133,22 +161,19 @@ const deleteUser = (user: User) => {
     cancel: true,
     persistent: true
   }).onOk(() => {
-    void UserRequest.DeleteUserInSameOrganization({
-      userId: user.id
-    })
-      .then(() => {
-        void $store.dispatch(`organization/${OrganizationActionTypes.DELETE_USER_IN_ORGANIZATION}`, user.id)
+    deleteUserMutation({
+      id: user.id,
+    }).then(() => {
+        refetch?.()
+          .catch(e => console.log(e))
         $q.notify({
-          color: "green-4",
-          textColor: "white",
-          icon: "cloud_done",
-          message: "Updated"
-        })
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Updated"
+          })
       })
+      .catch((e) => console.log(e))
   })
 }
 </script>
-
-<style>
-
-</style>

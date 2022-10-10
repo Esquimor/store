@@ -13,26 +13,24 @@
           dense
         >
           <q-tab 
-            :name="TAB.USER"
+            :name="INVENTORY_TYPE.ME"
           >
-            <q-chip>{{countedInventories.user}}</q-chip> Mine
+            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ME]}}</q-chip> Mine
           </q-tab>
           <q-tab
-            v-if="user.placement"
-            :name="TAB.PLACEMENT"
+            :name="INVENTORY_TYPE.PLACEMENT"
           >
-            <q-chip>{{countedInventories.placement}}</q-chip> Same Placement
+            <q-chip>{{inventoriesCount[INVENTORY_TYPE.PLACEMENT]}}</q-chip> Same Placement
           </q-tab>
           <q-tab 
-            v-if="user.address"
-            :name="TAB.ADDRESS"
+            :name="INVENTORY_TYPE.ADDRESS"
           >
-            <q-chip>{{countedInventories.address}}</q-chip> Same Localisation
+            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ADDRESS]}}</q-chip> Same Localisation
           </q-tab>
           <q-tab 
-            :name="TAB.ORGANIZATION"
+            :name="INVENTORY_TYPE.ALL"
           >
-            <q-chip>{{countedInventories.organization}}</q-chip> In my organization
+            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ALL]}}</q-chip> In my organization
           </q-tab>
         </q-tabs>
 
@@ -42,7 +40,6 @@
             :rows="inventories"
             :columns="columns"
             v-model:pagination="pagination"
-            @request="onRequest"
             :rows-per-page-options="[50]"
             @row-click="onRowClick"
           />
@@ -54,41 +51,26 @@
 
 <script lang="ts" setup>
 import { useRouter } from "vue-router"
-import { onMounted, computed, ref, watch } from "vue";
-import type { Ref } from "vue"
-import { useStore } from "../../store/index";
-import InventoryRequest from "../../request/InventoryRequest";
-import { InventoriesCounted, Inventory } from "../../../../commons/Interface/Inventory";
-import { InventoryActionTypes } from "../../store/inventory/action-types";
+import { computed, ref, watch } from "vue";
+import { Inventory } from "../../../../commons/Interface/Inventory";
+import gql from "graphql-tag";
+import { useQuery } from "@vue/apollo-composable";
 
-const $store = useStore()
-const router = useRouter()
-
-const TAB = {
-  USER: "user",
-  PLACEMENT: "placement",
-  ADDRESS: "address",
-  ORGANIZATION: "organization"
+enum INVENTORY_TYPE {
+  ALL = "ALL",
+  ME = "ME",
+  ADDRESS = "ADDRESS",
+  PLACEMENT = "PLACEMENT"
 }
 
-const tab = ref(TAB.USER)
-const loading = ref(false)
+const router = useRouter()
+
+const tab = ref(INVENTORY_TYPE.ME)
 const pagination = ref({
   page: 1,
   rowsNumber : 0, 
   rowsPerPage: 50
 })
-
-// eslint-disable-next-line
-const countedInventories: Ref<InventoriesCounted> = ref({
-  organization: 0,
-  address: 0,
-  placement: 0,
-  user: 0,
-}) as unknown as InventoriesCounted
-
-const inventories = computed(() => $store.state.inventory.inventories);
-const user = computed(() => $store.state.user.user);
 
 const columns = [
   {
@@ -103,53 +85,55 @@ const onRowClick = async (evt: Event, row: Inventory) => {
   await router.push({ name: "inventory", params: { id: row.id } })
 }
 
-const onRequest = (props: {
-  pagination: {
-    page: number
-  }
-}) => {
-  const { page } = props.pagination;
-  
-  let payload: {
-    start: number
-    user?: boolean;
-    placement?: boolean;
-    address?: boolean;
-    organization?: boolean;
-  } = {
-    start: +page - 1,
-    [tab.value]: true
-  }
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+const variablesInventories = computed(() => ({
+  type: tab.value,
+}))
 
-  loading.value = true
-  void InventoryRequest.GetForMe(payload)
-  .then(({ inventories, count }) => {
-    pagination.value.rowsNumber = count
-    void $store.dispatch(`inventory/${InventoryActionTypes.SET_INVENTORIES}`, inventories);
-  })
-  .finally(() => {
-    loading.value = false
-  })
-}
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const { result, loading, variables }: {
+  result: {
+    value:{
+      inventories: {
+        id: string;
+        name: string;
+      }[];
+      allInventoriesCount: number;
+      meInventoriesCount: number;
+      placementInventoriesCount: number;
+      addressInventoriesCount: number;
+    }
+  }
+} = useQuery(gql`
+  query inventories (
+    $type: String, 
+  ) {
+    inventories (type: $type) {
+      id
+      name
+    }
+    allInventoriesCount: inventoriesCount(type: ALL)
+    meInventoriesCount: inventoriesCount(type: ME)
+    addressInventoriesCount: inventoriesCount(type: ADDRESS)
+    placementInventoriesCount: inventoriesCount(type: PLACEMENT)
+  }
+`, variablesInventories)
 
-onMounted(() => {
-  onRequest({
-    pagination: pagination.value
-  })
-  void Promise.all([
-    InventoryRequest.GetInventoriesCounted()
-  ])
-    .then(([ { count }]) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      countedInventories.value = count as unknown as InventoriesCounted
-    })
-})
+const inventories = computed(() => result.value?.inventories ?? [])
+
+const inventoriesCount = computed(() => ({
+  [INVENTORY_TYPE.ALL]: result?.value?.allInventoriesCount ?? 0,
+  [INVENTORY_TYPE.ME]: result?.value?.meInventoriesCount ?? 0,
+  [INVENTORY_TYPE.ADDRESS]: result?.value?.addressInventoriesCount ?? 0,
+  [INVENTORY_TYPE.PLACEMENT]: result?.value?.placementInventoriesCount ?? 0,
+}))
+
 watch(
-  tab,
-  () => {
-    onRequest({
-    pagination: pagination.value
-  })
+  variablesInventories,
+  (newValue) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    variables.value = newValue
   }
 )
 </script>

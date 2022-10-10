@@ -6,6 +6,26 @@ type Placement {
   orders: [Order]
 }
 
+input PlacementCreate {
+  name: String
+}
+
+input PlacementUpdate {
+  id: String
+  name: String
+}
+
 type Query {
   placements: [Placement]
+}
+
+type Mutation {
+  createPlacementsForAddress(
+    addressId: String
+    placements: [PlacementCreate]
+  ): [Placement]
+  updatePlacementsForAddress(
+    addressId: String
+    placements: [PlacementUpdate]
+  ): [Placement]
 }

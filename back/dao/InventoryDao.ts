@@ -11,12 +11,6 @@ export default class InventoryDao extends Dao<Inventory> {
     super(Inventory)
   }
   
-  async getByOrganization(organization: Organization) {
-    const item = await getConnection().getRepository(this.entity).find({organization});
-    if (!item) return null;
-    return (item as unknown as Inventory);
-  }
-  
   async getByOrganizationId(idOrganization: string|number): Promise<Inventory|null> {
     const item = await getConnection().getRepository(this.entity).find({
       where: {
@@ -40,6 +34,44 @@ export default class InventoryDao extends Dao<Inventory> {
     });
     if (!items) return null;
     return (items as unknown as Inventory[]);
+  }
+
+  async getByOrganization(
+    organization: Organization,
+    {
+      userId,
+      placementId,
+      addressId
+    } : {
+      userId?: string,
+      placementId?: string;
+      addressId?: string;
+    } = {}
+  ):Promise<Inventory[] | null> {
+    let where = {};
+
+    if (isNotEmpty(userId)) {
+      where = {...where, user: userId}
+    }
+
+    if (isNotEmpty(placementId)) {
+      where = {...where, placement: placementId}
+    }
+
+    if (isNotEmpty(addressId)) {
+      where = {...where, address: addressId}
+    }
+
+    try {
+      const items = await getConnection().getRepository(this.entity).find({
+        organization,
+        where
+      });
+      if (!items) return null;
+      return (items as unknown as Inventory[]);
+    } catch {
+      return null
+    }
   }
 
   async getByOrganizationWithItemsWithFurnitureVersion(
