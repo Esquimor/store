@@ -6,6 +6,26 @@ type Variation {
   items: [Item]
 }
 
+input VariationCreate {
+  name: String
+}
+
+input VariationUpdate {
+  id: String
+  name: String
+}
+
 type Query {
   variations: [Variation]
+}
+
+type Mutation {
+  createVariationsForAttribut(
+    attributId: String
+    variations: [VariationCreate]
+  ): [Variation]
+  updateVariationsForAttribut(
+    attributId: String
+    variations: [VariationUpdate]
+  ): [Variation]
 }

@@ -21,3 +21,9 @@ type Query {
   inventoriesCount(type: Inventory_Type): Int
   inventory(id: String): Inventory
 }
+
+type Mutation {
+  deleteInventory(id: String): Boolean
+  createInventory(name: String): Inventory
+  updateInventory(id: String, name: String): Inventory
+}

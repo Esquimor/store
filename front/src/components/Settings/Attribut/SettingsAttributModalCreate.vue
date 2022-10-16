@@ -56,12 +56,11 @@ import { Form, FieldArray } from "vee-validate";
 import * as yup from "yup";
 import { useQuasar } from "quasar"
 import { useDialogPluginComponent } from "quasar"
-import { useStore } from "../../../store/index";
-import AttributRequest from "../../../request/AttributRequest";
-import { AttributActionTypes } from "../../../store/attribut/action-types";
 import { AttributDefaultWithVariationDefaults } from "../../../../../commons/Interface/Attribut";
 import QInputWithValidation from "../../Global/Form/QInputWithValidation.vue"
 import { isNotEmpty } from "../../../../../commons/Technical/Empty";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 defineEmits([
   ...useDialogPluginComponent.emits
@@ -69,7 +68,6 @@ defineEmits([
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
-const $store = useStore();
 const $q = useQuasar()
 
 
@@ -87,21 +85,63 @@ const initialValues = {
   }]
 }
 
+const { mutate: createAttribut } = useMutation(gql`
+  mutation createAttribut (
+    $name: String
+  ) {
+    createAttribut (
+      name: $name
+    ) {
+      id
+    }
+  }
+`)
+
+const { mutate: createVariationsForAttribut } = useMutation(gql`
+  mutation createVariationsForAttribut (
+    $attributId: String
+    $variations: [VariationCreate]
+  ) {
+    createVariationsForAttribut(attributId: $attributId, variations: $variations) {
+      id
+    }
+  }
+`)
+
 const onSubmit = (values: AttributDefaultWithVariationDefaults) => {
 
   const removedEmptyVariations = values.variations.filter(variation => isNotEmpty(variation.name))
 
-  void AttributRequest.Create({...values, variations: removedEmptyVariations })
-    .then(({ attribut }) => {
-      void $store.dispatch(`attribut/${AttributActionTypes.ADD_ATTRIBUT}`, attribut)
-      $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Submitted"
+  createAttribut(values)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore 
+    .then((
+      {
+        data
+      } : {
+        data: {
+          createAttribut :{
+            id: string;
+          }
+        }
+      }
+    ) => {
+      createVariationsForAttribut({
+        attributId: data.createAttribut.id,
+        variations: removedEmptyVariations
       })
-      onDialogOK()
+        .then(() => {
+          $q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Submitted"
+          })
+          onDialogOK()
+        })
+        .catch((e) => console.log(e))
     })
+    .catch((e) => console.log(e))
 }
 
 </script>

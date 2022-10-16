@@ -28,9 +28,8 @@
 import { ref} from "vue";
 import { useQuasar } from "quasar"
 import { useDialogPluginComponent } from "quasar"
-import { useStore } from "../../../store/index";
-import TagRequest from "../../../request/TagRequest";
-import { TagActionTypes } from "../../../store/tag/action-types";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 defineEmits([
   ...useDialogPluginComponent.emits
@@ -40,15 +39,20 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 const name = ref("");
 
-const $store = useStore();
 const $q = useQuasar()
 
+const { mutate: createTag } = useMutation(gql`
+  mutation createTag ($name: String) {
+    createTag (name: $name) {
+      id
+    }
+  }
+`)
+
 const onSubmit = () => {
-  void TagRequest.Create({
+  createTag({
     name: name.value,
-  })
-    .then(({ tag }) => {
-      void $store.dispatch(`tag/${TagActionTypes.ADD_TAG}`, tag)
+  }).then(() => {
       $q.notify({
         color: "green-4",
         textColor: "white",
@@ -57,6 +61,7 @@ const onSubmit = () => {
       })
       onDialogOK()
     })
+    .catch((e) => console.log(e))
 }
 
 </script>

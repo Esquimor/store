@@ -3,7 +3,7 @@
     <Form
       :validation-schema="schema"
       @submit="onSubmit"
-      :initial-values="initialValues"
+      ref="myForm"
     >
       <q-card-section class="row wrap justify-between">
         <QInputWithValidation
@@ -25,20 +25,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router"
-import { useStore } from "../../../store/index"
 import { useQuasar } from "quasar"
 import { Form } from "vee-validate";
 import * as yup from "yup";
 import { InventoryDefault } from "../../../../../commons/Interface/Inventory";
-import InventoryRequest from "../../../request/InventoryRequest";
-import { InventoryActionTypes } from "../../../store/inventory/action-types";
 import LayoutSettings from "../../../components/Settings/LayoutSettings.vue";
 import QInputWithValidation from "../../../components/Global/Form/QInputWithValidation.vue"
+import { useQuery, UseQueryReturn, useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const $q = useQuasar()
-const $store = useStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -46,24 +44,59 @@ const schema = yup.object({
   name: yup.string().required(),
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-const initialValues = computed(() => $store.getters["inventory/getInventoryById"](route.params.id) as number)
+const { result }: UseQueryReturn<{
+  inventory: {
+    id: string;
+    name: string;
+  };
+}, {
+  id: string
+}> = useQuery(gql`
+  query inventory($id: String) {
+    inventory(id: $id) {
+      id
+      name
+    }
+  }
+`, {
+  id: route.params.id
+})
+
+const myForm = ref(null);
+
+watch(
+  result,
+  () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    myForm.value.setValues({...result.value?.inventory})
+  }
+)
+
+const { mutate: updateInventory } = useMutation(gql`
+  mutation updateInventory (
+    $id: String
+    $name: String
+  ) {
+    updateInventory(id: $id, name: $name) {
+      id
+    }
+  }
+`)
 
 function onSubmit(values: InventoryDefault) {
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  void InventoryRequest.Update(route.params.id as string, values)
-    .then(({inventory}) => {
-      void $store.dispatch(`inventory/${InventoryActionTypes.UPDATE_INVENTORY}`, inventory)
+  updateInventory({
+    id: route.params.id,
+    ...values
+  })
+    .then(() => {
       $q.notify({
         color: "green-4",
         textColor: "white",
         icon: "cloud_done",
         message: "Submitted"
       })
-    })
-    .finally(() => {
       void router.push({ name: "settings-inventory" })
     })
+    .catch(e => console.log(e))
 }
 </script>

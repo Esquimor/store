@@ -7,6 +7,7 @@
       :rows="tags"
       :columns="columns"
       row-key="name"
+      :loading="loading"
     >
       <template v-slot:body="props">
           <q-tr :props="props">
@@ -44,18 +45,14 @@
 <script setup lang="ts">
 import { useQuasar } from "quasar"
 import {  computed } from "vue";
-import TagRequest from "../../request/TagRequest";
-import { useStore } from "../../store/index";
 import LayoutSettings from "../../components/Settings/LayoutSettings.vue";
-import { TagActionTypes } from "../../store/tag/action-types";
 import SettingsTagModalCreate from "../../components/Settings/Tag/SettingsTagModalCreate.vue";
 import SettingsTagModalEdit from "../../components/Settings/Tag/SettingsTagModalEdit.vue";
 import { Tag } from "../../../../commons/Interface/Tag";
+import { useQuery, useMutation, UseQueryReturn } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const $q = useQuasar()
-const $store = useStore()
-
-const tags = computed(() => $store.state.tag.tags)
 
 const columns = [
   {
@@ -70,9 +67,28 @@ const columns = [
   }
 ]
 
+const { result, loading, refetch }: UseQueryReturn<{
+  tags: {
+    id: string;
+    name: string;
+  };
+}, undefined> = useQuery(gql`
+  query tags {
+    tags {
+      name
+      id
+    }
+  }
+`)
+
+const tags = computed(() => result.value?.tags ?? [])
+
 const create = () => {
   $q.dialog({
     component: SettingsTagModalCreate,
+  }).onOk(() => {
+    refetch?.()
+      .catch(e => console.log(e))
   })
 }
 
@@ -82,8 +98,17 @@ const update = (tag: Tag) => {
     componentProps: {
       tag
     }
+  }).onOk(() => {
+    refetch?.()
+      .catch(e => console.log(e))
   })
 }
+
+const { mutate: deleteTagMutation  } = useMutation(gql`
+  mutation deleteTag ($id: String!) {
+    deleteTag (id: $id)
+  }
+`)
 
 const deleteTag = (tag: Tag) => {
   $q.dialog({
@@ -92,16 +117,19 @@ const deleteTag = (tag: Tag) => {
     cancel: true,
     persistent: true
   }).onOk(() => {
-    void TagRequest.Delete(tag.id)
-      .then(() => {
-        void $store.dispatch(`tag/${TagActionTypes.REMOVE_TAG}`, tag.id)
+    deleteTagMutation({
+      id: tag.id,
+    }).then(() => {
+        refetch?.()
+          .catch(e => console.log(e))
         $q.notify({
-          color: "green-4",
-          textColor: "white",
-          icon: "cloud_done",
-          message: "Updated"
-        })
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Deleted"
+          })
       })
+      .catch((e) => console.log(e))
   })
 }
 </script>

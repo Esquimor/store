@@ -28,10 +28,9 @@
 import { ref, defineProps} from "vue";
 import { useQuasar } from "quasar"
 import { useDialogPluginComponent } from "quasar"
-import { useStore } from "../../../store/index";
-import { CategoryActionTypes } from "../../../store/category/action-types";
 import { Tag } from "../../../../../commons/Interface/Tag";
-import CategoryRequest from "../../../request/CategoryRequest";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const props = defineProps<{
   category: Tag
@@ -45,15 +44,21 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 const name = ref(props.category.name)
 
-const $store = useStore();
 const $q = useQuasar()
 
+const { mutate: updateCategory } = useMutation(gql`
+  mutation updateCategory ($name: String, $id: String) {
+    updateCategory (name: $name, id: $id) {
+      id
+    }
+  }
+`)
+
 const onSubmit = () => {
-  void CategoryRequest.UpdateTree(props.category.id, {
+  updateCategory({
+    id: props.category.id,
     name: name.value
-  })
-    .then(({ categories }) => {
-      void $store.dispatch(`category/${CategoryActionTypes.SET_CATEGORIES_TREE}`, categories)
+  }).then(() => {
       $q.notify({
         color: "green-4",
         textColor: "white",
@@ -62,6 +67,7 @@ const onSubmit = () => {
       })
       onDialogOK()
     })
+    .catch((e) => console.log(e))
 }
 
 </script>

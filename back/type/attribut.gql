@@ -4,8 +4,16 @@ type Attribut {
   categories: [Category]
   furnitureVersions: [FurnitureVersion]
   organization: Organization
+  variations: [Variation]
 }
 
 type Query {
   attributs: [Attribut]
+  attribut(id: String): Attribut
+}
+
+type Mutation {
+  deleteAttribut(id: String): Boolean
+  updateAttribut(id: String, name: String): Attribut
+  createAttribut(name: String): Attribut
 }

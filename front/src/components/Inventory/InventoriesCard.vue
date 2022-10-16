@@ -7,6 +7,7 @@
     >
       <InventoryCard
         :inventory="inventory"
+        @onDelete="(payload: string) => $emit('onDelete', payload)"
       />
     </div>
   </div>
@@ -20,7 +21,3 @@ const props = defineProps<{
   inventories: Inventory[]
 }>()
 </script>
-
-<style>
-
-</style>

@@ -7,3 +7,9 @@ type Tag {
 type Query {
   tags: [Tag]
 }
+
+type Mutation {
+  deleteTag(id: String): Boolean
+  createTag(name: String): Tag
+  updateTag(id: String, name: String): Tag
+}

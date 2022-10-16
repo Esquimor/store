@@ -51,7 +51,6 @@ const { result, refetch }: UseQueryReturn<{
 
 const addresses = computed(() => result.value?.addresses ?? [])
 
-
 const { mutate: deleteAddress  } = useMutation(gql`
   mutation deleteAddress ($id: String!) {
     deleteAddress (id: $id)

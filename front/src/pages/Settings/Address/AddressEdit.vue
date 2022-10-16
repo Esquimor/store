@@ -212,7 +212,6 @@ const { mutate: updatePlacementsForAddress } = useMutation(gql`
 `)
 
 function onSubmit(values: AddressDefaultWithPlacementsDefault) {
-  console.log(values)
   const removedEmptyPlacements = values.placements.filter(placement => isNotEmpty(placement.name))
   updateAddress({
     ...values,

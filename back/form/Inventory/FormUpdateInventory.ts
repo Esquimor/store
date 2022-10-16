@@ -6,7 +6,8 @@ export default class FormUpdateInventory extends Form {
   constructor(formBody: any) {
     super();
     const schema = z.object({
-      name: z.string().optional(),
+      id: z.string(),
+      name: z.string(),
       userId: z.string().optional(),
       tagsId: z.array(z.string()).optional(),
       itemsId: z.array(z.string()).optional(),

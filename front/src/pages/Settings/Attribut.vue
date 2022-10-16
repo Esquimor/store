@@ -7,6 +7,7 @@
       :rows="attributs"
       :columns="columns"
       row-key="name"
+      :loading="loading"
     >
       <template v-slot:body="props">
           <q-tr :props="props">
@@ -44,18 +45,14 @@
 <script lang="ts" setup>
 import { useQuasar } from "quasar"
 import { computed } from "vue";
-import AttributRequest from "../../request/AttributRequest";
-import { useStore } from "../../store/index";
 import LayoutSettings from "../../components/Settings/LayoutSettings.vue";
-import { AttributActionTypes } from "../../store/attribut/action-types";
 import SettingsAttributModalCreate from "../../components/Settings/Attribut/SettingsAttributModalCreate.vue";
 import SettingsAttributModalEdit from "../../components/Settings/Attribut/SettingsAttributModalEdit.vue";
 import { Attribut } from "../../../../commons/Interface/Attribut";
+import { useQuery, useMutation, UseQueryReturn } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const $q = useQuasar()
-const $store = useStore()
-
-const attributs = computed(() => $store.state.attribut.attributs)
 
 const columns = [
   {
@@ -70,9 +67,28 @@ const columns = [
   }
 ]
 
+const { result, loading, refetch }: UseQueryReturn<{
+  attributs: {
+    id: string;
+    name: string;
+  };
+}, undefined> = useQuery(gql`
+  query attributs {
+    attributs {
+      name
+      id
+    }
+  }
+`)
+
+const attributs = computed(() => result.value?.attributs ?? [])
+
 const create = () => {
   $q.dialog({
     component: SettingsAttributModalCreate,
+  }).onOk(() => {
+    refetch?.()
+      .catch(e => console.log(e))
   })
 }
 
@@ -82,8 +98,17 @@ const update = (attribut: Attribut) => {
     componentProps: {
       attributId: attribut.id
     }
+  }).onOk(() => {
+    refetch?.()
+      .catch(e => console.log(e))
   })
 }
+
+const { mutate: deleteAttributMutation  } = useMutation(gql`
+  mutation deleteAttribut ($id: String!) {
+    deleteAttribut (id: $id)
+  }
+`)
 
 const deleteAttribut = (attribut: Attribut) => {
   $q.dialog({
@@ -92,16 +117,19 @@ const deleteAttribut = (attribut: Attribut) => {
     cancel: true,
     persistent: true
   }).onOk(() => {
-    void AttributRequest.Delete(attribut.id)
-      .then(() => {
-        void $store.dispatch(`attribut/${AttributActionTypes.REMOVE_ATTRIBUT}`, attribut.id)
+    deleteAttributMutation({
+      id: attribut.id,
+    }).then(() => {
+        refetch?.()
+          .catch(e => console.log(e))
         $q.notify({
-          color: "green-4",
-          textColor: "white",
-          icon: "cloud_done",
-          message: "Updated"
-        })
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Deleted"
+          })
       })
+      .catch((e) => console.log(e))
   })
 }
 </script>

@@ -28,10 +28,9 @@
 import { ref, defineProps} from "vue";
 import { useQuasar } from "quasar"
 import { useDialogPluginComponent } from "quasar"
-import { useStore } from "../../../store/index";
-import { TagActionTypes } from "../../../store/tag/action-types";
 import { Tag } from "../../../../../commons/Interface/Tag";
-import TagRequest from "../../../request/TagRequest";
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const props = defineProps<{
   tag: Tag
@@ -45,15 +44,21 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 const name = ref(props.tag.name)
 
-const $store = useStore();
 const $q = useQuasar()
 
+const { mutate: updateTag } = useMutation(gql`
+  mutation updateTag ($name: String, $id: String) {
+    updateTag (name: $name, id: $id) {
+      id
+    }
+  }
+`)
+
 const onSubmit = () => {
-  void TagRequest.Update(props.tag.id, {
+  updateTag({
+    id: props.tag.id,
     name: name.value
-  })
-    .then(({ tag }) => {
-      void $store.dispatch(`tag/${TagActionTypes.UPDATE_TAG}`, tag)
+  }).then(() => {
       $q.notify({
         color: "green-4",
         textColor: "white",
@@ -62,6 +67,7 @@ const onSubmit = () => {
       })
       onDialogOK()
     })
+    .catch((e) => console.log(e))
 }
 
 </script>

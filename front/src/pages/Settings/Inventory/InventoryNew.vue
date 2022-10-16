@@ -26,18 +26,16 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router"
-import { useStore } from "../../../store/index"
 import { useQuasar } from "quasar"
 import { Form } from "vee-validate";
 import * as yup from "yup";
 import { InventoryDefault } from "../../../../../commons/Interface/Inventory";
-import InventoryRequest from "../../../request/InventoryRequest";
-import { InventoryActionTypes } from "../../../store/inventory/action-types";
 import LayoutSettings from "../../../components/Settings/LayoutSettings.vue";
 import QInputWithValidation from "../../../components/Global/Form/QInputWithValidation.vue"
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const $q = useQuasar()
-const $store = useStore()
 const router = useRouter()
 
 const schema = yup.object({
@@ -48,21 +46,31 @@ const initialValues = {
   name: "",
 }
 
+const { mutate: createInventory } = useMutation(gql`
+  mutation createInventory (
+    $name: String
+  ) {
+    createInventory (
+      name: $name
+    ) {
+      id
+    }
+  }
+`)
+
 function onSubmit(values: InventoryDefault) {
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  void InventoryRequest.Create(values)
-    .then(({inventory}) => {
-      void $store.dispatch(`inventory/${InventoryActionTypes.ADD_INVENTORY}`, inventory)
+  createInventory(values)
+    .then(() => {
       $q.notify({
         color: "green-4",
         textColor: "white",
         icon: "cloud_done",
         message: "Submitted"
       })
-    })
-    .finally(() => {
       void router.push({ name: "settings-inventory" })
     })
+    .catch(e => console.log(e))
 }
 </script>

@@ -120,7 +120,6 @@ export default  {
       return placements
     },
     updatePlacementsForAddress: async(parent, args, {user}) => {
-      console.log(user)
       if (!user) {
         return Promise.reject(
           new GraphQLError(
@@ -144,7 +143,6 @@ export default  {
         )
       }
       const address = await addressDao.getById(body.addressId)
-      console.log(address)
       if (!address) {
         return Promise.reject(
           new GraphQLError(
@@ -160,8 +158,6 @@ export default  {
         )
       }
       let promise:Promise<Placement|boolean>[] = [];
-      console.log(address)
-      console.log(body)
       body.placements.forEach(({id, name}) => {
         const placement = new Placement();
         if (!!id) {

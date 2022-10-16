@@ -8,6 +8,8 @@ import TagDao from "../dao/TagDao";
 import ItemDao from "../dao/ItemDao";
 import InventoryDao from "../dao/InventoryDao";
 import { User } from "../entity/User";
+import FormCreateInventory from "../form/Inventory/FormCreateInventory";
+import FormUpdateInventory from "../form/Inventory/FormUpdateInventory";
 
 const organizationDao: OrganizationDao = new OrganizationDao();
 const userDao: UserDao = new UserDao();
@@ -188,4 +190,118 @@ export default  {
       return inventory
     },
   },
+  Mutation: {
+    deleteInventory: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (!args.id) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const inventory = await inventoryDao.getById(args.id)
+      if (!inventory) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (inventory.organizationId !== user.organizationId) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const isDeletedInventory = await inventoryDao.deleteById(inventory.id);
+      return isDeletedInventory
+    },
+    createInventory: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const body = (args as unknown as { 
+        name: string;
+      });
+      const form = new FormCreateInventory(body);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const inventory = new Inventory()
+      inventory.organization = user.organization;
+      inventory.name = body.name;
+
+      const createdInventory = await inventoryDao.create(inventory);
+      if (!createdInventory) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return createdInventory
+    },
+    updateInventory: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const body = (args as unknown as { 
+        name: string;
+        id: number
+      });
+      const form = new FormUpdateInventory(body);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const inventory = await inventoryDao.getById(body.id);
+      if (!inventory) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (inventory.organizationId !== user.organizationId) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      inventory.name = body.name;
+      const savedInventory = await inventoryDao.update(inventory);
+      if (!savedInventory) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return savedInventory
+    },
+  }
 }

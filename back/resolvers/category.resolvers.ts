@@ -4,6 +4,8 @@ import CategoryDao from "../dao/CategoryDao";
 import FurnitureVersionDao from "../dao/FurnitureVersionDao";
 import OrganizationDao from "../dao/OrganizationDao";
 import { Category } from "../entity/Category";
+import FormCreateCategory from "../form/Category/FormCreateCategory";
+import FormUpdateCategory from "../form/Category/FormUpdateCategory";
 
 const categoryDao: CategoryDao = new CategoryDao();
 const organizationDao: OrganizationDao = new OrganizationDao();
@@ -78,4 +80,129 @@ export default  {
       return items
     },
   },
+  Mutation: {
+    deleteCategory: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (!args.id) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const category = await categoryDao.getById(args.id)
+      if (!category) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (category.organizationId !== user.organizationId) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const isCategoryDeleted = await categoryDao.deleteById(category.id);
+      if (!isCategoryDeleted) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return isCategoryDeleted
+    },
+    createCategory: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      const body = (args as unknown as { 
+        name: string;
+        parentId: number;
+      });
+      const form = new FormCreateCategory(body);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+  
+      const category = new Category();
+      category.name = body.name;
+      category.parentId = body.parentId;
+      category.organization = user.organization;
+  
+      const categorySaved = await categoryDao.create(category);
+      if (!categorySaved) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return categorySaved;
+    },
+    updateCategory: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+  
+      const body = (args as unknown as { 
+        name: string;
+        id: string;
+      });
+  
+      const form = new FormUpdateCategory(body);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+
+      const category = await categoryDao.getById(body.id)
+      if (!category) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+  
+      if (body.name) {
+        category.name = body.name;
+      }
+  
+      const savedCategory = await categoryDao.update(category);
+      if (!savedCategory) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+  
+      return savedCategory;
+    }
+  }
 }

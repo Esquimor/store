@@ -5,8 +5,8 @@
         <Form
           :validation-schema="schema"
           @submit="onSubmit"
-          :initial-values="initialValues"
-              class="q-gutter-md"
+          ref="myForm"
+          class="q-gutter-md"
         >
           <QInputWithValidation
           name="name"
@@ -15,7 +15,7 @@
 
           <FieldArray name="variations" v-slot="{ fields, push, remove }">
             <q-card-section
-              v-for="(field, idx) in fields"
+              v-for="(field, idx) in fields || []"
               :key="field.key"
             >
               <q-card class="full-width" flat bordered>
@@ -52,17 +52,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
+import { ref, watch } from "vue"
 import { Form, FieldArray } from "vee-validate";
 import * as yup from "yup";
 import { useQuasar } from "quasar"
 import { useDialogPluginComponent } from "quasar"
-import { useStore } from "../../../store/index";
-import AttributRequest from "../../../request/AttributRequest";
-import { AttributActionTypes } from "../../../store/attribut/action-types";
 import { AttributDefaultWithVariationDefaults } from "../../../../../commons/Interface/Attribut";
 import QInputWithValidation from "../../Global/Form/QInputWithValidation.vue"
 import { isNotEmpty } from "../../../../../commons/Technical/Empty";
+import { useQuery, UseQueryReturn, useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 defineEmits([
   ...useDialogPluginComponent.emits
@@ -70,13 +69,13 @@ defineEmits([
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
-const $store = useStore();
 const $q = useQuasar()
 
 
 const schema = yup.object({
   name: yup.string().required(),
   variations: yup.array().of(yup.object({
+    id: yup.string().optional(),
     name: yup.string()
   }))
 });
@@ -86,24 +85,93 @@ const props = defineProps<{
   attributId: string
 }>()
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-const initialValues = computed(() => $store.getters["attribut/getAttributById"](props.attributId) as number)
+const { result, loading }: UseQueryReturn<{
+  attribut: {
+    id: string;
+    name: string;
+    variations: {
+      id: string;
+      name: string
+    }[];
+  };
+}, {
+  id: string
+}> = useQuery(gql`
+  query attribut($id: String) {
+    attribut(id: $id) {
+      id
+      name
+      variations {
+        id
+        name
+      }
+    }
+  }
+`, {
+  id: props.attributId
+})
 
-const onSubmit = (values: AttributDefaultWithVariationDefaults) => {
+const myForm = ref(null);
 
+watch(
+  result,
+  (resultValue) => {
+    if (!loading || !resultValue) return
+    // Sanitize Variations
+    const variations = resultValue.attribut?.variations.map(variation => ({id: variation.id, name: variation.name})) || []
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    myForm.value.setValues({...resultValue.attribut, variations})
+  }
+)
+
+const { mutate: updateAttribut } = useMutation(gql`
+  mutation updateAttribut (
+    $id: String
+    $name: String
+  ) {
+    updateAttribut (
+      id: $id
+      name: $name
+    ) {
+      id
+    }
+  }
+`)
+
+const { mutate: updateVariationsForAttribut } = useMutation(gql`
+  mutation updateVariationsForAttribut (
+    $attributId: String
+    $variations: [VariationUpdate]
+  ) {
+    updateVariationsForAttribut(attributId: $attributId, variations: $variations) {
+      id
+    }
+  }
+`)
+
+function onSubmit(values: AttributDefaultWithVariationDefaults) {
   const removedEmptyVariations = values.variations.filter(variation => isNotEmpty(variation.name))
-
-  void AttributRequest.Update(props.attributId, {...values, variations: removedEmptyVariations })
-    .then(({ attribut }) => {
-      void $store.dispatch(`attribut/${AttributActionTypes.UPDATE_ATTRIBUT}`, attribut)
-      $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Submitted"
+  updateAttribut({
+    ...values,
+    id: props.attributId
+  })
+    .then(() => {
+      updateVariationsForAttribut({
+        attributId: props.attributId,
+        variations: removedEmptyVariations
       })
-      onDialogOK()
+        .then(() => {
+          $q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Submitted"
+          })
+          onDialogOK()
+        })
+        .catch((e) => console.log(e))
     })
+    .catch((e) => console.log(e))
 }
 
 </script>

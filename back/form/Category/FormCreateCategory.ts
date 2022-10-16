@@ -7,7 +7,7 @@ export default class FormCreateCategory extends Form {
     super();
     const schema = z.object({
       name: z.string(),
-      parentId: z.string().optional()
+      parentId: z.string()
     });
     this.buildForm(schema, formBody)
   }
