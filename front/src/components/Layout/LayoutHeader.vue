@@ -62,13 +62,7 @@ import { computed } from "vue";
 import { OrganizationActionTypes } from "../../store/organization/action-types";
 import { BasketActionTypes } from "../../store/basket/action-types";
 import { FurnitureActionTypes } from "../../store/furniture/action-types";
-import { InventoryActionTypes } from "../../store/inventory/action-types";
-import { OrderActionTypes } from "../../store/order/action-types";
 import { UserActionTypes } from "../../store/user/action-types";
-import { AddressActionTypes } from "../../store/address/action-types";
-import { TagActionTypes } from "../../store/tag/action-types";
-import { CategoryActionTypes } from "../../store/category/action-types";
-import { AttributActionTypes } from "../../store/attribut/action-types";
 
 const $store = useStore()
 const router = useRouter()
@@ -79,14 +73,8 @@ const nbArticlesInBasket = computed(() => $store.getters["basket/getNbArticlesIn
 const logout = async () => {
   void $store.dispatch(`basket/${BasketActionTypes.RESET_BASKET}`)
   void $store.dispatch(`furniture/${FurnitureActionTypes.RESET_FURNITURE}`)
-  void $store.dispatch(`inventory/${InventoryActionTypes.RESET_INVENTORY}`)
-  void $store.dispatch(`order/${OrderActionTypes.RESET_ORDER}`)
   void $store.dispatch(`organization/${OrganizationActionTypes.RESET_ORGANIZATION}`)
   void $store.dispatch(`user/${UserActionTypes.RESET_USER}`)
-  void $store.dispatch(`address/${AddressActionTypes.RESET_ADDRESS}`)
-  void $store.dispatch(`tag/${TagActionTypes.RESET_TAG}`)
-  void $store.dispatch(`category/${CategoryActionTypes.RESET_CATEGORY}`)
-  void $store.dispatch(`attribut/${AttributActionTypes.RESET_ATTRIBUT}`)
   await router.push({ name: "login" })
 }
 </script>

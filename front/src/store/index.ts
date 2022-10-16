@@ -11,33 +11,11 @@ import {
 import user from "./user"
 import organization from "./organization"
 import furniture from "./furniture"
-import order from "./order"
 import basket from "./basket"
-import inventory from "./inventory"
-import address from "./address"
-import tag from "./tag"
-import category from "./category"
-import attribut from "./attribut"
 import { UserStateInterface } from "./user/state"
 import { OrganizationStateInterface } from "./organization/state"
 import { FurnitureStateInterface } from "./furniture/state"
-import { OrderStateInterface } from "./order/state"
 import { BasketStateInterface } from "./basket/state"
-import { InventoryStateInterface } from "./inventory/state"
-import { AddressStateInterface } from "./address/state"
-import { TagStateInterface } from "./tag/state"
-import { CategoryStateInterface } from "./category/state"
-import { AttributStateInterface } from "./attribut/state"
-import TagRequest from "src/request/TagRequest"
-import AddressRequest from "src/request/AddressRequest"
-import InventoryRequest from "src/request/InventoryRequest"
-import AttributRequest from "src/request/AttributRequest"
-import CategoryRequest from "src/request/CategoryRequest"
-import { TagMutationTypes } from "./tag/mutation-types"
-import { AddressMutationTypes } from "./address/mutation-types"
-import { InventoryMutationTypes } from "./inventory/mutation-types"
-import { AttributMutationTypes } from "./attribut/mutation-types"
-import { CategoryMutationTypes } from "./category/mutation-types"
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -52,17 +30,10 @@ import { CategoryMutationTypes } from "./category/mutation-types"
  */
 
 export interface StateInterface {
-  loadingBootStrap: boolean;
   user: UserStateInterface,
   organization: OrganizationStateInterface,
   furniture: FurnitureStateInterface,
-  order: OrderStateInterface,
   basket: BasketStateInterface,
-  inventory: InventoryStateInterface,
-  address: AddressStateInterface,
-  tag: TagStateInterface,
-  category: CategoryStateInterface,
-  attribut: AttributStateInterface
 }
 
 // provide typings for `this.$store`
@@ -81,60 +52,12 @@ export default store(function (/* { ssrContext } */) {
       user,
       organization,
       furniture,
-      order,
       basket,
-      inventory,
-      address,
-      tag,
-      category,
-      attribut
     },
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
     strict: !!process.env.DEBUGGING,
-
-    state: {
-      loadingBootStrap: true
-    },
-
-    getters: {
-      loadingBootStrap: (state: StateInterface) => state.loadingBootStrap
-    },
-
-    actions: {
-      bootstrap({ commit }) {
-        commit("startLoadingBootstrap")
-        const promises = [
-          TagRequest.Get(),
-          AddressRequest.Get(),
-          InventoryRequest.Get(),
-          AttributRequest.Get(),
-          CategoryRequest.GetTree(),
-          CategoryRequest.Get(),
-        ];
-        void Promise.all(promises).then(([tags, addresses, inventories, attributs, categoriesTree, categories]) => {
-          commit(`tag/${TagMutationTypes.SET_TAGS}`, tags.tags)
-          commit(`address/${AddressMutationTypes.SET_ADDRESSES}`, addresses.addresses)
-          commit(`inventory/${InventoryMutationTypes.SET_INVENTORIES}`, inventories.inventories)
-          commit(`attribut/${AttributMutationTypes.SET_ATTRIBUTS}`, attributs.attributs)
-          commit(`category/${CategoryMutationTypes.SET_CATEGORIES_TREE}`, categoriesTree.categories)
-          commit(`category/${CategoryMutationTypes.SET_CATEGORIES}`, categories.categories)
-        })
-        .finally(() => {
-          commit("endLoadingBootstrap")
-        })
-      }
-    },
-
-    mutations: {
-      startLoadingBootstrap(state: StateInterface) {
-        state.loadingBootStrap = true
-      },
-      endLoadingBootstrap(state: StateInterface) {
-        state.loadingBootStrap = false
-      },
-    }
   })
 
   return Store;

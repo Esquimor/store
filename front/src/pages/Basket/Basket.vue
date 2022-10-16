@@ -81,14 +81,12 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import { useQuasar } from "quasar"
+// import { useQuasar } from "quasar"
 import { useStore } from "../../store/index";
 import { BasketActionTypes } from "../../store/basket/action-types";
 import { Article } from "../../../../commons/Interface/Basket";
-import OrderRequest from "../../request/OrderRequest";
-import { OrderActionTypes } from "../../store/order/action-types";
 
-const $q = useQuasar()
+// const $q = useQuasar()
 const $store = useStore()
 
 enum ACTION {
@@ -145,13 +143,13 @@ const setQuantityOfArticle = (furniture_version_id: string, quantity: number) =>
 
 const sendRequest = () => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  void OrderRequest.Create({
+  /*void OrderRequest.Create({
     name: name.value, 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     items: articles.value.map((article: Article) => ({ quantity: article.quantity, furnitureVersionId: article.furniture_version.id}))
   })
     .then(({ order }) => {
-      void $store.dispatch(`order/${OrderActionTypes.ADD_ORDER}`, order)
+      // void $store.dispatch(`order/${OrderActionTypes.ADD_ORDER}`, order)
       void $store.dispatch(`basket/${BasketActionTypes.RESET_ARTICLES}`)
       $q.notify({
         color: "green-4",
@@ -159,6 +157,6 @@ const sendRequest = () => {
         icon: "cloud_done",
         message: "Submitted"
       })
-    })
+    })*/
 }
 </script>
