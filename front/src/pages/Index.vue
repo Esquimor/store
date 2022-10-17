@@ -48,8 +48,8 @@ import {
   ORDER_STATUS,
   OrderWithItemWithFurnitureVersionWithFurniture
 } from "../../../commons/Interface/Order";
+import { useQuery, UseQueryReturn } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import { useQuery } from "@vue/apollo-composable";
 
 const router = useRouter()
 
@@ -97,26 +97,29 @@ const variablesOrders = computed(() => ({
   error: ORDER_STATUS.ERROR,
 }))
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const { result, loading, variables }: {
-  result: {
-    value:{
-      orders: {
-        id: string;
-        name: string;
-        status: ORDER_STATUS;
-        countItems: number
-      }[];
-      ordersCount: number;
-      createdOrdersCount: number;
-      validatedOrdersCount: number;
-      orderedOrdersCount: number;
-      finishedOrdersCount: number;
-      errorOrdersCount: number;
-    }
-  }
-} = useQuery(gql`
+const { result, loading, variables }: UseQueryReturn<{
+  orders: {
+    id: string;
+    name: string;
+    status: ORDER_STATUS;
+    countItems: number
+  }[];
+  ordersCount: number;
+  createdOrdersCount: number;
+  validatedOrdersCount: number;
+  orderedOrdersCount: number;
+  finishedOrdersCount: number;
+  errorOrdersCount: number;
+}, {
+  status: string;
+  skip: number;
+  take: number;
+  created: ORDER_STATUS;
+  validated: ORDER_STATUS;
+  ordered: ORDER_STATUS;
+  finished: ORDER_STATUS;
+  error: ORDER_STATUS;
+}> = useQuery(gql`
   query orders (
     $status: String, 
     $skip: Int,
@@ -156,7 +159,6 @@ const ordersCount = computed(() => ({
 watch(
   variablesOrders,
   (newValue) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     variables.value = newValue
   }
 )

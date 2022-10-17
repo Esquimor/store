@@ -6,7 +6,6 @@
     <div class="col col-lg-10 col-md-12">
       <div class="row justify-between items-center">
         <h2 style="margin-top: 0px; margin-bottom: 0px;">Furnitures</h2>
-        <FurnitureModalCreate />
       </div>
       <div class="q-pa-md row wrap q-col-gutter-md">
         <FurnituresCard
@@ -23,22 +22,23 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from "vue";
-import { useRoute, useRouter } from "vue-router"
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router"
 import { useStore } from "../../store/index";
-import FurnitureModalCreate from "../../components/Furniture/FurnitureModalCreate.vue"
 import FurnituresCard from "../../components/Furniture/Card/FurnituresCard.vue";
 import FurnitureDrawer from "../../components/Furniture/Drawer/FurnitureDrawer.vue";
-import FurnitureRequest from "../../request/FurnitureRequest";
-import { FurnitureActionTypes } from "../../store/furniture/action-types";
+// import FurnitureRequest from "../../request/FurnitureRequest";
+// import { FurnitureActionTypes } from "../../store/furniture/action-types";
 import { FurnitureWithLatestFurnitureVersion } from "../../../../commons/Interface/Furniture";
 import { BasketActionTypes } from "../../store/basket/action-types";
-import { isEmpty } from "app/../commons/Technical/Empty";
+// import { isEmpty } from "app/../commons/Technical/Empty";
 import { getNbPageByItems } from "app/../commons/Technical/Pagination";
+import { useQuery, UseQueryReturn } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 const $store = useStore()
 const route = useRoute()
-const router = useRouter();
+// const router = useRouter();
 
 const leftDrawerOpen = ref(true)
 const page = ref(route.query?.p || 0)
@@ -46,10 +46,32 @@ const countItems = ref(0)
 
 const NB_ITEMS = 50
 
-const furnitures = computed(() => $store.state.furniture.furnituresWithLastestFurnitureVersion)
+const { result }: UseQueryReturn<{
+  furnitures: {
+    id: string;
+    lastFurnitureVersion: {
+      id: string;
+      name: string;
+      description: string;
+    }
+  }[];
+}, undefined> = useQuery(gql`
+  query furnitures {
+    furnitures {
+      id
+      lastFurnitureVersion {
+        id
+        name
+        description
+      }
+    }
+  }
+`)
+
+const furnitures = computed(() => result.value?.furnitures ?? [])
 
 const paginationMax = computed(() => getNbPageByItems(countItems.value, NB_ITEMS))
-
+/*
 watch(
   page,
   (newValue) => {
@@ -85,7 +107,7 @@ watch(
     immediate: true
   }
 )
-
+*/
 const addInBasket = (furniture: FurnitureWithLatestFurnitureVersion) => {
   void $store.dispatch(`basket/${BasketActionTypes.ADD_ARTICLE}`, { quantity: 1, furniture_version: furniture.furnitureVersions[0]})
 }

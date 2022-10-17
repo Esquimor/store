@@ -15,11 +15,17 @@
 
 <script lang="ts" setup>
 import { defineProps } from "vue";
-import { FurnitureWithLatestFurnitureVersion } from "../../../../../commons/Interface/Furniture";
 import FurnitureCard from "./FurnitureCard.vue";
 
 const props = defineProps<{
-  furnitures: FurnitureWithLatestFurnitureVersion[]
+  furnitures: {
+    id: string;
+    lastFurnitureVersion: {
+      id: string;
+      name: string;
+      description: string;
+    }
+  }[]
 }>()
 </script>
 

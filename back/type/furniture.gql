@@ -1,9 +1,14 @@
 type Furniture {
   id: String
   furnitureVersions: [FurnitureVersion]
+  lastFurnitureVersion: FurnitureVersion
   organization: Organization
 }
 
 type Query {
   furnitures: [Furniture]
+}
+
+type Mutation {
+  createFurniture(name: String, description: String): Furniture
 }

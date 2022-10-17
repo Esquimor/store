@@ -22,6 +22,19 @@ export default class FurnitureVersionDao extends Dao<FurnitureVersion> {
     return (items as unknown as FurnitureVersion[]);
   }
 
+  async getLastFurnitureVersionByIdFurniture(
+    furnitureId: string | number
+  ): Promise<FurnitureVersion|null> {
+    const item = await getConnection().getRepository(this.entity)
+      .createQueryBuilder("furnitureVersion")
+      .where("furnitureVersion.furnitureId = :furnitureId")
+      .orderBy("furnitureVersion.created_at", "DESC")
+      .setParameters({ furnitureId })
+      .getOne();
+    if (!item) return null;
+    return (item as unknown as FurnitureVersion);
+  }
+
   async getAllByIdAttribut(idAttribut: number|string):Promise<FurnitureVersion[]|null> {
     // @ts-ignore Doesn't recognise right type
     const item = await getConnection().getRepository(Attribut).findOne({
@@ -42,7 +55,7 @@ export default class FurnitureVersionDao extends Dao<FurnitureVersion> {
   
   async getAllByIdFurniture(idFurniture: number|string):Promise<FurnitureVersion[]|null> {
     const items = await getConnection().getRepository(this.entity).find({
-      furniture: idFurniture
+      furnitureId: idFurniture
     });
     if (!items) return null;
     return (items as unknown as FurnitureVersion[]);

@@ -1,56 +1,80 @@
 <template>
-  <q-btn color="primary" label="Add a Furniture" @click="open = true" />
-  <q-dialog v-model="open" >
+  <q-dialog ref="dialogRef" @hide="onDialogHide" >
     <q-card style="width: 700px; max-width: 80vw;">
-      <q-card-section>
-        <div class="text-h6">Add a Furniture</div>
-      </q-card-section>
+      <Form
+        :validation-schema="schema"
+        @submit="onSubmit"
+        :initial-values="initialValues"
+      >
+        <q-card-section>
+          <div class="text-h6">Add a Furniture</div>
+        </q-card-section>
 
-      <q-card-section class="q-pt-none">
-        <q-input
-          filled
-          v-model="name"
-          label="Name"
-          lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
-        />
-        <q-input
-          filled
-          v-model="description"
-          label="Description"
-          lazy-rules
-          type="textarea"
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
-        />
-      </q-card-section>
+        <q-card-section class="q-pt-none">
+          <QInputWithValidation
+            name="name"
+            label="Name"
+          />
+          <QInputWithValidation
+            name="description"
+            label="Description"
+            type="textarea"
+          />
+        </q-card-section>
 
-      <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" v-close-popup></q-btn>
-        <q-btn label="OK" color="primary" @click="onSubmit"></q-btn>
-      </q-card-actions>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" @click="onDialogCancel"></q-btn>
+          <q-btn color="primary" type="submit" label="Submit" />
+        </q-card-actions>
+      </Form>
     </q-card>
   </q-dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { useQuasar } from "quasar"
-import { useStore } from "../../store/index"
-import FurnitureRequest from "../../request/FurnitureRequest";
-import { FurnitureActionTypes } from "../../store/furniture/action-types";
+import { Form } from "vee-validate";
+import * as yup from "yup";
+import { useQuasar, useDialogPluginComponent } from "quasar"
+import QInputWithValidation from "../Global/Form/QInputWithValidation.vue"
+import { useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
+
+defineEmits([
+  ...useDialogPluginComponent.emits
+])
+
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 const $q = useQuasar()
-const $store = useStore()
 
-const name = ref("")
-const description = ref("")
-const open = ref(false)
+const schema = yup.object({
+  name: yup.string().required(),
+  description: yup.string()
+});
 
+const initialValues = {
+  name: "",
+  description: ""
+}
 
-const onSubmit = () => {
-  void FurnitureRequest.Create({name: name.value, description: description.value})
-    .then(({ furniture }) => {
-      void $store.dispatch(`furniture/${FurnitureActionTypes.ADD_FURNITURE_WITH_LATEST_FURNITURE_VERSION}`, furniture)
+const { mutate: createFurniture } = useMutation(gql`
+  mutation createFurniture (
+    $name: String
+    $description: String
+  ) {
+    createFurniture (
+      name: $name
+      description: $description
+    ) {
+      id
+    }
+  }
+`)
+
+const onSubmit = (values: {name: string, description?: string}) => {
+  createFurniture(values)
+    .then(() => {
+      onDialogOK()
       $q.notify({
         color: "green-4",
         textColor: "white",
@@ -58,6 +82,6 @@ const onSubmit = () => {
         message: "Submitted"
       })
     })
-    .finally(() => open.value = false)
+    .catch((e) => console.log(e))
 }
 </script>

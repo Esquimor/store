@@ -20,9 +20,9 @@ export class FurnitureVersion {
     name: string;
 
     @Column("text", {
-        nullable: true
+      nullable: true
     })
-    description: string;
+    description: string | null;
 
     @OneToMany(() => Item, item => item.furnitureVersion, {
         cascade: true,

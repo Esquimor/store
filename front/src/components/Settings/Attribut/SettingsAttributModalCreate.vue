@@ -9,7 +9,7 @@
               class="q-gutter-md"
         >
           <QInputWithValidation
-          name="name"
+            name="name"
             label="Name"
           />
 
@@ -69,7 +69,6 @@ defineEmits([
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 const $q = useQuasar()
-
 
 const schema = yup.object({
   name: yup.string().required(),

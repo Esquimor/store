@@ -1,11 +1,11 @@
 <template>
   <q-card>
     <q-card-section>
-      <div class="text-h6">{{latestFurnitureVersion.name}}</div>
+      <div class="text-h6">{{props.furniture?.lastFurnitureVersion?.name}}</div>
     </q-card-section>
 
     <q-card-section class="q-pt-none">
-      {{latestFurnitureVersion.description}}
+      {{props.furniture?.lastFurnitureVersion?.description}}
     </q-card-section>
     
 
@@ -18,12 +18,16 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, computed } from "vue";
-import { FurnitureWithLatestFurnitureVersion } from "../../../../../commons/Interface/Furniture";
+import { defineProps } from "vue";
 
 const props = defineProps<{
-  furniture: FurnitureWithLatestFurnitureVersion
+  furniture: {
+    id: string;
+    lastFurnitureVersion: {
+      id: string;
+      name: string;
+      description: string;
+    }
+  }
 }>()
-
-const latestFurnitureVersion = computed(() => props.furniture.furnitureVersions[0]);
 </script>
