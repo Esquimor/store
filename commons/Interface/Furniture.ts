@@ -23,4 +23,13 @@ export interface FurnitureDefaultWithOrganization {
   organization: Organization;
 }
 
+export interface FurnitureWithLastFurnitureVersion {
+  id: string;
+  lastFurnitureVersion: {
+    id: string;
+    name: string;
+    description: string;
+  }
+}
+
 export interface FurnitureDefault {}

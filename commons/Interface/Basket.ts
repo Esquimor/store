@@ -1,4 +1,4 @@
-import { FurnitureVersion } from "./FurnitureVersion";
+import { FurnitureVersionSimple } from "./FurnitureVersion";
 
 export interface ArticleSetQuantity {
   quantity: number;
@@ -7,5 +7,5 @@ export interface ArticleSetQuantity {
 
 export interface Article {
   quantity: number;
-  furniture_version: FurnitureVersion
+  furniture_version: FurnitureVersionSimple
 }

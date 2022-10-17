@@ -29,7 +29,7 @@ import FurnituresCard from "../../components/Furniture/Card/FurnituresCard.vue";
 import FurnitureDrawer from "../../components/Furniture/Drawer/FurnitureDrawer.vue";
 // import FurnitureRequest from "../../request/FurnitureRequest";
 // import { FurnitureActionTypes } from "../../store/furniture/action-types";
-import { FurnitureWithLatestFurnitureVersion } from "../../../../commons/Interface/Furniture";
+import { FurnitureWithLastFurnitureVersion } from "../../../../commons/Interface/Furniture";
 import { BasketActionTypes } from "../../store/basket/action-types";
 // import { isEmpty } from "app/../commons/Technical/Empty";
 import { getNbPageByItems } from "app/../commons/Technical/Pagination";
@@ -108,7 +108,11 @@ watch(
   }
 )
 */
-const addInBasket = (furniture: FurnitureWithLatestFurnitureVersion) => {
-  void $store.dispatch(`basket/${BasketActionTypes.ADD_ARTICLE}`, { quantity: 1, furniture_version: furniture.furnitureVersions[0]})
+const addInBasket = (furniture: FurnitureWithLastFurnitureVersion) => {
+  void $store.dispatch(`basket/${BasketActionTypes.ADD_ARTICLE}`, {
+    quantity: 1,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    furniture_version: furniture.lastFurnitureVersion
+  })
 }
 </script>

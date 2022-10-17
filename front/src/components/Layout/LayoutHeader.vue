@@ -16,9 +16,6 @@
         <q-btn color="black" icon="add" label="Add">
           <q-menu auto-close>
             <q-item clickable v-ripple @click="addFurniture">
-              <q-item-section avatar>
-                <q-icon name="check_box_outline_blank" />
-              </q-item-section>
               <q-item-section>
                 Furniture
               </q-item-section>

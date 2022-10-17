@@ -19,15 +19,9 @@
 
 <script lang="ts" setup>
 import { defineProps } from "vue";
+import { FurnitureWithLastFurnitureVersion } from "../../../../../commons/Interface/Furniture";
 
 const props = defineProps<{
-  furniture: {
-    id: string;
-    lastFurnitureVersion: {
-      id: string;
-      name: string;
-      description: string;
-    }
-  }
+  furniture: FurnitureWithLastFurnitureVersion
 }>()
 </script>

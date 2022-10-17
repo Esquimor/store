@@ -81,12 +81,14 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-// import { useQuasar } from "quasar"
+import { useQuasar } from "quasar"
 import { useStore } from "../../store/index";
 import { BasketActionTypes } from "../../store/basket/action-types";
 import { Article } from "../../../../commons/Interface/Basket";
+import {useMutation } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
-// const $q = useQuasar()
+const $q = useQuasar()
 const $store = useStore()
 
 enum ACTION {
@@ -141,22 +143,29 @@ const setQuantityOfArticle = (furniture_version_id: string, quantity: number) =>
   void $store.dispatch(`basket/${BasketActionTypes.SET_QUANTITY_TO_ARTICLE}`, {furniture_version_id, quantity})
 }
 
+const { mutate: addOrder } = useMutation(gql`
+  mutation addOrder ($name: String, $items: [ItemAddOrder]) {
+    addOrder (name: $name, items: $items) {
+      id
+    }
+  }
+`)
+
 const sendRequest = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  /*void OrderRequest.Create({
-    name: name.value, 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  addOrder({
+    name: name.value,
     items: articles.value.map((article: Article) => ({ quantity: article.quantity, furnitureVersionId: article.furniture_version.id}))
   })
-    .then(({ order }) => {
-      // void $store.dispatch(`order/${OrderActionTypes.ADD_ORDER}`, order)
-      void $store.dispatch(`basket/${BasketActionTypes.RESET_ARTICLES}`)
+    .then(() => {
       $q.notify({
         color: "green-4",
         textColor: "white",
         icon: "cloud_done",
         message: "Submitted"
       })
-    })*/
+    })
+    .catch(e => {
+      console.log(e)
+    })
 }
 </script>

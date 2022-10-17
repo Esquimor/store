@@ -4,6 +4,10 @@ export interface FurnitureVersionWithFurniture extends FurnitureVersion {
   furniture: Furniture;
 }
 
+export interface FurnitureVersionSimple extends FurnitureVersionDefault {
+  id: string;
+}
+
 export interface FurnitureVersion extends FurnitureVersionDefault {
   id: string;
   created_at: string;

@@ -63,6 +63,10 @@ export class Order {
     @Column({ nullable: true })
     placementId: number;
 
+    setItems(items: Item[]) {
+      this.items = items;
+    }
+
     orderForResponseWithItemsAndCreator() {
       return {
         items: this.items, 

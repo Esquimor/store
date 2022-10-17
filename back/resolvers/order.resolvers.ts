@@ -6,7 +6,8 @@ import UserDao from '../dao/UserDao';
 import ItemDao from '../dao/ItemDao';
 import AddressDao from '../dao/AddressDao';
 import PlacementDao from '../dao/PlacementDao';
-import { ORDER_STATUS } from '../../commons/Interface/Order';
+import FormCreateOrderWithFurnitures from "../form/Order/FormCreateOrderWithFurnitures";
+import { Item } from '../entity/Item';
 
 const orderDao: OrderDao = new OrderDao();
 const organizationDao: OrganizationDao = new OrganizationDao();
@@ -146,4 +147,52 @@ export default  {
       return order
     },
   },
+  Mutation: {
+    addOrder: async(parent, args, {user}) => {
+      const query = (args as unknown as {
+        name: string;
+        items: {
+          furnitureVersionId: string;
+          quantity: number;
+        }[]
+      });
+      const form = new FormCreateOrderWithFurnitures(query);
+      if (form.hasError()) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+  
+      // Create Furnitures
+      const items = query.items.reduce<Item[]>((acc, ite) => {
+        let ites:Item[] = [];
+        for(let i =0; i < ite.quantity; i++) {
+          const item = new Item();
+          item.furnitureVersionId = ite.furnitureVersionId as unknown as number;
+          ites = [...ites, item]
+        }
+        return [...acc, ...ites];
+      }, []);
+  
+      // Create Order;
+      const order = new Order();
+      order.setItems(items);
+      order.name = query.name;
+      
+      order.creator = user;
+      order.organization = user.organization;
+      
+      const orderSaved = await orderDao.create(order);
+      if (!orderSaved) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return orderSaved
+    }
+  }
 }

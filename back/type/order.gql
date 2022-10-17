@@ -10,8 +10,17 @@ type Order {
   placement: Placement
 }
 
+input ItemAddOrder {
+  furnitureVersionId: String
+  quantity: Int
+}
+
 type Query {
   orders(skip: Int, take: Int, status: String): [Order]
   ordersCount(status: String): Int
   order(id: String): Order
+}
+
+type Mutation {
+  addOrder(name: String, items: [ItemAddOrder]): Order
 }
