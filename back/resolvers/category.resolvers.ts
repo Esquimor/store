@@ -17,8 +17,16 @@ export default  {
     id: (parent: Category) => parent.id,
     name: (parent: Category) => parent.name,
     children: async (parent: Category) => {
-      const children = await categoryDao.getDescendantsUsingParentIdy(parent.id)
+      const children = await categoryDao.getChildrenUsingCategory(parent)
       return children
+    },
+    descendants: async (parent: Category) => {
+      const children = await categoryDao.getDescendantsUsingCategory(parent, {filterCurrentCategory: true})
+      return children
+    },
+    ancestors: async (parent: Category) => {
+      const ancestors = await categoryDao.getAncestorsUsingCategory(parent, {filterCurrentCategory: true})
+      return ancestors
     },
     parent: async (parent: Category) => {
       if (!parent.parentId) return null;
@@ -79,6 +87,35 @@ export default  {
       }
       return items
     },
+    category: async(parent, args, {user}) => {
+      if (!user) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      if (args.id === "") {
+        const category = await categoryDao.getFirstCategoryOfAnOrganization(user.organization)
+        if (!category) {
+          return Promise.reject(
+            new GraphQLError(
+              "error",
+            ),
+          )
+        }
+        return category
+      }
+      const item = await categoryDao.getByCategoryIdAndOrganization(args.id, user.organization)
+      if (!item) {
+        return Promise.reject(
+          new GraphQLError(
+            "error",
+          ),
+        )
+      }
+      return item
+    }
   },
   Mutation: {
     deleteCategory: async(parent, args, {user}) => {

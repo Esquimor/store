@@ -22,29 +22,33 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
-import { useRoute } from "vue-router"
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router"
 import { useStore } from "../../store/index";
 import FurnituresCard from "../../components/Furniture/Card/FurnituresCard.vue";
 import FurnitureDrawer from "../../components/Furniture/Drawer/FurnitureDrawer.vue";
-// import FurnitureRequest from "../../request/FurnitureRequest";
-// import { FurnitureActionTypes } from "../../store/furniture/action-types";
 import { FurnitureWithLastFurnitureVersion } from "../../../../commons/Interface/Furniture";
 import { BasketActionTypes } from "../../store/basket/action-types";
-// import { isEmpty } from "app/../commons/Technical/Empty";
 import { getNbPageByItems } from "app/../commons/Technical/Pagination";
 import { useQuery, UseQueryReturn } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 
 const $store = useStore()
 const route = useRoute()
-// const router = useRouter();
+const router = useRouter();
 
 const leftDrawerOpen = ref(true)
 const page = ref(route.query?.p || 0)
 const countItems = ref(0)
 
 const NB_ITEMS = 50
+
+const variablesFurnitures = computed(() => ({
+  search: (route.query?.s ?? "") as unknown as string,
+  category: (route.query?.k ?? "") as unknown as string,
+  start: +page.value as unknown as number,
+  quantity: +NB_ITEMS
+}))
 
 const { result }: UseQueryReturn<{
   furnitures: {
@@ -55,9 +59,14 @@ const { result }: UseQueryReturn<{
       description: string;
     }
   }[];
-}, undefined> = useQuery(gql`
-  query furnitures {
-    furnitures {
+}, {
+  search?: string;
+  category?: string;
+  start: number;
+  quantity: number;
+}> = useQuery(gql`
+  query furnitures($search: String, $start: Int, $quantity: Int, $category: String) {
+    furnitures(search: $search, start: $start, quantity: $quantity, category: $category) {
       id
       lastFurnitureVersion {
         id
@@ -66,12 +75,12 @@ const { result }: UseQueryReturn<{
       }
     }
   }
-`)
+`, variablesFurnitures)
 
 const furnitures = computed(() => result.value?.furnitures ?? [])
 
 const paginationMax = computed(() => getNbPageByItems(countItems.value, NB_ITEMS))
-/*
+
 watch(
   page,
   (newValue) => {
@@ -79,35 +88,6 @@ watch(
   }
 )
 
-watch(
-  () => route.query as unknown as { s?: string; k?: string; p?: number},
-  (newValue) => {
-
-    let categoryId = newValue.k;
-    if (isEmpty(categoryId)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      categoryId = $store.getters["category/getFirstCategory"].id as unknown as string
-    }
-
-    void FurnitureRequest.Get({
-      search: newValue.s,
-      category: categoryId,
-      start: +page.value as unknown as number,
-      quantity: +NB_ITEMS
-    })
-      .then(({ furnitures, count }) => {
-        void $store.dispatch(
-          `furniture/${FurnitureActionTypes.SET_FURNITURES_WITH_LATEST_FURNITURE_VERSION}`,
-          furnitures
-        )
-        countItems.value = count
-      })
-  },
-  {
-    immediate: true
-  }
-)
-*/
 const addInBasket = (furniture: FurnitureWithLastFurnitureVersion) => {
   void $store.dispatch(`basket/${BasketActionTypes.ADD_ARTICLE}`, {
     quantity: 1,

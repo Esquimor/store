@@ -19,6 +19,24 @@ export default class CategoryDao extends Dao<Category> {
     if (!item) return null;
     return (item as unknown as Category);
   }
+
+  async getFirstCategoryOfAnOrganization(organization): Promise<Category|null> {
+    const item = await getConnection().getRepository(this.entity).findOne({
+      organization,
+      parentId: IsNull()
+    });
+    if (!item) return null;
+    return (item as unknown as Category);
+  }
+  
+  async getByCategoryIdAndOrganization(idCategory: string|number, organization: Organization): Promise<Category|null> {
+    const item = await getConnection().getRepository(this.entity).findOne({
+      id: idCategory,
+      organization,
+    });
+    if (!item) return null;
+    return (item as unknown as Category);
+  }
   
   async getByIdWithOrganizationAndWithChildren(id: string) {
     const item = await getConnection().getRepository(this.entity).findOne(id, { relations: ["organization", "children"]});
@@ -43,17 +61,31 @@ export default class CategoryDao extends Dao<Category> {
     // @ts-ignore
     return items
   }
-
-  async getDescendantsUsingParentCategory(parentCategory: Category) {
-    const descendants = await getConnection().getTreeRepository(this.entity).findDescendants(parentCategory)
+  
+  async getChildrenUsingCategory(parentCategory: Category) {
+    const descendants = await getConnection().getRepository(this.entity).find({
+      parent: parentCategory
+    })
     if (!descendants) return null;
     return (descendants as unknown as Category[]);
   }
 
-  async getDescendantsUsingParentIdy(parentId: number|string) {
-    const descendants = await getConnection().getTreeRepository(this.entity).findDescendants(parentId)
+  async getDescendantsUsingCategory(parentCategory: Category, options: {filterCurrentCategory: boolean} = {filterCurrentCategory: false}): Promise<Category[]|null> {
+    const descendants = await getConnection().getTreeRepository(this.entity).findDescendants(parentCategory) as unknown as Category[]
     if (!descendants) return null;
-    return (descendants as unknown as Category[]);
+    if (options.filterCurrentCategory) {
+      return descendants.filter(d => d.id !== parentCategory.id);
+    }
+    return descendants;
+  }
+
+  async getAncestorsUsingCategory(category: Category, options: {filterCurrentCategory: boolean} = {filterCurrentCategory: false}) {
+    const ancestors = await getConnection().getTreeRepository(this.entity).findAncestors(category) as unknown as Category[]
+    if (!ancestors) return null;
+    if (options.filterCurrentCategory) {
+      return ancestors.filter(a => a.id !== category.id);
+    }
+    return ancestors;
   }
 
   async getAllByIdAttribut(idAttribut: number|string):Promise<Category[]|null> {

@@ -6,7 +6,12 @@ type Furniture {
 }
 
 type Query {
-  furnitures: [Furniture]
+  furnitures(
+    search: String
+    start: Int
+    quantity: Int
+    category: String
+  ): [Furniture]
 }
 
 type Mutation {

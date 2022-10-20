@@ -85,7 +85,6 @@ const onRowClick = async (evt: Event, row: OrderWithItemWithFurnitureVersionWith
   await router.push({ name: "order", params: { id: row.id } })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
 const variablesOrders = computed(() => ({
   status: tab.value,
   skip: pagination.value.page - 1,

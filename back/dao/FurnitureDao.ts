@@ -4,7 +4,10 @@ import Dao from './Dao';
 import { Organization } from '../entity/Organization';
 import { FurnitureVersion } from '../entity/FurnitureVersion';
 import { isNotEmpty } from "../../commons/Technical/Empty"
+import CategoryDao from './CategoryDao';
+import { Category } from '../entity/Category';
 
+const categoryDao: CategoryDao = new CategoryDao();
 export default class FurnitureDao extends Dao<Furniture> {
 
   constructor() {
@@ -35,9 +38,17 @@ export default class FurnitureDao extends Dao<Furniture> {
 
   async getFurnituresByOrganizationWithLastestVersion(
     organization: Organization,
-    { start, quantity, search, categories }: {start?: number; quantity?: number; search?: string; categories?: number[] } = {start: 0, quantity: 50, search: ""}
-  ):Promise<[Furniture[], number] | null> {
-    const [items, itemsCount] = await getConnection().getRepository(this.entity)
+    { start, quantity, search, category }: {start?: number; quantity?: number; search?: string; category?: number } = {start: 0, quantity: 50, search: ""}
+  ):Promise<Furniture[] | null> {
+
+    let categories:Category[] = [];
+    if (category) {
+      const categoryObject = await categoryDao.getById(category);
+      if (categoryObject) 
+        categories = await categoryDao.getDescendantsUsingCategory(categoryObject) || [];
+    }
+
+    const items = await getConnection().getRepository(this.entity)
       .createQueryBuilder("furniture")
       .leftJoinAndSelect("furniture.furnitureVersions", "furnitureVersion")
       .where("furniture.organization = :organizationId")
@@ -55,7 +66,7 @@ export default class FurnitureDao extends Dao<Furniture> {
         }
 
         if (isNotEmpty(categories)) {
-          subQuery = subQuery.andWhere("furVersion.category IN (:...categories)", { categories })
+          subQuery = subQuery.andWhere("furVersion.categoryId IN (:...categories)", { categories: categories.map(c => c.id) })
         }
         
         return "furnitureVersion.id = " + subQuery.getQuery()
@@ -63,9 +74,9 @@ export default class FurnitureDao extends Dao<Furniture> {
       .skip(start)
       .take(quantity)
       .setParameters({ organizationId: organization.id })
-      .getManyAndCount()
+      .getMany()
 
     if (!items) return null;
-    return ([items, itemsCount] as unknown as [Furniture[], number]);
+    return (items as unknown as Furniture[]);
   }
 }

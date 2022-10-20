@@ -60,7 +60,7 @@ export default {
           ),
         )
       }
-      const items = await furnitureDao.getByOrganization(user.organization)
+      const items = await furnitureDao.getFurnituresByOrganizationWithLastestVersion(user.organization, args)
       if (!items) {
         return Promise.reject(
           new GraphQLError(
