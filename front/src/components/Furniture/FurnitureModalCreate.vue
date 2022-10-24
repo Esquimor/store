@@ -27,6 +27,9 @@
           <q-btn color="primary" type="submit" label="Submit" />
         </q-card-actions>
       </Form>
+      <input type="file"
+        id="avatar" name="avatar"
+        accept="image/png, image/jpeg" @change="onFile">
     </q-card>
   </q-dialog>
 </template>
@@ -46,6 +49,43 @@ defineEmits([
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 const $q = useQuasar()
+
+const { mutate: saveFile } = useMutation(gql`
+  mutation saveFile (
+    $file: File!
+  ) {
+    saveFile (
+      file: $file
+    )
+  }
+`)
+
+const onFile = (event) => {
+  try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const file = event.target.files[0];
+
+      const reader = new FileReader();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      reader.readAsDataURL(file);
+      // eslint-disable-next-line @typescript-eslint/require-await
+      reader.onload = async () => {
+        const result = reader.result as string;
+        if (!result) return;
+        const base64 = result.split(",").pop();
+        if (!base64) return;
+
+
+        saveFile({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          file: base64
+        })
+        .catch((e) => console.log(e))
+      };
+    } catch (error) {
+      console.log(error);
+    } 
+}
 
 const schema = yup.object({
   name: yup.string().required(),

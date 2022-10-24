@@ -11,8 +11,8 @@
           :to="{ name: 'home'}"
         />
         <q-btn flat label="Order" :to="{ name: 'home'}" />
-        <q-btn flat label="Inventory" :to="{ name: 'inventory'}" />
-        <q-btn flat label="Funitures" :to="{ name: 'furniture'}" />
+        <q-btn flat label="Inventories" :to="{ name: 'inventories'}" />
+        <q-btn flat label="Funitures" :to="{ name: 'furnitures'}" />
         <q-btn color="black" icon="add" label="Add">
           <q-menu auto-close>
             <q-item clickable v-ripple @click="addFurniture">

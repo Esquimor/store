@@ -16,9 +16,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import("pages/Order/Order.vue")
       },
       {
-        path: "furniture",
-        name: "furniture",
-        component: () => import("pages/Furniture/Furniture.vue")
+        path: "furnitures",
+        name: "furnitures",
+        component: () => import("pages/Furniture/Furnitures.vue")
       },
       {
         path: "basket",
@@ -26,9 +26,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import("pages/Basket/Basket.vue")
       },
       {
-        path: "inventory",
-        name: "inventory",
-        component: () => import("pages/Inventory/Inventory.vue")
+        path: "inventories",
+        children: [
+          {
+            path: "/",
+            name: "inventories",
+            component: () => import("pages/Inventory/Inventories.vue"),
+          },
+          {
+            path: "/:id",
+            name: "inventory",
+            component: () => import("pages/Inventory/Inventory.vue"),
+          }
+        ]
       },
     ],
     meta: {

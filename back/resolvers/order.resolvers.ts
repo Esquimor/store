@@ -19,6 +19,7 @@ const placementDao: PlacementDao = new PlacementDao();
 export default  {
   Order: {
     id: (parent: Order) => parent.id,
+    created_at: (parent: Order) => parent.created_at,
     name: (parent: Order) => parent.name,
     status: (parent: Order) => parent.status,
     organization: async (parent: Order) => {

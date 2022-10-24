@@ -23,6 +23,7 @@
     "apollo-link-http": "^1.5.17",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "dayjs": "^1.11.6",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "node-fetch": "^3.2.10",

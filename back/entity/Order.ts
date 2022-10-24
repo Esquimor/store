@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn, CreateDateColumn } from 'typeorm';
 import { Organization } from './Organization';
 import { User } from './User';
 import { ORDER_STATUS } from "../../commons/Interface/Order"
@@ -11,6 +11,9 @@ export class Order {
 
     @PrimaryGeneratedColumn('uuid')
     id: number;
+
+    @CreateDateColumn()
+    created_at: Date;
 
     @Column({
       default: ""

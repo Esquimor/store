@@ -8,6 +8,7 @@ type Order {
   creator: User
   address: Address
   placement: Placement
+  created_at: String
 }
 
 input ItemAddOrder {
