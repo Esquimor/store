@@ -9,30 +9,30 @@
           <q-input
             filled
             v-model="email"
-            label="Email"
+            :label="$t('label.email')"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
           />
 
           <q-input
             filled
             v-model="firstname"
-            label="First Name"
+            :label="$t('label.first_name')"
             lazy-rules
           />
 
           <q-input
             filled
             v-model="lastname"
-            label="Last Name"
+            :label="$t('label.last_name')"
             lazy-rules
           />
           
-          <q-select filled v-model="role" :options="options" label="Role" />
+          <q-select filled v-model="role" :options="options" :label="$t('label.role')" />
 
           <q-card-actions align="right">
-            <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
-            <q-btn color="primary" label="OK" @click="onSubmit" />
+            <q-btn color="primary" :label="$t('label.cancel')" @click="onDialogCancel" />
+            <q-btn color="primary" :label="$t('label.submit')" @click="onSubmit" />
           </q-card-actions>
         </q-form>
       </div>
@@ -47,6 +47,7 @@ import { useDialogPluginComponent } from "quasar"
 import { ROLE } from "../../../../../commons/Interface/Role";
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const options = Object.values(ROLE)
 
@@ -62,6 +63,8 @@ const lastname = ref("");
 const role = ref(ROLE.NORMAL)
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const { mutate: createUser } = useMutation(gql`
   mutation createUser ($firstname: String!, $lastname: String!, $email: String!, $role: String!) {
@@ -82,7 +85,7 @@ const onSubmit = () => {
           color: "green-4",
           textColor: "white",
           icon: "cloud_done",
-          message: "Updated"
+          message: t("label.updated")
         })
       onDialogOK()
     })

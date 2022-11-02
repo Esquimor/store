@@ -9,7 +9,7 @@ import CategoryDao from "../dao/CategoryDao";
 import AttributDao from "../dao/AttributDao";
 import OrganizationDao from "../dao/OrganizationDao";
 import { Organization } from "../entity/Organization";
-import FormPatchOrganization from "../form/Organization/FormPatchOrganization";
+import { ERROR } from "../../commons/Const/Error";
 
 const userDao: UserDao = new UserDao();
 const orderDao: OrderDao = new OrderDao();
@@ -28,99 +28,64 @@ export default  {
     users: async (parent: Organization) => {
       const item = await userDao.getUsersInOrganizationByOrganizationId(parent.id)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
     orders: async (parent: Organization) => {
       const item = await orderDao.getWithOrganizationId(parent.id)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
     furnitures: async (parent: Organization) => {
       const item = await furnitureDao.getByOrganizationId(parent.id)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
     addresses: async (parent: Organization) => {
       const item = await addressDao.getByOrganizationId(parent.id)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
     addressMain: async (parent: Organization) => {
+      if (!parent.addressMain) return null;
       const item = await addressDao.getById(parent.addressMainId)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
     tags: async (parent: Organization) => {
       const item = await tagDao.getByOrganizationId(parent.id)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
     inventories: async (parent: Organization) => {
       const item = await inventoryDao.getByOrganizationId(parent.id)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
     categories: async (parent: Organization) => {
       const item = await categoryDao.getByOrganizationId(parent.id)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
     attributs: async (parent: Organization) => {
       const item = await attributDao.getByOrganizationId(parent.id)
       if (!item) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return item
     },
@@ -128,11 +93,7 @@ export default  {
   Query: {
     myOrganization: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       return user.organization
     },
@@ -140,30 +101,14 @@ export default  {
   Mutation: {
     updateMyOrganization: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const query = (args as unknown as { name?: string });
-      const form = new FormPatchOrganization(query);
-      if (form.hasError()) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
       const organizationPatched = user.organization;
       organizationPatched.name = query.name;
       const organizationSaved = await organizationDao.update(organizationPatched);
       if (!organizationSaved) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.DEFAULT))
       }
       return organizationSaved
     },

@@ -12,25 +12,25 @@
         <q-input
           filled
           v-model="email"
-          label="Email"
+          :label="$t('label.email')"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
         />
 
         <q-input
           filled
           v-model="password"
-          label="Password"
+          :label="$t('label.password')"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
         />
 
         <div>
-          <q-btn label="Submit" type="submit" color="primary"/>
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          <q-btn :label="$t('label.submit')" type="submit" color="primary"/>
+          <q-btn :label="$t('label.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
-      <q-btn class="q-mt-md" flat color="primary" size="sm" label="Password forget ?" :to="{name: 'passwordForgotten'}"/>
+      <q-btn class="q-mt-md" flat color="primary" size="sm" :label="$t('label.password_forget')" :to="{name: 'passwordForgotten'}"/>
     </q-card-section>
   </login-layout>
 </template>
@@ -39,6 +39,7 @@
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar"
 import { useMutation } from "@vue/apollo-composable"
+import { useI18n } from "vue-i18n"
 import gql from "graphql-tag"
 import LoginLayout from "../layouts/LoginLayout.vue";
 import { User } from "app/../commons/Interface/User";
@@ -57,6 +58,7 @@ export default defineComponent({
     const $store = useStore()
     const $q = useQuasar()
     const router = useRouter()
+    const lang = useI18n() 
 
     const email = ref("")
     const password = ref("")
@@ -110,7 +112,7 @@ export default defineComponent({
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Submitted"
+            message: lang.t("label.submited")
           })
           void router.push({name: "home"})
         })

@@ -7,24 +7,24 @@
         :initial-values="initialValues"
       >
         <q-card-section>
-          <div class="text-h6">Add a Furniture</div>
+          <div class="text-h6">{{$t("furniture.add_a_furniture")}}</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
           <QInputWithValidation
             name="name"
-            label="Name"
+            :label="$t('label.name')"
           />
           <QInputWithValidation
             name="description"
-            label="Description"
+            :label="$t('label.description')"
             type="textarea"
           />
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" @click="onDialogCancel"></q-btn>
-          <q-btn color="primary" type="submit" label="Submit" />
+          <q-btn flat :label="$t('label.cancel')" color="primary" @click="onDialogCancel"></q-btn>
+          <q-btn color="primary" type="submit" :label="$t('label.submit')" />
         </q-card-actions>
       </Form>
       <input type="file"
@@ -41,6 +41,10 @@ import { useQuasar, useDialogPluginComponent } from "quasar"
 import QInputWithValidation from "../Global/Form/QInputWithValidation.vue"
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
+
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 defineEmits([
   ...useDialogPluginComponent.emits
@@ -119,7 +123,7 @@ const onSubmit = (values: {name: string, description?: string}) => {
         color: "green-4",
         textColor: "white",
         icon: "cloud_done",
-        message: "Submitted"
+        message: t("label.submited")
       })
     })
     .catch((e) => console.log(e))

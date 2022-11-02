@@ -8,6 +8,7 @@
       <FurnitureCard
         :furniture="furniture"
         @addOrder="$emit('addOrder', furniture)"
+        @select="$emit('selectFurniture', furniture)"
       />
     </div>
   </div>
@@ -15,11 +16,21 @@
 
 <script lang="ts" setup>
 import { defineProps } from "vue";
-import { FurnitureWithLastFurnitureVersion } from "../../../../../commons/Interface/Furniture";
 import FurnitureCard from "./FurnitureCard.vue";
 
 const props = defineProps<{
-  furnitures: FurnitureWithLastFurnitureVersion[]
+  furnitures: {
+    id: string;
+    lastFurnitureVersion: {
+      id: string;
+      name: string;
+      description: string;
+      medias: {
+        id: string;
+        base64: string;
+      }[]
+    }
+  }[]
 }>()
 </script>
 

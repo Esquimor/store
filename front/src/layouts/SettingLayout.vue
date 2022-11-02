@@ -31,31 +31,31 @@
             <q-item-section avatar>
               <q-icon color="primary" name="place" />
             </q-item-section>
-            <q-item-section>Address</q-item-section>
+            <q-item-section>{{$t("address.address")}}</q-item-section>
           </q-item>
           <q-item clickable v-ripple :to="{ name: 'settings-inventory'}">
             <q-item-section avatar>
               <q-icon color="primary" name="warehouse" />
             </q-item-section>
-            <q-item-section>Inventory</q-item-section>
+            <q-item-section>{{$t("inventory.inventory")}}</q-item-section>
           </q-item>
           <q-item clickable v-ripple :to="{ name: 'settings-tag'}">
             <q-item-section avatar>
               <q-icon color="primary" name="label" />
             </q-item-section>
-            <q-item-section>Tag</q-item-section>
+            <q-item-section>{{$t("tag.tag")}}</q-item-section>
           </q-item>
           <q-item clickable v-ripple :to="{ name: 'settings-category'}">
             <q-item-section avatar>
               <q-icon color="primary" name="category" />
             </q-item-section>
-            <q-item-section>Category</q-item-section>
+            <q-item-section>{{$t("category.category")}}</q-item-section>
           </q-item>
           <q-item clickable v-ripple :to="{ name: 'settings-attribut'}">
             <q-item-section avatar>
               <q-icon color="primary" name="list" />
             </q-item-section>
-            <q-item-section>Attribut</q-item-section>
+            <q-item-section>{{$t("attribut.attribut")}}</q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>

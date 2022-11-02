@@ -1,6 +1,6 @@
 <template>
   <section class="q-pa-md">
-    <h3 class="text-subtitle1 q-ma-xs text-weight-bolder">Category</h3>
+    <h3 class="text-subtitle1 q-ma-xs text-weight-bolder">{{$t("category.category")}}</h3>
     <template v-if="!loading">
       <div
         v-for="cat in ancestors"

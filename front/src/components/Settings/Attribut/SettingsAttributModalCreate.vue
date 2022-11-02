@@ -6,11 +6,11 @@
           :validation-schema="schema"
           @submit="onSubmit"
           :initial-values="initialValues"
-              class="q-gutter-md"
+          class="q-gutter-md"
         >
           <QInputWithValidation
             name="name"
-            label="Name"
+            :label="$t('label.name')"
           />
 
           <FieldArray name="variations" v-slot="{ fields, push, remove }">
@@ -25,7 +25,7 @@
                       class="full-width">
                       <QInputWithValidation
                         :name="`variations[${idx}].name`"
-                        label="Name"
+                        :label="$t('label.name')"
                       />
                     </div>
 
@@ -37,13 +37,13 @@
               </q-card>
             </q-card-section>
             <q-card-actions class="q-pl-lg">
-              <q-btn label="Add" color="primary"  @click="push({ name: '' })" />
+              <q-btn :label="$t('label.add')" color="primary"  @click="push({ name: '' })" />
             </q-card-actions>
           </FieldArray>
 
           <q-card-actions align="right">
-            <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
-            <q-btn color="primary" type="submit" label="Submit" />
+            <q-btn color="primary" :label="$t('label.cancel')" @click="onDialogCancel" />
+            <q-btn color="primary" type="submit" :label="$t('label.submit')" />
           </q-card-actions>
         </Form>
       </div>
@@ -61,6 +61,7 @@ import QInputWithValidation from "../../Global/Form/QInputWithValidation.vue"
 import { isNotEmpty } from "../../../../../commons/Technical/Empty";
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 defineEmits([
   ...useDialogPluginComponent.emits
@@ -69,6 +70,8 @@ defineEmits([
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -134,7 +137,7 @@ const onSubmit = (values: AttributDefaultWithVariationDefaults) => {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Submitted"
+            message: t("label.submited")
           })
           onDialogOK()
         })

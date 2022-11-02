@@ -9,14 +9,14 @@
           <q-input
             filled
             v-model="name"
-            label="Name"
+            :label="$t('label.name')"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
           />
 
           <q-card-actions align="right">
-            <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
-            <q-btn color="primary" label="OK" @click="onSubmit" />
+            <q-btn color="primary" :label="$t('label.cancel')" @click="onDialogCancel" />
+            <q-btn color="primary" :label="$t('label.submit')" @click="onSubmit" />
           </q-card-actions>
         </q-form>
       </div>
@@ -31,6 +31,7 @@ import { useDialogPluginComponent } from "quasar"
 import { Tag } from "../../../../../commons/Interface/Tag";
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const props = defineProps<{
   category: Tag
@@ -45,6 +46,8 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 const name = ref(props.category.name)
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const { mutate: updateCategory } = useMutation(gql`
   mutation updateCategory ($name: String, $id: String) {
@@ -63,7 +66,7 @@ const onSubmit = () => {
         color: "green-4",
         textColor: "white",
         icon: "cloud_done",
-        message: "Updated"
+        message: t("label.updated")
       })
       onDialogOK()
     })

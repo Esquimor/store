@@ -2,9 +2,8 @@ import { GraphQLError } from "graphql";
 import OrganizationDao from "../dao/OrganizationDao";
 import TagDao from "../dao/TagDao";
 import { Tag } from "../entity/Tag";
-import FormCreateTag from "../form/Tag/FormCreateTag";
-import FormUpdateTag from "../form/Tag/FormUpdateTag";
 import { replaceObjectValueFromToObject } from "../../commons/Technical/Object";
+import { ERROR } from "../../commons/Const/Error";
 
 const organizationDao: OrganizationDao = new OrganizationDao();
 const tagDao: TagDao = new TagDao();
@@ -17,11 +16,7 @@ export default  {
       if (!parent.organizationId) return null
       const organization = await organizationDao.getById(parent.organizationId)
       if (!organization) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return organization
     },
@@ -29,19 +24,11 @@ export default  {
   Query: {
     tags: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const palcements = await tagDao.getAllByOrganization(user.organization)
       if (!palcements) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return palcements
     },
@@ -49,63 +36,28 @@ export default  {
   Mutation: {
     deleteTag: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
-      if (!args.id) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const tag = await tagDao.getById(args.id)
       if (!tag) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       if (tag.organizationId !== user.organizationId) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const isTagDeleted = await tagDao.deleteById(tag.id);
       if (!isTagDeleted) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.DEFAULT))
       }
       return isTagDeleted
     },
     createTag: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const body = (args as unknown as { 
         name: string;
       });
-      const form = new FormCreateTag(body);
-      if (form.hasError()) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
   
       const tag = new Tag();
       tag.name = body.name;
@@ -113,62 +65,33 @@ export default  {
   
       const tagSaved = await tagDao.create(tag);
       if (!tagSaved) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.DEFAULT))
       }
       return tagSaved;
     },
     updateTag: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const body = (args as unknown as {
         id: number;
         name: string;
       });
-
-      const form = new FormUpdateTag(body);
-      if (form.hasError()) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
       const tag = await tagDao.getById(body.id);
 
       if (!tag) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
 
       if (tag.organizationId !== user.organizationId) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
 
       const tagReplaced = replaceObjectValueFromToObject(body, tag) as Tag;
 
       const tagSaved = await tagDao.update(tagReplaced);
       if (!tagSaved) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.DEFAULT))
       }
 
       return tagSaved

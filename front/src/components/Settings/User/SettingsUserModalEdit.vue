@@ -9,8 +9,8 @@
           <q-select filled v-model="role" :options="options" label="Role" />
 
           <q-card-actions align="right">
-            <q-btn color="primary" label="Cancel" @click="onDialogCancel" />
-            <q-btn color="primary" label="OK" @click="onSubmit" />
+            <q-btn color="primary" :label="$t('label.cancel')" @click="onDialogCancel" />
+            <q-btn color="primary" :label="$t('label.submit')" @click="onSubmit" />
           </q-card-actions>
         </q-form>
       </div>
@@ -26,6 +26,7 @@ import { ROLE } from "../../../../../commons/Interface/Role";
 import { User } from "../../../../../commons/Interface/User";
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const props = defineProps<{
   user: User
@@ -41,6 +42,8 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 const role = ref(props.user.role)
 
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 const $q = useQuasar()
 
 const { mutate: updateUser } = useMutation(gql`
@@ -60,7 +63,7 @@ const onSubmit = () => {
           color: "green-4",
           textColor: "white",
           icon: "cloud_done",
-          message: "Updated"
+          message: t("label.updated")
         })
       onDialogOK()
     })

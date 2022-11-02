@@ -1,9 +1,9 @@
 <template>
-  <LayoutSettings title="Inventories">
+  <LayoutSettings :title="$t('inventory.inventories')">
     <template v-slot:actions>
       <q-btn
         color="primary"
-        label="Add an Inventory" 
+        :label="$t('inventory.add_inventory')" 
         :to="{ name: 'settings-inventory-new' }"
       />
     </template>
@@ -18,8 +18,11 @@ import InventoriesCard from "src/components/Inventory/InventoriesCard.vue";
 import { useQuery, UseQueryReturn, useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { useQuasar } from "quasar"
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const { result, refetch }: UseQueryReturn<{
   inventories: {
@@ -45,8 +48,8 @@ const { mutate: deleteInventory  } = useMutation(gql`
 
 const onDelete = (id: string) => {
   $q.dialog({
-    title: "Confirm",
-    message: "Would you like to delete this inventory ?",
+    title: t("label.confirm"),
+    message: t("inventory.would_you_like_to_delete_this_inventory"),
     cancel: true,
     persistent: true
   }).onOk(() => {
@@ -59,7 +62,7 @@ const onDelete = (id: string) => {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Deleted"
+            message: t("label.deleted")
           })
       })
       .catch((e) => console.log(e))

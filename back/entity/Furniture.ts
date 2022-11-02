@@ -8,6 +8,9 @@ export class Furniture {
     @PrimaryGeneratedColumn('uuid')
     id: number;
 
+    @Column({ default: false, type: Boolean })
+    archived: boolean;
+
     @OneToMany(() => FurnitureVersion, furnitureVersion => furnitureVersion.furniture, {
         cascade: true,
     })
@@ -26,6 +29,17 @@ export class Furniture {
             return; 
         }
         this.furnitureVersions = [...this.furnitureVersions, furnitureVersion]
+    }
+
+    replaceFurnitureVersion(furnitureVersion: FurnitureVersion) {
+        if (!this.furnitureVersions || this.furnitureVersions.length === 0) {
+            this.furnitureVersions = [furnitureVersion]
+            return; 
+        }
+        this.furnitureVersions = this.furnitureVersions.map(furVers => {
+            if (furnitureVersion.id !== furVers.id) return furVers
+            return furnitureVersion;
+        })
     }
 
     furnitureForResponseWithFurnitureVersion() {

@@ -16,9 +16,29 @@ const routes: RouteRecordRaw[] = [
         component: () => import("pages/Order/Order.vue")
       },
       {
-        path: "furnitures",
-        name: "furnitures",
-        component: () => import("pages/Furniture/Furnitures.vue")
+        path: "/furnitures",
+        children: [
+          {
+            path: "/furniture/:id",
+            name: "furniture",
+            component: () => import("pages/Furniture/Furniture.vue"),
+          },
+          {
+            path: "/furniture/:id/edit",
+            name: "furniture-edit",
+            component: () => import("pages/Furniture/FurnitureEdit.vue"),
+          },
+          {
+            path: "/furnitures/add",
+            name: "furniture-add",
+            component: () => import("pages/Furniture/FurnitureAdd.vue"),
+          },
+          {
+            path: "/furnitures",
+            name: "furnitures",
+            component: () => import("pages/Furniture/Furnitures.vue"),
+          },
+        ]
       },
       {
         path: "basket",
@@ -26,15 +46,15 @@ const routes: RouteRecordRaw[] = [
         component: () => import("pages/Basket/Basket.vue")
       },
       {
-        path: "inventories",
+        path: "/inventories",
         children: [
           {
-            path: "/",
+            path: "/inventories",
             name: "inventories",
             component: () => import("pages/Inventory/Inventories.vue"),
           },
           {
-            path: "/:id",
+            path: "/inventories/:id",
             name: "inventory",
             component: () => import("pages/Inventory/Inventory.vue"),
           }

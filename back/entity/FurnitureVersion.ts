@@ -6,6 +6,7 @@ import { Item } from './Item';
 import { Tag } from './Tag';
 import { User } from './User';
 import { Variation } from './Variation';
+import { Media } from "./Media";
 
 @Entity()
 export class FurnitureVersion {
@@ -62,6 +63,23 @@ export class FurnitureVersion {
     @JoinTable()
     variations: Variation[]
 
+    @OneToMany(() => Media, media => media.furnitureVersion, {
+        cascade: true,
+    })
+    medias: Media[];
+
+    addAttribut(attribut: Attribut) {
+        if (!this.attributs || this.attributs.length === 0) {
+            this.attributs = [attribut]
+            return; 
+        }
+        this.attributs = [...this.attributs, attribut]
+    }
+
+    resetAttributs() {
+        this.attributs = [];
+    }
+
     furnitureVersionForResponse() {
         return {
             id: this.id,
@@ -69,5 +87,17 @@ export class FurnitureVersion {
             name: this.name,
             description: this.description
         }
+    }
+
+    addMedia(media: Media) {
+        if (!this.medias || this.medias.length === 0) {
+            this.medias = [media]
+            return; 
+        }
+        this.medias = [...this.medias, media]
+    }
+
+    resetMedias() {
+        this.medias = [];
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <LayoutSettings title="Add Inventory">
+  <LayoutSettings :title="$t('inventory.add_inventory')">
     <Form
       :validation-schema="schema"
       @submit="onSubmit"
@@ -8,7 +8,7 @@
       <q-card-section class="row wrap justify-between">
         <QInputWithValidation
           name="name"
-          label="Name"
+          :label="$t('label.name')"
           class="col col-5"
         />
       </q-card-section>
@@ -16,8 +16,8 @@
       <q-toolbar class="bg-white">
         <q-space />
         <q-card-actions class="q-pl-lg">
-          <q-btn label="Cancel" color="grey-9" :to="{ name: 'settings-inventory' }"></q-btn>
-          <q-btn color="primary" type="submit" label="Submit"/>
+          <q-btn :label="$t('label.cancel')" color="grey-9" :to="{ name: 'settings-inventory' }"></q-btn>
+          <q-btn color="primary" type="submit" :label="$t('label.submit')"/>
         </q-card-actions>
       </q-toolbar>
     </Form>
@@ -34,9 +34,12 @@ import LayoutSettings from "../../../components/Settings/LayoutSettings.vue";
 import QInputWithValidation from "../../../components/Global/Form/QInputWithValidation.vue"
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
 const router = useRouter()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -67,7 +70,7 @@ function onSubmit(values: InventoryDefault) {
         color: "green-4",
         textColor: "white",
         icon: "cloud_done",
-        message: "Submitted"
+        message: t("label.submited")
       })
       void router.push({ name: "settings-inventory" })
     })

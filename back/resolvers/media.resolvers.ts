@@ -1,16 +1,10 @@
-import { GraphQLError } from "graphql"
-const fs = require("fs/promises");
-const path = require("path");
+import { Media } from "../entity/Media"
 
 export default  {
-  Mutation: {
-    async saveFile(_, { file }) {
-      try {
-        await fs.writeFile(path.join(__dirname, "file.png"), file, 'base64')
-        return true
-      } catch {
-        return false
-      }
-    }
-  }
+  Media: {
+    id: (parent: Media) => parent.id,
+    label: (parent: Media) => parent.label,
+    link: (parent: Media) => parent.link,
+    base64: (parent: Media) => parent.base64,
+  },
 }

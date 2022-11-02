@@ -1,5 +1,5 @@
 <template>
-  <div>register completed</div>
+  <div>{{$t("label.register_completed")}}</div>
 </template>
 
 <script lang="ts" setup>

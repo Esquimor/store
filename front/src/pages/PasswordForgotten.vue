@@ -6,27 +6,26 @@
     <q-card-section>
       <template v-if="sendLink" >
         <q-banner inline-actions class="text-white bg-primary">
-          An email has been seend, if your email exist
+          {{$t("error.an_email_has_been_seend_if_your_email_exist")}}
         </q-banner>
         <div class="q-pb-md"/>
       </template>
       <q-form
           @submit="onSubmit"
-          @reset="onReset"
           class="q-gutter-md"
         >
         <q-input
           filled
           v-model="email"
-          label="Email"
+          :label="$t('label.email')"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
         />
         <div>
-          <q-btn label="Submit" type="submit" color="primary"/>
+          <q-btn :label="$t('label.submit')" type="submit" color="primary"/>
         </div>
       </q-form>
-      <q-btn class="q-mt-md" flat color="primary" size="sm" label="Go to Login" :to="{name: 'login'}"/>
+      <q-btn class="q-mt-md" flat color="primary" size="sm" :label="$t('label.go_to_login')" :to="{name: 'login'}"/>
     </q-card-section>
   </login-layout>
 </template>

@@ -12,7 +12,3 @@ type Item {
   furnitureVersion: FurnitureVersion
   variations: [Variation]
 }
-
-type Query {
-  items: [Item]
-}

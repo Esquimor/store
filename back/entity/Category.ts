@@ -17,7 +17,6 @@ export class Category {
     children: Category[];
 
     @TreeParent()
-    @JoinColumn({ name: "parentId" })
     parent: Category;
 
     @Column({ nullable: true })

@@ -7,6 +7,17 @@ type Attribut {
   variations: [Variation]
 }
 
+input AttributInput {
+  name: String
+  variations: [VariationCreate]
+}
+
+input AttributUpdate {
+  id: String
+  name: String
+  variations: [VariationUpdate]
+}
+
 type Query {
   attributs: [Attribut]
   attribut(id: String): Attribut

@@ -1,12 +1,11 @@
 import { GraphQLError } from "graphql"
-import ItemDao from '../dao/ItemDao';
 import OrderDao from '../dao/OrderDao';
 import InventoryDao from '../dao/InventoryDao';
 import FurnitureVersionDao from '../dao/FurnitureVersionDao';
 import VariationDao from '../dao/VariationDao';
 import { Item } from "../entity/Item";
+import { ERROR } from "../../commons/Const/Error";
 
-const itemDao: ItemDao = new ItemDao();
 const orderDao: OrderDao = new OrderDao();
 const inventoryDao: InventoryDao = new InventoryDao();
 const furnitureVersionDao: FurnitureVersionDao = new FurnitureVersionDao();
@@ -20,11 +19,7 @@ export default  {
       if (!parent.orderId) return null
       const order = await orderDao.getById(parent.orderId)
       if (!order) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return order
     },
@@ -32,11 +27,7 @@ export default  {
       if (!parent.inventoryId) return null
       const inventory = await inventoryDao.getById(parent.inventoryId)
       if (!inventory) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return inventory
     },
@@ -44,11 +35,7 @@ export default  {
       if (!parent.furnitureVersionId) return null
       const furnitureVersion = await furnitureVersionDao.getById(parent.furnitureVersionId)
       if (!furnitureVersion) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return furnitureVersion
     },
@@ -56,25 +43,5 @@ export default  {
       const item = await variationDao.getAllByIdItem(parent.id)
       return item
     },
-  },
-  Query: {
-    items: async(parent, args, {user}, info) => {
-      if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
-      const items = await itemDao.getAll()
-      if (!items) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
-      return items
-    }
   },
 }

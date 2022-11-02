@@ -9,8 +9,10 @@ type FurnitureVersion {
   category: Category
   attributs: [Attribut]
   variations: [Variation]
+  medias: [Media]
 }
 
 type Query {
   furnitureVersions: [FurnitureVersion]
+  furnitureVersion(id: String!): FurnitureVersion
 }

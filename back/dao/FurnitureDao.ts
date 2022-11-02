@@ -52,6 +52,7 @@ export default class FurnitureDao extends Dao<Furniture> {
       .createQueryBuilder("furniture")
       .leftJoinAndSelect("furniture.furnitureVersions", "furnitureVersion")
       .where("furniture.organization = :organizationId")
+      .andWhere("furniture.archived = false")
       .andWhere((qb) => {
         let subQuery = qb
           .subQuery()

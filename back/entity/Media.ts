@@ -1,9 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { FurnitureVersion } from './FurnitureVersion';
 import { Organization } from './Organization';
 import { User } from './User';
 
 @Entity()
-export class Inventory {
+export class Media {
 
     @PrimaryGeneratedColumn('uuid')
     id: number;
@@ -17,6 +18,11 @@ export class Inventory {
       nullable: true
     })
     link: string;
+
+    @Column({
+      nullable: true
+    })
+    base64: string;
 
     @ManyToOne(() => Organization, organization => organization.inventories, {
       nullable: true
@@ -35,4 +41,13 @@ export class Inventory {
 
     @Column({ nullable: true })
     userId: number;
+
+    @ManyToOne(() => FurnitureVersion, furnitureVersion => furnitureVersion.medias, {
+      nullable: true
+    })
+    @JoinColumn({ name: "furnitureVersionId" })
+    furnitureVersion: FurnitureVersion;
+
+    @Column({ nullable: true })
+    furnitureVersionId: number;
 }

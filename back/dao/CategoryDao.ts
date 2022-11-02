@@ -45,7 +45,7 @@ export default class CategoryDao extends Dao<Category> {
   }
 
   async getByOrganiaztion(organization: Organization) {
-    const items = await getConnection().getRepository(this.entity).find({organization, relations: ["parent"]});
+    const items = await getConnection().getRepository(this.entity).find({organization});
     if (!items) return null;
     return (items as unknown as Category[]);
   }
@@ -79,11 +79,13 @@ export default class CategoryDao extends Dao<Category> {
     return descendants;
   }
 
-  async getAncestorsUsingCategory(category: Category, options: {filterCurrentCategory: boolean} = {filterCurrentCategory: false}) {
-    const ancestors = await getConnection().getTreeRepository(this.entity).findAncestors(category) as unknown as Category[]
-    if (!ancestors) return null;
-    if (options.filterCurrentCategory) {
-      return ancestors.filter(a => a.id !== category.id);
+  async getAncestorsUsingCategory(category: Category) {
+    let ancestors:Category[] = [];
+    let currentCategory = category;
+    while(currentCategory.parentId !== null) {
+      const categoryParent = await getConnection().getRepository(this.entity).findOne(currentCategory.parentId) as unknown as Category;
+      ancestors = [...ancestors, categoryParent];
+      currentCategory = categoryParent
     }
     return ancestors;
   }

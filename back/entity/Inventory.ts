@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, ManyToMany, JoinTable, JoinColumn, CreateDateColumn } from 'typeorm';
 import { Address } from './Address';
 import { Item } from './Item';
 import { Organization } from './Organization';
@@ -11,6 +11,9 @@ export class Inventory {
 
     @PrimaryGeneratedColumn('uuid')
     id: number;
+
+    @CreateDateColumn()
+    created_at: Date;
 
     @Column({
       nullable: true

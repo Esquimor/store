@@ -11,6 +11,12 @@ export default class FurnitureVersionDao extends Dao<FurnitureVersion> {
     super(FurnitureVersion)
   }
 
+  async getByIdWithFurniture(id: string | number): Promise<FurnitureVersion | null> {
+    const item = await getConnection().getRepository(this.entity).findOne(id, {relations: ["furniture"]});
+    if (!item) return null;
+    return (item as unknown as FurnitureVersion);
+  }
+
   async getInOrganization(organization: Organization):Promise<FurnitureVersion[]|null>  {
     const items = await getConnection().getRepository(this.entity)
       .createQueryBuilder("furnitureVersion")

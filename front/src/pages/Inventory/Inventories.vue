@@ -2,7 +2,7 @@
   <q-page padding class="row justify-center">
     <div class="col col-lg-8 col-md-10 col-sx-12">
       <div class="full-width row justify-between items-center" style="border-bottom: 2px solid black">
-        <h2 style="margin-top: 0px; margin-bottom: 0px;">Inventories</h2>
+        <h2 style="margin-top: 0px; margin-bottom: 0px;">{{$t("inventory.inventories")}}</h2>
       </div>
       <div class="q-pa-md q-mt-md">
         <q-tabs
@@ -15,22 +15,22 @@
           <q-tab 
             :name="INVENTORY_TYPE.ME"
           >
-            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ME]}}</q-chip> Mine
+            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ME]}}</q-chip> {{$t("label.mine")}}
           </q-tab>
           <q-tab
             :name="INVENTORY_TYPE.PLACEMENT"
           >
-            <q-chip>{{inventoriesCount[INVENTORY_TYPE.PLACEMENT]}}</q-chip> Same Placement
+            <q-chip>{{inventoriesCount[INVENTORY_TYPE.PLACEMENT]}}</q-chip> {{$t("label.same_placement")}}
           </q-tab>
           <q-tab 
             :name="INVENTORY_TYPE.ADDRESS"
           >
-            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ADDRESS]}}</q-chip> Same Localisation
+            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ADDRESS]}}</q-chip> {{$t("label.same_localisation")}}
           </q-tab>
           <q-tab 
             :name="INVENTORY_TYPE.ALL"
           >
-            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ALL]}}</q-chip> In my organization
+            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ALL]}}</q-chip> {{$t("label.in_my_organization")}}
           </q-tab>
         </q-tabs>
 
@@ -55,6 +55,7 @@ import { computed, ref, watch } from "vue";
 import { Inventory } from "../../../../commons/Interface/Inventory";
 import gql from "graphql-tag";
 import { useQuery } from "@vue/apollo-composable";
+import { useI18n } from "vue-i18n"
 
 enum INVENTORY_TYPE {
   ALL = "ALL",
@@ -64,6 +65,8 @@ enum INVENTORY_TYPE {
 }
 
 const router = useRouter()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const tab = ref(INVENTORY_TYPE.ME)
 const pagination = ref({
@@ -75,7 +78,7 @@ const pagination = ref({
 const columns = [
   {
     name: "name",
-    label: "Name",
+    label: t("label.name"),
     field: "name",
     align: "left",
   },

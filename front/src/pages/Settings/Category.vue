@@ -1,5 +1,5 @@
 <template>
-  <LayoutSettings title="Categories">
+  <LayoutSettings :title="$t('category.categories')">
     <q-tree
       v-if="!!tree"
       :nodes="[tree]"
@@ -21,7 +21,7 @@
               @click="(e) => remove(e, props.node)"
             >
               <q-tooltip>
-                Remove
+                {{$t("label.remove")}}
               </q-tooltip>
             </q-btn>
             <q-btn
@@ -33,7 +33,7 @@
               @click="(e) => edit(e, props.node)"
             >
               <q-tooltip>
-                Edit
+                {{$t("label.edit")}}
               </q-tooltip>
             </q-btn>
             <q-btn
@@ -44,7 +44,7 @@
               @click="(e) => add(e, props.node)"
             >
               <q-tooltip>
-                Add Children
+                {{$t("category.add_category")}}
               </q-tooltip>
             </q-btn>
           </div>
@@ -62,8 +62,11 @@ import SettingsCategoryModalCreate from "../../components/Settings/Category/Sett
 import SettingsCategoryModalEdit from "../../components/Settings/Category/SettingsCategoryModalEdit.vue";
 import { useQuery, useMutation, UseQueryReturn } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const tree = ref(null) as unknown as Ref<CategoryWithChildren | null>
 
@@ -120,8 +123,8 @@ const remove = (e: Event, category: Category) => {
   e.stopPropagation();
 
   $q.dialog({
-    title: "Want to delete the category",
-    message: "Are you sur ?",
+    title: t("category.want_to_delete_the_category"),
+    message: t("label.are_you_sur"),
     cancel: true,
     persistent: true
   }).onOk(() => {
@@ -134,7 +137,7 @@ const remove = (e: Event, category: Category) => {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Deleted"
+            message: t("label.deleted")
           })
       })
       .catch((e) => console.log(e))

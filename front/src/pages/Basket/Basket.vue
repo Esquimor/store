@@ -2,7 +2,7 @@
   <q-page padding class="row justify-center">
     <div class="col col-lg-8 col-md-10 col-sx-12">
       <div class="row justify-between items-center">
-        <h2 style="margin-top: 0px; margin-bottom: 0px;">Basket</h2>
+        <h2 style="margin-top: 0px; margin-bottom: 0px;">{{$t("basket.basket")}}</h2>
       </div>
       <q-card class="q-pa-md">
         <q-btn-group spread>
@@ -35,15 +35,15 @@
           <q-input
             filled
             v-model="name"
-            label="Name"
+            :label="$t('label.name')"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
             class="q-mb-md"
           />
         </q-section>
         <q-section>
           <q-table
-            title="Articles"
+            :title="$t('furniture.furnitures')"
             :rows="articles"
             :columns="columns"
             row-key="name"
@@ -72,7 +72,7 @@
           </q-table>
         </q-section>
         <q-section class="row justify-end q-pt-md">
-          <q-btn color="primary" label="Send Request" @click="sendRequest"/>
+          <q-btn color="primary" :label="$t('label.submit')" @click="sendRequest"/>
         </q-section>
       </q-card>
     </div>
@@ -87,9 +87,12 @@ import { BasketActionTypes } from "../../store/basket/action-types";
 import { Article } from "../../../../commons/Interface/Basket";
 import {useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
 const $store = useStore()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 enum ACTION {
   CREATE_ORDER = "create_order",
@@ -112,7 +115,7 @@ const columns = [
   {
     name: "name",
     required: true,
-    label: "Name",
+    label: t("label.name"),
     align: "left",
     field: "name",
     style: "width: 100px",
@@ -120,7 +123,7 @@ const columns = [
   {
     name: "quantity",
     required: true,
-    label: "Quantity",
+    label: t("label.quantity"),
     align: "left",
     field: "quantity",
     style: "width: 200px",
@@ -161,7 +164,7 @@ const sendRequest = () => {
         color: "green-4",
         textColor: "white",
         icon: "cloud_done",
-        message: "Submitted"
+        message: t("label.submited")
       })
     })
     .catch(e => {

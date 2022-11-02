@@ -1,5 +1,17 @@
 scalar File
 
-type Mutation {
-  saveFile(file: File!): Boolean
+type Media {
+  id: String
+  label: String
+  link: String
+  base64: String
+}
+
+input MediaCreate {
+  base64: String
+}
+
+input MediaUpdate {
+  id: String
+  base64: String
 }

@@ -5,12 +5,13 @@
     </q-drawer>
     <div class="col col-lg-10 col-md-12">
       <div class="row justify-between items-center">
-        <h2 style="margin-top: 0px; margin-bottom: 0px;">Furnitures</h2>
+        <h2 style="margin-top: 0px; margin-bottom: 0px;">{{$t("furniture.furnitures")}}</h2>
       </div>
       <div class="q-pa-md row wrap q-col-gutter-md">
         <FurnituresCard
           :furnitures="furnitures" 
           @addOrder="addInBasket"
+          @selectFurniture="goToFurniture"
         />
       </div>
     </div>
@@ -57,6 +58,10 @@ const { result }: UseQueryReturn<{
       id: string;
       name: string;
       description: string;
+      medias: {
+        id: string;
+        base64: string;
+      }[]
     }
   }[];
 }, {
@@ -72,6 +77,10 @@ const { result }: UseQueryReturn<{
         id
         name
         description
+        medias {
+          id
+          base64
+        }
       }
     }
   }
@@ -94,5 +103,9 @@ const addInBasket = (furniture: FurnitureWithLastFurnitureVersion) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     furniture_version: furniture.lastFurnitureVersion
   })
+}
+
+const goToFurniture = async(furniture: FurnitureWithLastFurnitureVersion) => {
+  await router.push({name: "furniture", params: { id: furniture.id }})
 }
 </script>

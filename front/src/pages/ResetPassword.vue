@@ -1,7 +1,7 @@
 <template>
   <login-layout>
     <q-card-section>
-      <div class="text-h6">Reset Password</div>
+      <div class="text-h6">{{$t("label.reset_password")}}</div>
     </q-card-section>
     <q-card-section>
       <q-form
@@ -14,7 +14,7 @@
           v-model="password"
           label="Password"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
         />
 
         <q-input
@@ -23,13 +23,13 @@
           label="Confirm Password"
           lazy-rules
           :rules="[
-            val => val && val.length > 0 || 'Please type something',
-            val => val === password || 'Password doesn\'t match'
+            val => val && val.length > 0 || $t('error.field_required'),
+            val => val === password || $t('error.password_doesn_t_match')
           ]"
         />
 
         <div>
-          <q-btn label="Submit" type="submit" color="primary"/>
+          <q-btn :label="$t('label.submit')" type="submit" color="primary"/>
         </div>
       </q-form>
     </q-card-section>

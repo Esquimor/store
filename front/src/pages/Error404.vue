@@ -6,7 +6,7 @@
       </div>
 
       <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
+        {{$t("error.oops_nothing_here")}}
       </div>
 
       <q-btn

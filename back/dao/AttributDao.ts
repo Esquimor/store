@@ -56,7 +56,6 @@ export default class AttributDao extends Dao<Attribut> {
   }
 
   async getAllByIdFurnitureVersion(idFurnitureVersion: number|string):Promise<Attribut[]|null> {
-    console.log(idFurnitureVersion)
     // @ts-ignore Doesn't recognise right type
     const items = await getConnection().getRepository(FurnitureVersion).findOne({
       id: idFurnitureVersion,

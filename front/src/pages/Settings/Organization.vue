@@ -15,8 +15,11 @@ import { useQuasar } from "quasar"
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import LayoutSettingsForm from "../../components/Settings/LayoutSettingsForm.vue";
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const name = ref("");
 
@@ -63,7 +66,7 @@ const onSubmit = async () => {
         color: "green-4",
         textColor: "white",
         icon: "cloud_done",
-        message: "Submitted"
+        message: t("label.submited")
       })
     })
     .catch(e => {

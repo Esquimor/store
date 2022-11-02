@@ -1,7 +1,7 @@
 <template>
-  <LayoutSettings title="Users">
+  <LayoutSettings :title="$t('user.users')">
     <template v-slot:actions>
-      <q-btn color="primary" icon="add" label="Add User" @click="create" />
+      <q-btn color="primary" icon="add" :label="$t('user.add_user')" @click="create" />
     </template>
     <q-table
       :rows="users"
@@ -32,14 +32,14 @@
                         <q-icon color="primary" name="edit" />
                       </q-item-section>
 
-                      <q-item-section>Edit</q-item-section>
+                      <q-item-section>{{$t("label.edit")}}</q-item-section>
                     </q-item>
                     <q-item clickable @click="deleteUser(props.row)" v-close-popup v-if="meId !== props.row.id">
                       <q-item-section avatar>
                         <q-icon color="primary" name="delete" />
                       </q-item-section>
 
-                      <q-item-section>Remove</q-item-section>
+                      <q-item-section>{{$t("label.remove")}}</q-item-section>
                     </q-item>
                   </q-list>
                 </q-menu>
@@ -61,8 +61,11 @@ import { User } from "../../../../commons/Interface/User";
 import { useQuery, useMutation, UseQueryReturn } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { ROLE } from "app/../commons/Interface/Role";
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const { result, loading, refetch }: UseQueryReturn<{
   users: {
@@ -97,28 +100,28 @@ const columns = [
   {
     name: "email",
     required: true,
-    label: "Email",
+    label: t("label.email"),
     align: "left",
     field: "email"
   },
   {
     name: "firstname",
     required: true,
-    label: "First Name",
+    label: t("label.first_name"),
     align: "left",
     field: "firstname"
   },
   {
     name: "lastname",
     required: true,
-    label: "Last Name",
+    label: t("label.last_name"),
     align: "left",
     field: "lastname"
   },
   {
     name: "role",
     required: true,
-    label: "Role",
+    label: t("label.role"),
     align: "left",
     field: "role"
   },{
@@ -156,8 +159,8 @@ const { mutate: deleteUserMutation  } = useMutation(gql`
 
 const deleteUser = (user: User) => {
   $q.dialog({
-    title: "Want to delete the user",
-    message: "Are you sur ?",
+    title: t("user.want_to_delete_the_user"),
+    message: t("label.are_you_sur"),
     cancel: true,
     persistent: true
   }).onOk(() => {
@@ -170,7 +173,7 @@ const deleteUser = (user: User) => {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Updated"
+            message: t("label.updated")
           })
       })
       .catch((e) => console.log(e))

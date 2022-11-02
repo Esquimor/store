@@ -5,8 +5,7 @@ import { Address } from "../entity/Address";
 import InventoryDao from "../dao/InventoryDao";
 import OrderDao from "../dao/OrderDao";
 import AddressDao from "../dao/AddressDao";
-import FormCreateAddress from "../form/Address/FormCreateAddress";
-import FormUpdateAddress from "../form/Address/FormUpdateAddress";
+import { ERROR } from "../../commons/Const/Error";
 
 const placementDao: PlacementDao = new PlacementDao();
 const organizationDao: OrganizationDao = new OrganizationDao();
@@ -28,11 +27,7 @@ export default  {
     placements: async (parent: Address) => {
       const placement = await placementDao.getAllByIdAddress(parent.id)
       if (!placement) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return placement
     },
@@ -40,33 +35,21 @@ export default  {
       if (!parent.organizationId) return null
       const organization = await organizationDao.getById(parent.organizationId)
       if (!organization) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return organization
     },
     inventories: async (parent: Address) => {
       const items = await inventoryDao.getAllByIdAddress(parent.id)
       if (!items) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return items
     },
     orders: async (parent: Address) => {
       const items = await orderDao.getAllByIdAddress(parent.id)
       if (!items) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return items
     },
@@ -74,51 +57,24 @@ export default  {
   Query: {
     addresses: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const addresses = await addressDao.getAddressesByOrganization(user.organization)
       if (!addresses) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return addresses
     },
     address: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
-      if (!args.id) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const address = await addressDao.getById(args.id)
       if (!address) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       if (address.organizationId !== user.organizationId) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       return address
     },
@@ -126,11 +82,7 @@ export default  {
   Mutation: {
     createAddress: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const body = (args as unknown as { 
         name: string;
@@ -142,14 +94,6 @@ export default  {
         country: string|null;
         comment: string|null;
       });
-      const form = new FormCreateAddress(body);
-      if (form.hasError()) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
       const address = new Address();
       address.name = body.name;
       address.number = body.number
@@ -163,21 +107,13 @@ export default  {
   
       const addressSaved = await addressDao.create(address);
       if (!addressSaved) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.DEFAULT))
       }
       return addressSaved
     },
     updateAddress: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const body = (args as unknown as { 
         name?: string|null;
@@ -190,29 +126,12 @@ export default  {
         comment?: string|null;
         placements?: {name: string; id?: number}[]|null;
       });
-
-      const form = new FormUpdateAddress(body);
-      if (form.hasError()) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
       const address = await addressDao.getById(args.id)
       if (!address) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       if (address.organizationId !== user.organizationId) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       if (body.name) {
         address.name = body.name;
@@ -240,43 +159,20 @@ export default  {
       }
       const savedAddress = await addressDao.update(address);
       if (!savedAddress) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.DEFAULT))
       }
       return savedAddress
     },
     deleteAddress: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
-      if (!args.id) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const address = await addressDao.getById(args.id)
       if (!address) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       if (address.organizationId !== user.organizationId) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const isDeletedAddress = await addressDao.deleteById(address.id);
       return isDeletedAddress

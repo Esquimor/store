@@ -2,7 +2,7 @@
   <q-page padding class="row justify-center">
     <div class="col col-lg-8 col-md-10 col-sx-12">
       <div class="full-width row justify-between items-center" style="border-bottom: 2px solid black">
-        <h2 style="margin-top: 0px; margin-bottom: 0px;">Orders</h2>
+        <h2 style="margin-top: 0px; margin-bottom: 0px;">{{$t("order.orders")}}</h2>
       </div>
       <div class="q-pa-md q-mt-md">
         <q-tabs
@@ -15,14 +15,14 @@
           <q-tab 
             name="all"
           >
-            <q-chip>{{all}}</q-chip> All
+            <q-chip>{{all}}</q-chip> {{$t("label.all")}}
           </q-tab>
           <q-tab
             v-for="status in ORDER_STATUS"
             :key="status"
             :name="status"
           >
-          <q-chip>{{ordersCount[status]}}</q-chip> {{ status }}
+          <q-chip>{{ordersCount[status]}}</q-chip> {{ $t(`order.order_status.${status}`) }}
           </q-tab>
         </q-tabs>
 
@@ -50,8 +50,11 @@ import {
 } from "../../../commons/Interface/Order";
 import { useQuery, UseQueryReturn } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const router = useRouter()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const tab = ref("all")
 const pagination = ref({
@@ -63,19 +66,20 @@ const pagination = ref({
 const columns = [
   {
     name: "name",
-    label: "Name",
+    label: t("order.name"),
     field: "name",
     align: "left",
   },
   {
     name: "status",
-    label: "Status",
+    label: t("order.status"),
     field: "status",
     align: "left",
+    format: (val: string) => t(`order.order_status.${val}`),
   },
   {
     name: "countItems",
-    label: "Nb Items",
+    label: t("order.nb_items"),
     field: "countItems",
     align: "left",
   },

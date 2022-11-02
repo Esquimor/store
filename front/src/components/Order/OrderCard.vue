@@ -10,14 +10,14 @@
       <q-card-section>
         <q-chip square>
           <q-avatar color="primary" text-color="white">{{props.order.items.length}}</q-avatar>
-          Items
+          {{$t("item.items")}}
         </q-chip>
       </q-card-section>
 
       <q-separator />
 
       <q-card-actions align="right">
-        <q-btn unelevated color="primary" fka @click="goToOrder">See</q-btn>
+        <q-btn unelevated color="primary" fka @click="goToOrder">{{$t("label.see")}}</q-btn>
       </q-card-actions>
     </q-card>
   </div>

@@ -1,9 +1,9 @@
 <template>
-  <LayoutSettings title="Addresses">
+  <LayoutSettings :title="$t('address.addresses')">
     <template v-slot:actions>
       <q-btn
         color="primary"
-        label="Add an Address" 
+        :label="$t('address.add_address')" 
         :to="{ name: 'settings-address-new' }"
       />
     </template>
@@ -18,8 +18,11 @@ import LayoutSettings from "../../../components/Settings/LayoutSettings.vue";
 import AddressesCard from "src/components/Address/AddressesCard.vue";
 import { useQuery, UseQueryReturn, useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const { result, refetch }: UseQueryReturn<{
   addresses: {
@@ -59,8 +62,8 @@ const { mutate: deleteAddress  } = useMutation(gql`
 
 const onDelete = (id: string) => {
   $q.dialog({
-    title: "Confirm",
-    message: "Would you like to delete this address ?",
+    title: t("label.confirm"),
+    message: t("address.would_you_like_to_delete_this_address"),
     cancel: true,
     persistent: true
   }).onOk(() => {
@@ -73,7 +76,7 @@ const onDelete = (id: string) => {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Deleted"
+            message: t("label.deleted")
           })
       })
       .catch((e) => console.log(e))

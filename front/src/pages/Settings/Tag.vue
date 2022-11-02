@@ -1,7 +1,7 @@
 <template>
-  <LayoutSettings title="Tags">
+  <LayoutSettings :title="$t('tag.tags')">
     <template v-slot:actions>
-      <q-btn color="primary" icon="add" label="Add Tag" @click="create" />
+      <q-btn color="primary" icon="add" :label="$t('tag.add_tag')" @click="create" />
     </template>
     <q-table
       :rows="tags"
@@ -23,14 +23,14 @@
                         <q-icon color="primary" name="edit" />
                       </q-item-section>
 
-                      <q-item-section>Edit</q-item-section>
+                      <q-item-section>{{$t("label.edit")}}</q-item-section>
                     </q-item>
                     <q-item clickable @click="deleteTag(props.row)" v-close-popup >
                       <q-item-section avatar>
                         <q-icon color="primary" name="delete" />
                       </q-item-section>
 
-                      <q-item-section>Remove</q-item-section>
+                      <q-item-section>{{$t("label.remove")}}</q-item-section>
                     </q-item>
                   </q-list>
                 </q-menu>
@@ -51,14 +51,17 @@ import SettingsTagModalEdit from "../../components/Settings/Tag/SettingsTagModal
 import { Tag } from "../../../../commons/Interface/Tag";
 import { useQuery, useMutation, UseQueryReturn } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const columns = [
   {
     name: "name",
     required: true,
-    label: "Name",
+    label: t("label.name"),
     align: "left",
     field: "name"
   },{
@@ -112,8 +115,8 @@ const { mutate: deleteTagMutation  } = useMutation(gql`
 
 const deleteTag = (tag: Tag) => {
   $q.dialog({
-    title: "Want to delete the tag",
-    message: "Are you sur ?",
+    title: t("tag.want_to_delete_the_tag"),
+    message: t("label.are_you_sur"),
     cancel: true,
     persistent: true
   }).onOk(() => {
@@ -126,7 +129,7 @@ const deleteTag = (tag: Tag) => {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Deleted"
+            message: t("label.deleted")
           })
       })
       .catch((e) => console.log(e))

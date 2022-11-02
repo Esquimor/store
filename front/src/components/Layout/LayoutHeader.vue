@@ -10,14 +10,17 @@
           class="q-mr-md"
           :to="{ name: 'home'}"
         />
-        <q-btn flat label="Order" :to="{ name: 'home'}" />
-        <q-btn flat label="Inventories" :to="{ name: 'inventories'}" />
-        <q-btn flat label="Funitures" :to="{ name: 'furnitures'}" />
-        <q-btn color="black" icon="add" label="Add">
+        <q-btn flat :label="$t('order.orders')" :to="{ name: 'home'}" />
+        <q-btn flat :label="$t('inventory.inventories')" :to="{ name: 'inventories'}" />
+        <q-btn flat :label="$t('furniture.furnitures')" :to="{ name: 'furnitures'}" />
+        <q-btn color="black" icon="add" :label="$t('label.add')">
           <q-menu auto-close>
-            <q-item clickable v-ripple @click="addFurniture">
+            <q-item clickable v-ripple :to="{ name: 'furniture-add'}" >
+              <q-item-section avatar>
+                <q-icon name="mdi-tools" />
+              </q-item-section>
               <q-item-section>
-                Furniture
+                {{$t("furniture.furniture")}}
               </q-item-section>
             </q-item>
           </q-menu>
@@ -47,7 +50,7 @@
                 <q-icon name="settings" />
               </q-item-section>
               <q-item-section>
-                Settings
+                {{$t("label.settings")}}
               </q-item-section>
             </q-item>
             <q-separator />
@@ -55,7 +58,7 @@
               <q-item-section avatar>
                 <q-icon name="logout" />
               </q-item-section>
-              <q-item-section>Logout</q-item-section>
+              <q-item-section>{{$t("label.logout")}}</q-item-section>
             </q-item>
           </q-menu>
         </q-btn>
@@ -65,7 +68,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useQuasar } from "quasar"
 import { useStore } from "../../store"
 import { useRouter } from "vue-router"
 import { computed } from "vue";
@@ -73,9 +75,7 @@ import { OrganizationActionTypes } from "../../store/organization/action-types";
 import { BasketActionTypes } from "../../store/basket/action-types";
 import { FurnitureActionTypes } from "../../store/furniture/action-types";
 import { UserActionTypes } from "../../store/user/action-types";
-import FurnitureModalCreateVue from "../Furniture/FurnitureModalCreate.vue";
 
-const $q = useQuasar()
 const $store = useStore()
 const router = useRouter()
 
@@ -88,11 +88,5 @@ const logout = async () => {
   void $store.dispatch(`organization/${OrganizationActionTypes.RESET_ORGANIZATION}`)
   void $store.dispatch(`user/${UserActionTypes.RESET_USER}`)
   await router.push({ name: "login" })
-}
-
-const addFurniture = () => {
-  $q.dialog({
-    component: FurnitureModalCreateVue,
-  })
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <login-layout>
     <q-card-section>
-      <div class="text-h6">Register</div>
+      <div class="text-h6">{{$t("label.register")}}</div>
     </q-card-section>
     <q-card-section>
       <q-form
@@ -12,40 +12,40 @@
         <q-input
           filled
           v-model="organization"
-          label="Organization"
+          :label="$t('organization.organization')"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
         />
         <q-input
           filled
           v-model="email"
-          label="Email"
+          :label="$t('label.email')"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
         />
 
         <q-input
           filled
           v-model="password"
-          label="Password"
+          :label="$t('label.password')"
           lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Please type something']"
+          :rules="[ val => val && val.length > 0 || $t('error.field_required')]"
         />
 
         <q-input
           filled
           v-model="confirm"
-          label="Confirm Password"
+          :label="$t('label.confirm_password')"
           lazy-rules
           :rules="[
-            val => val && val.length > 0 || 'Please type something',
-            val => val === password || 'Password doesn\'t match'
+            val => val && val.length > 0 || $t('error.field_required'),
+            val => val === password || $t('error.password_doesn_t_match')
           ]"
         />
 
         <div>
-          <q-btn label="Submit" type="submit" color="primary"/>
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          <q-btn :label="$t('label.submit')" type="submit" color="primary"/>
+          <q-btn :label="$t('label.reset')" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
     </q-card-section>
@@ -55,6 +55,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar"
+import { useI18n } from "vue-i18n"
 import LoginLayout from "../layouts/LoginLayout.vue";
 import { useStore } from "../store/index";
 import { UserActionTypes } from "../store/user/action-types";
@@ -71,6 +72,7 @@ export default defineComponent({
     const $store = useStore()
     const $q = useQuasar()
     const router = useRouter()
+    const lang = useI18n() 
 
     const email = ref("")
     const password = ref("")
@@ -87,7 +89,7 @@ export default defineComponent({
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Submitted"
+            message: lang.t("label.submited")
           })
           void router.push({name: "home"})
         })

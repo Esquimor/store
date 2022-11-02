@@ -1,5 +1,6 @@
 type Furniture {
   id: String
+  archived: Boolean
   furnitureVersions: [FurnitureVersion]
   lastFurnitureVersion: FurnitureVersion
   organization: Organization
@@ -12,8 +13,22 @@ type Query {
     quantity: Int
     category: String
   ): [Furniture]
+  furniture(id: String!): Furniture
 }
 
 type Mutation {
-  createFurniture(name: String, description: String): Furniture
+  createFurniture(
+    name: String
+    description: String
+    attributs: [AttributInput]
+    medias: [MediaCreate]
+  ): Furniture
+  editFurniture(
+    id: String!
+    name: String
+    description: String
+    attributs: [AttributUpdate]
+    medias: [MediaUpdate]
+  ): Furniture
+  archiveFurniture(id: String!): Furniture
 }

@@ -1,6 +1,6 @@
 <template>
   <section class="q-pa-md">
-    <q-input outlined v-model="search" label="Search" debounce="500"/>
+    <q-input outlined v-model="search" :label="$t('label.search')" debounce="500"/>
   </section>
 </template>
 

@@ -17,11 +17,11 @@
       <q-separator inset/>
 
       <q-card-actions align="right">
-        <q-btn color="negative" icon="delete" label="Delete" @click="() => $emit('onDelete', props.address.id)"/>
+        <q-btn color="negative" icon="delete" :label="$t('label.delete')" @click="() => $emit('onDelete', props.address.id)"/>
         <q-btn
           color="secondary"
           icon="edit"
-          label="Edit"
+          :label="$t('label.edit')"
           :to="{ name: 'settings-address-edit', params: {id: props.address.id } }"
         />
       </q-card-actions>

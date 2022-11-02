@@ -4,8 +4,7 @@ import ItemDao from "../dao/ItemDao";
 import VariationDao from "../dao/VariationDao";
 import { Variation } from "../entity/Variation";
 import { GraphQLError } from "graphql";
-import FormCreateVariations from "../form/Variation/FormCreateVariations";
-import FormUpdateVariations from "../form/Variation/FormUpdateVariations"
+import { ERROR } from "../../commons/Const/Error";
 
 const furnitureVersionDao: FurnitureVersionDao = new FurnitureVersionDao();
 const attributDao: AttributDao = new AttributDao();
@@ -20,33 +19,21 @@ export default  {
       if (!parent.attributId) return null
       const attribut = await attributDao.getById(parent.attributId)
       if (!attribut) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return attribut
     },
     furnitureVersions: async (parent: Variation) => {
       const items = await furnitureVersionDao.getAllByIdVariation(parent.id)
       if (!items) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return items
     },
     items: async (parent: Variation) => {
       const items = await itemDao.getAllByIdVariation(parent.id)
       if (!items) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return items
     },
@@ -54,19 +41,11 @@ export default  {
   Query: {
     variations: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const variations = await variationDao.getVariationsInOrganization(user.organization)
       if (!variations) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return variations
     },
@@ -74,11 +53,7 @@ export default  {
   Mutation: {
     createVariationsForAttribut: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const body = (args as unknown as { 
         attributId: string;
@@ -86,28 +61,12 @@ export default  {
           name: string
         }[];
       });
-      const form = new FormCreateVariations(body);
-      if (form.hasError()) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
       const attribut = await attributDao.getById(body.attributId)
       if (!attribut) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       if (attribut.organizationId !== user.organizationId) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       let promise:Promise<Variation>[] = [];
       body.variations.forEach(({name}) => {
@@ -121,11 +80,7 @@ export default  {
     },
     updateVariationsForAttribut: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const body = (args as unknown as { 
         attributId: string;
@@ -134,28 +89,12 @@ export default  {
           name: string;
         }[];
       });
-      const form = new FormUpdateVariations(body);
-      if (form.hasError()) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
       const attribut = await attributDao.getById(body.attributId)
       if (!attribut) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       if (attribut.organizationId !== user.organizationId) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       let promise:Promise<Variation|boolean>[] = [];
       body.variations.forEach(({id, name}) => {

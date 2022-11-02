@@ -6,8 +6,8 @@ import UserDao from '../dao/UserDao';
 import ItemDao from '../dao/ItemDao';
 import AddressDao from '../dao/AddressDao';
 import PlacementDao from '../dao/PlacementDao';
-import FormCreateOrderWithFurnitures from "../form/Order/FormCreateOrderWithFurnitures";
 import { Item } from '../entity/Item';
+import { ERROR } from '../../commons/Const/Error';
 
 const orderDao: OrderDao = new OrderDao();
 const organizationDao: OrganizationDao = new OrganizationDao();
@@ -26,11 +26,7 @@ export default  {
       if (!parent.organizationId) return null
       const organization = await organizationDao.getById(parent.organizationId)
       if (!organization) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return organization
     },
@@ -38,22 +34,14 @@ export default  {
       if (!parent.creatorId) return null
       const user = await userDao.getById(parent.creatorId)
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return user
     },
     items: async (parent: Order) => {
       const items = await itemDao.getAllByIdOrder(parent.id)
       if (!items) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return items
     },
@@ -65,11 +53,7 @@ export default  {
       if (!parent.addressId) return null
       const address = await addressDao.getById(parent.addressId)
       if (!address) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return address
     },
@@ -77,11 +61,7 @@ export default  {
       if (!parent.placementId) return null
       const placement = await placementDao.getById(parent.placementId)
       if (!placement) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return placement
     },
@@ -89,11 +69,7 @@ export default  {
   Query: {
     orders: async(parent, args, {user}) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const orders = await orderDao.getByOrganization(user.organization, {
         start: args.skip,
@@ -101,21 +77,13 @@ export default  {
         status: args.status
       })
       if (!orders) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       return orders
     },
     ordersCount: async(parent, args, {user}, info) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const orders = await orderDao.countByOrganization(user.organization, {
         status: args.status
@@ -124,26 +92,14 @@ export default  {
     },
     order: async(parent, args, {user}, info) => {
       if (!user) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       const order = await orderDao.getById(args.id);
       if (!order) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.NOT_FOUND))
       }
       if (order.organizationId !== user.organization.id) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.UNAUTHORIZED))
       }
       return order
     },
@@ -157,14 +113,6 @@ export default  {
           quantity: number;
         }[]
       });
-      const form = new FormCreateOrderWithFurnitures(query);
-      if (form.hasError()) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
-      }
   
       // Create Furnitures
       const items = query.items.reduce<Item[]>((acc, ite) => {
@@ -187,11 +135,7 @@ export default  {
       
       const orderSaved = await orderDao.create(order);
       if (!orderSaved) {
-        return Promise.reject(
-          new GraphQLError(
-            "error",
-          ),
-        )
+        return Promise.reject(new GraphQLError(ERROR.DEFAULT))
       }
       return orderSaved
     }

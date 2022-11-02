@@ -1,5 +1,5 @@
 <template>
-  <LayoutSettings title="Add Address">
+  <LayoutSettings :title="$t('address.add_address')">
     <Form
       :validation-schema="schema"
       @submit="onSubmit"
@@ -8,42 +8,42 @@
       <q-card-section class="row wrap justify-between">
         <QInputWithValidation
           name="name"
-          label="Name"
+          :label="$t('label.name')"
           class="col col-5"
         />
         <QInputWithValidation
           name="number"
-          label="Number"
+          :label="$t('address.number')"
           class="col col-5 col-of-2"
         />
         <QInputWithValidation
           name="ligne1"
-          label="Ligne 1"
+          :label="$t('address.ligne1')"
           class="col col-5"
         />
         <QInputWithValidation
           name="ligne2"
-          label="Ligne 2"
+          :label="$t('address.ligne2')"
           class="col col-5"
         />
         <QInputWithValidation
           name="city"
-          label="City"
+          :label="$t('address.city')"
           class="col col-5"
         />
         <QInputWithValidation
           name="zipCode"
-          label="Zip Code"
+          :label="$t('address.zip_code')"
           class="col col-5"
         />
         <QInputWithValidation
           name="country"
-          label="Country"
+          :label="$t('address.country')"
           class="col col-5"
         />
         <QInputWithValidation
           name="comment"
-          label="Comment"
+          :label="$t('label.comment')"
           class="col col-12"
           type="textarea"
         />
@@ -61,7 +61,7 @@
                     class="full-width">
                   <QInputWithValidation
                     :name="`placements[${idx}].name`"
-                    label="Name"
+                    :label="$t('label.name')"
                   />
                 </div>
 
@@ -73,15 +73,15 @@
           </q-card>
         </q-card-section>
         <q-card-actions class="q-pl-lg">
-          <q-btn label="Add" color="primary"  @click="push({ description: '', name: '' })" />
+          <q-btn :label="$t('label.add')" color="primary"  @click="push({ description: '', name: '' })" />
         </q-card-actions>
       </FieldArray>
         
       <q-toolbar class="bg-white">
         <q-space />
         <q-card-actions class="q-pl-lg">
-          <q-btn label="Cancel" color="grey-9" :to="{ name: 'settings-address' }"></q-btn>
-          <q-btn color="primary" type="submit" label="Submit"/>
+          <q-btn :label="$t('label.cancel')" color="grey-9" :to="{ name: 'settings-address' }"></q-btn>
+          <q-btn color="primary" type="submit" :label="$t('label.submit')"/>
         </q-card-actions>
       </q-toolbar>
     </Form>
@@ -99,9 +99,12 @@ import QInputWithValidation from "../../../components/Global/Form/QInputWithVali
 import { isNotEmpty } from "../../../../../commons/Technical/Empty";
 import { useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import { useI18n } from "vue-i18n"
 
 const $q = useQuasar()
 const router = useRouter()
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { t } = useI18n() 
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -194,7 +197,7 @@ const onSubmit = (values: AddressDefaultWithPlacementsDefault) => {
             color: "green-4",
             textColor: "white",
             icon: "cloud_done",
-            message: "Submitted"
+            message: t("label.submited")
           })
           void router.push({ name: "settings-address" })
         })
