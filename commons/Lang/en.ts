@@ -4,12 +4,12 @@ export default {
     lastname: "Lastname",
     name: "Name",
     email: "Email",
-    password: "password",
+    password: "Password",
     comment: "Comment",
     role: "Role",
     quantity: "Quantity",
     description: "Description",
-    confirm_password: "confirm_password",
+    confirm_password: "Confirm password",
     submit: "Submit",
     reset: "Reset",
     reset_password: "Reset password",
@@ -17,7 +17,7 @@ export default {
     register_completed: "Register completed",
     register: "Register",
     notified: "Notified",
-    submited: "Submited",
+    submited: "Submitted",
     updated: "Updated",
     deleted: "Deleted",
     go_to_login: "Go to Login",
@@ -50,7 +50,10 @@ export default {
     field_required: "Field required",
     password_doesn_t_match: "Password doesn't match",
     an_email_has_been_seend_if_your_email_exist: "An email has been seend, if your email exist",
-    oops_nothing_here: "Oops. Nothing here..."
+    oops_nothing_here: "Oops. Nothing here...",
+    default: "An error has append",
+    unauthorized: "Your are not authorized",
+    not_found: "The resource has not been found",
   },
   setting: {
     my_personal_information: "My personal information",
@@ -60,6 +63,7 @@ export default {
   },
   user: {
     login: "Login",
+    user: "User",
     users: "Users",
     add_user: "Add user",
     want_to_delete_the_user: "Want to delete the user"
