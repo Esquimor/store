@@ -26,9 +26,9 @@ const status = [
     label: t("item.item_status.DECLINED")
   },
   {
-    value: ITEM_STATUS.VALIDED,
+    value: ITEM_STATUS.VALIDATED,
     color: "purple",
-    label: t("item.item_status.VALIDED")
+    label: t("item.item_status.VALIDATED")
   },
 ]
 </script>

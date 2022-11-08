@@ -130,7 +130,7 @@ export default {
     want_to_delete_the_furniture: "Want to delete the furniture ?",
     add_a_furniture: "Add a Furniture"
   },
-  medias: {
+  media: {
     media: "Media",
     medias: "Medias",
     picture: "Picture",

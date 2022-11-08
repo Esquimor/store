@@ -19,6 +19,12 @@
         <q-tab name="description" icon="mdi-text-long" :label="$t('label.description')" />
       </q-tabs>
       <q-card-section>
+        <div class="row q-pb-md">
+          <div class="col col-9"></div>
+          <div class="col col-3 row justify-end">
+            <q-btn color="primary" :label="$t('furniture.add_a_furniture')" @click="onAddFurniture"/>
+          </div>
+        </div>
         <Items :items="inventory.items" />
       </q-card-section>
       <template v-slot:sidebar>
@@ -41,6 +47,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useQuasar } from "quasar"
 import { useRoute } from "vue-router"
 import { computed, ref } from "vue";
 import gql from "graphql-tag";
@@ -50,12 +57,14 @@ import { ITEM_STATUS } from "app/../commons/Interface/Item";
 import dayjs from "dayjs"
 import LayoutSection from "../../components/Layout/LayoutSection.vue"
 import Info from "../../components/Global/Ui/Info.vue"
+import InventoryFurnitureList from "../../components/Inventory/InventoryFurnitureList.vue"
 
+const $q = useQuasar()
 const route = useRoute()
 
 const tab = ref("furnitures")
 
-const { result, loading }: UseQueryReturn<{
+const { result, loading, refetch }: UseQueryReturn<{
   inventory: {
     id: string;
     name: string;
@@ -115,4 +124,17 @@ const { result, loading }: UseQueryReturn<{
 const inventory = computed(() => result.value?.inventory)
 
 const dateCreated = computed(() => dayjs(inventory.value?.created_at).format("DD/MM/YYYY"))
+
+const onAddFurniture = () => {
+  $q.dialog({
+    component: InventoryFurnitureList,
+    componentProps: {
+      inventoryId: route.params.id
+    }
+  })
+  .onOk(() => {
+    refetch?.()
+      .catch(e => console.log(e))
+  })
+}
 </script>

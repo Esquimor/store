@@ -5,7 +5,7 @@
       <div
         v-for="cat in ancestors"
         :key="cat.id"
-        @click="() => handleCategory(cat.id)"
+        @click="() => $emit('changeCategory', cat.id)"
         class="cursor-pointer"
       >
         <q-icon
@@ -18,7 +18,7 @@
       <div
         v-for="cat in category.children"
         :key="cat.id"
-        @click="() => handleCategory(cat.id)"
+        @click="() => $emit('changeCategory', cat.id)"
         class="q-pl-lg cursor-pointer"
       >
         {{cat.name}}
@@ -30,17 +30,15 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useRouter, useRoute } from "vue-router"
 import { useQuery, UseQueryReturn } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 
-const router = useRouter();
-const route = useRoute();
-
-const currentCategory = computed(() => (route.query?.k || "") as unknown as string);
+const props = defineProps<{
+  category: string;
+}>()
 
 const variablesCategory = computed(() => ({
-  id: currentCategory.value
+  id: props.category
 }))
 
 const { result, loading }: UseQueryReturn<{
@@ -78,8 +76,4 @@ const { result, loading }: UseQueryReturn<{
 const category = computed(() => result.value?.category ?? {id: "", name: "", children: [], ancestors: []})
 
 const ancestors = computed(() => [...category.value.ancestors].reverse())
-
-const handleCategory = (categoryId: string) => {
-  void router.push({path: route.path, query: {...route.query, k: categoryId}})
-}
 </script>

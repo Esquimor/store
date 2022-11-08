@@ -46,7 +46,7 @@ export default class ItemDao extends Dao<Item> {
   
   async getAllByIdInventory(idInventory: number|string):Promise<Item[]|null> {
     const items = await getConnection().getRepository(this.entity).find({
-      inventory: idInventory
+      inventoryId: idInventory
     });
     if (!items) return null;
     return (items as unknown as Item[]);

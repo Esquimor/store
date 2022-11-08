@@ -130,7 +130,7 @@ export default {
     want_to_delete_the_furniture: "Voulez-vous supprimer cette fourniture ?",
     add_a_furniture: "Ajouter une fourniture"
   },
-  medias: {
+  media: {
     media: "Media",
     medias: "Medias",
     picture: "Image",

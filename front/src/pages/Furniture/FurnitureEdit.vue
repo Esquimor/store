@@ -99,7 +99,7 @@
           default-opened
         >
           <template v-slot:header>
-            <div class="full-width text-h4">{{$t("medias.pictures")}}</div>
+            <div class="full-width text-h4">{{$t("media.pictures")}}</div>
           </template>
           <q-card>
             <q-card-section>
@@ -290,12 +290,15 @@ const onSubmit = (values: {
   name: string;
   description?: string;
   attributs: {
+    id?: string;
     name: string;
     variations: {
+    id?: string;
       name: string;
     }[];
   }[];
   medias: {
+    id?: string;
     base64: string;
   }[];
 }) => {

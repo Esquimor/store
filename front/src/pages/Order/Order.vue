@@ -19,9 +19,14 @@
         align="left"
       >
         <q-tab name="furnitures" icon="mdi-tools" :label="$t('furniture.furnitures')" />
-        <q-tab name="description" icon="mdi-text-long" :label="$t('label.description')" />
       </q-tabs>
       <q-card-section>
+        <div class="row q-pb-md">
+          <div class="col col-9"></div>
+          <div class="col col-3 row justify-end">
+            <q-btn color="primary" :label="$t('furniture.add_a_furniture')" @click="onAddFurniture"/>
+          </div>
+        </div>
         <Items :items="order.items" @clickItem="onClickItem"/>
       </q-card-section>
       <template v-slot:sidebar>
@@ -61,13 +66,14 @@ import dayjs from "dayjs"
 import LayoutSection from "../../components/Layout/LayoutSection.vue"
 import Info from "../../components/Global/Ui/Info.vue"
 import FurnitureVersionModal from "../../components/Furniture/Modal/FurnitureVersionModal.vue";
+import OrderFurnitureList from "../../components/Order/OrderFurnitureList.vue"
 
 const $q = useQuasar()
 const route = useRoute()
 
 const tab = ref("furnitures")
 
-const { result, loading }: UseQueryReturn<{
+const { result, loading, refetch }: UseQueryReturn<{
   order: {
     id: string;
     name: string;
@@ -150,6 +156,19 @@ const onClickItem = (item: {
       id: item.furnitureVersion.id
     },
     fullWidth: true
+  })
+}
+
+const onAddFurniture = () => {
+  $q.dialog({
+    component: OrderFurnitureList,
+    componentProps: {
+      orderId: route.params.id
+    }
+  })
+  .onOk(() => {
+    refetch?.()
+      .catch(e => console.log(e))
   })
 }
 </script>

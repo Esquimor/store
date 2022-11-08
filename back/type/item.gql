@@ -1,7 +1,7 @@
 enum ITEM_STATUS {
   WANTED
   DECLINED
-  VALIDED
+  VALIDATED
 }
 
 type Item {
@@ -11,4 +11,9 @@ type Item {
   inventory: Inventory
   furnitureVersion: FurnitureVersion
   variations: [Variation]
+}
+
+type Mutation {
+  addItemInOrder(furnitureId: String!, orderId: String!): Item
+  addItemInInventory(furnitureId: String!, inventoryId: String!): Item
 }

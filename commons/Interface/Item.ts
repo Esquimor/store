@@ -3,7 +3,7 @@ import { FurnitureVersionWithFurniture } from "./FurnitureVersion";
 export enum ITEM_STATUS {
   WANTED = "WANTED",
   DECLINED = "DECLINED",
-  VALIDED = "VALIDED",
+  VALIDATED = "VALIDATED",
 }
 
 export interface ItemWithFurnitureVersionWithFurniture extends Item {

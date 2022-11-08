@@ -1,8 +1,8 @@
 <template>
   <div>
-    <FurnitureDrawerSearch/>
+    <FurnitureDrawerSearch v-bind="$attrs"/>
     <q-separator />
-    <FurnitureDrawerCategories />
+    <FurnitureDrawerCategories v-bind="$attrs" @changeCategory="(id) => $emit('changeCategory', id)" />
   </div>
 </template>
 

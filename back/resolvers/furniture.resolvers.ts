@@ -196,15 +196,18 @@ export default {
         lastFurnitureVersion.resetMedias();
         for (const mediaBody of args.medias) {
           const media = new Media();
-          media.organization = user.organization;
-          media.user = user
+          if (mediaBody.id) {
+            media.id = mediaBody.id as number
+          } else {
+            media.organization = user.organization;
+            media.user = user
+          }
           media.base64 = mediaBody.base64;
           lastFurnitureVersion.addMedia(media)
         }
       }
-      furniture.replaceFurnitureVersion(lastFurnitureVersion);
-
-      const savedFurniture = await furnitureDao.update(furniture);
+      await furnitureVersionDao.update(lastFurnitureVersion);
+      const savedFurniture = furnitureDao.getById(furniture.id)
       if (!savedFurniture) {
         return Promise.reject(new GraphQLError(ERROR.DEFAULT))
       }
