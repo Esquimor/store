@@ -1,52 +1,47 @@
 <template>
-  <q-page padding class="row justify-center">
-    <div class="col col-lg-8 col-md-10 col-sx-12">
-      <div class="full-width row justify-between items-center" style="border-bottom: 2px solid black">
-        <h2 style="margin-top: 0px; margin-bottom: 0px;">{{$t("inventory.inventories")}}</h2>
-      </div>
-      <div class="q-pa-md q-mt-md">
-        <q-tabs
-          v-model="tab"
-          inline-label
-          class="bg-primary text-white shadow-2"
-          align="left"
-          dense
+  <LayoutList :title="$t('inventory.inventories')">
+    <div class="q-pa-md q-mt-md">
+      <q-tabs
+        v-model="tab"
+        inline-label
+        class="bg-primary text-white shadow-2"
+        align="left"
+        dense
+      >
+        <q-tab 
+          :name="INVENTORY_TYPE.ME"
         >
-          <q-tab 
-            :name="INVENTORY_TYPE.ME"
-          >
-            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ME]}}</q-chip> {{$t("label.mine")}}
-          </q-tab>
-          <q-tab
-            :name="INVENTORY_TYPE.PLACEMENT"
-          >
-            <q-chip>{{inventoriesCount[INVENTORY_TYPE.PLACEMENT]}}</q-chip> {{$t("label.same_placement")}}
-          </q-tab>
-          <q-tab 
-            :name="INVENTORY_TYPE.ADDRESS"
-          >
-            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ADDRESS]}}</q-chip> {{$t("label.same_localisation")}}
-          </q-tab>
-          <q-tab 
-            :name="INVENTORY_TYPE.ALL"
-          >
-            <q-chip>{{inventoriesCount[INVENTORY_TYPE.ALL]}}</q-chip> {{$t("label.in_my_organization")}}
-          </q-tab>
-        </q-tabs>
+          <q-chip>{{inventoriesCount[INVENTORY_TYPE.ME]}}</q-chip> {{$t("label.mine")}}
+        </q-tab>
+        <q-tab
+          :name="INVENTORY_TYPE.PLACEMENT"
+        >
+          <q-chip>{{inventoriesCount[INVENTORY_TYPE.PLACEMENT]}}</q-chip> {{$t("label.same_placement")}}
+        </q-tab>
+        <q-tab 
+          :name="INVENTORY_TYPE.ADDRESS"
+        >
+          <q-chip>{{inventoriesCount[INVENTORY_TYPE.ADDRESS]}}</q-chip> {{$t("label.same_localisation")}}
+        </q-tab>
+        <q-tab 
+          :name="INVENTORY_TYPE.ALL"
+        >
+          <q-chip>{{inventoriesCount[INVENTORY_TYPE.ALL]}}</q-chip> {{$t("label.in_my_organization")}}
+        </q-tab>
+      </q-tabs>
 
-        <div class="q-mt-md">
-          <q-table
-            :loading="loading"
-            :rows="inventories"
-            :columns="columns"
-            v-model:pagination="pagination"
-            :rows-per-page-options="[50]"
-            @row-click="onRowClick"
-          />
-        </div>
+      <div class="q-mt-md">
+        <q-table
+          :loading="loading"
+          :rows="inventories"
+          :columns="columns"
+          v-model:pagination="pagination"
+          :rows-per-page-options="[50]"
+          @row-click="onRowClick"
+        />
       </div>
     </div>
-  </q-page>
+  </LayoutList>
 </template>
 
 <script lang="ts" setup>
@@ -56,6 +51,7 @@ import { Inventory } from "../../../../commons/Interface/Inventory";
 import gql from "graphql-tag";
 import { useQuery } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n"
+import LayoutList from "../../components/Layout/LayoutList.vue"
 
 enum INVENTORY_TYPE {
   ALL = "ALL",

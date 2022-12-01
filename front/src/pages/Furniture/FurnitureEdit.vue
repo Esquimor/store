@@ -1,160 +1,158 @@
 <template>
-  <q-page padding class="row justify-center">
-    <div class="col col-lg-8 col-md-10 col-sx-12">
-      <Form
-        :validation-schema="schema"
-        @submit="onSubmit"
-        ref="myForm"
+  <LayoutContent>
+    <Form
+      :validation-schema="schema"
+      @submit="onSubmit"
+      ref="myForm"
+    >
+      <q-expansion-item
+        expand-separator
+        class="full-width q-pb-lg"
+        default-opened
       >
-        <q-expansion-item
-          expand-separator
-          class="full-width q-pb-lg"
-          default-opened
-        >
-          <template v-slot:header>
-            <div class="full-width text-h4">{{$t("label.general")}}</div>
-          </template>
-          <q-card>
-            <q-card-section>
-              <QInputWithValidation
-                name="name"
-                :label="$t('label.name')"
-              />
-              <QInputWithValidation
-                name="description"
-                :label="$t('label.description')"
-                type="textarea"
-              />
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-        <q-expansion-item
-          expand-separator
-          class="full-width q-pb-lg"
-          default-opened
-        >
-          <template v-slot:header>
-            <div class="full-width text-h4">{{$t("attribut.attributs")}}</div>
-          </template>
-          <q-card>
-            <q-card-section>
-              <FieldArray name="attributs" v-slot="{ fields: fieldsA, push: pushA, remove: removeA }">
-                <q-card-section
-                  v-for="(fieldA, idxA) in fieldsA"
-                  :key="fieldA.key"
-                >
-                  <q-card class="full-width" flat bordered>
-                    <q-card-section>
-                      <q-card-section horizontal>
-                        <div class="full-width">
-                          <QInputWithValidation
-                            :name="`attributs[${idxA}].name`"
-                            :label="$t('label.name')"
-                          />
-                          <FieldArray :name="`attributs[${idxA}].variations`" v-slot="{ fields: fieldsV, push: pushV, remove: removeV }">
-                            <q-card-section
-                              v-for="(fieldV, idxV) in fieldsV"
-                              :key="fieldV.key"
-                            >
-                              <q-card class="full-width" flat bordered>
-                                <q-card-section>
-                                  <q-card-section horizontal>
-                                    <div class="full-width">
-                                      <QInputWithValidation
-                                        :name="`attributs[${idxA}].variations[${idxV}].name`"
-                                        :label="$t('label.name')"
-                                      />
-                                    </div>
+        <template v-slot:header>
+          <div class="full-width text-h4">{{$t("label.general")}}</div>
+        </template>
+        <q-card>
+          <q-card-section>
+            <QInputWithValidation
+              name="name"
+              :label="$t('label.name')"
+            />
+            <QInputWithValidation
+              name="description"
+              :label="$t('label.description')"
+              type="textarea"
+            />
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+      <q-expansion-item
+        expand-separator
+        class="full-width q-pb-lg"
+        default-opened
+      >
+        <template v-slot:header>
+          <div class="full-width text-h4">{{$t("attribut.attributs")}}</div>
+        </template>
+        <q-card>
+          <q-card-section>
+            <FieldArray name="attributs" v-slot="{ fields: fieldsA, push: pushA, remove: removeA }">
+              <q-card-section
+                v-for="(fieldA, idxA) in fieldsA"
+                :key="fieldA.key"
+              >
+                <q-card class="full-width" flat bordered>
+                  <q-card-section>
+                    <q-card-section horizontal>
+                      <div class="full-width">
+                        <QInputWithValidation
+                          :name="`attributs[${idxA}].name`"
+                          :label="$t('label.name')"
+                        />
+                        <FieldArray :name="`attributs[${idxA}].variations`" v-slot="{ fields: fieldsV, push: pushV, remove: removeV }">
+                          <q-card-section
+                            v-for="(fieldV, idxV) in fieldsV"
+                            :key="fieldV.key"
+                          >
+                            <q-card class="full-width" flat bordered>
+                              <q-card-section>
+                                <q-card-section horizontal>
+                                  <div class="full-width">
+                                    <QInputWithValidation
+                                      :name="`attributs[${idxA}].variations[${idxV}].name`"
+                                      :label="$t('label.name')"
+                                    />
+                                  </div>
 
-                                    <q-card-actions vertical class="justify-start items-start content-start">
-                                      <q-btn flat round color="red" icon="delete" @click="removeV(idxV)"/>
-                                    </q-card-actions>
-                                  </q-card-section>
+                                  <q-card-actions vertical class="justify-start items-start content-start">
+                                    <q-btn flat round color="red" icon="delete" @click="removeV(idxV)"/>
+                                  </q-card-actions>
                                 </q-card-section>
-                              </q-card>
-                            </q-card-section>
-                            <q-card-actions class="q-pl-lg">
-                              <q-btn :label="$t('label.add')" color="primary"  @click="pushV({ name: '' })" />
-                            </q-card-actions>
-                          </FieldArray>
-                        </div>
+                              </q-card-section>
+                            </q-card>
+                          </q-card-section>
+                          <q-card-actions class="q-pl-lg">
+                            <q-btn :label="$t('label.add')" color="primary"  @click="pushV({ name: '' })" />
+                          </q-card-actions>
+                        </FieldArray>
+                      </div>
 
-                        <q-card-actions vertical class="justify-start items-start content-start">
-                          <q-btn flat round color="red" icon="delete" @click="removeA(idxA)"/>
-                        </q-card-actions>
-                      </q-card-section>
+                      <q-card-actions vertical class="justify-start items-start content-start">
+                        <q-btn flat round color="red" icon="delete" @click="removeA(idxA)"/>
+                      </q-card-actions>
                     </q-card-section>
-                  </q-card>
-                </q-card-section>
-                <q-card-actions class="q-pl-lg">
-                  <q-btn :label="$t('label.add')" color="primary"  @click="pushA({ name: '' })" />
-                </q-card-actions>
-              </FieldArray>
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-        <q-expansion-item
-          expand-separator
-          class="full-width q-pb-lg"
-          default-opened
-        >
-          <template v-slot:header>
-            <div class="full-width text-h4">{{$t("media.pictures")}}</div>
-          </template>
-          <q-card>
-            <q-card-section>
-              <FieldArray name="medias" v-slot="{ fields, push, remove, move }">
-                <div class="fit row wrap items-center FurnitureEdit-medias">
-                  <template
-                    v-for="(field, idx) in fields"
-                    :key="field.key"
+                  </q-card-section>
+                </q-card>
+              </q-card-section>
+              <q-card-actions class="q-pl-lg">
+                <q-btn :label="$t('label.add')" color="primary"  @click="pushA({ name: '' })" />
+              </q-card-actions>
+            </FieldArray>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+      <q-expansion-item
+        expand-separator
+        class="full-width q-pb-lg"
+        default-opened
+      >
+        <template v-slot:header>
+          <div class="full-width text-h4">{{$t("media.pictures")}}</div>
+        </template>
+        <q-card>
+          <q-card-section>
+            <FieldArray name="medias" v-slot="{ fields, push, remove, move }">
+              <div class="fit row wrap items-center FurnitureEdit-medias">
+                <template
+                  v-for="(field, idx) in fields"
+                  :key="field.key"
+                >
+                  <q-img
+                    :src="field?.value?.base64 || ''"
+                    spinner-color="white"
+                    class="q-ma-md FurnitureEdit-media"
                   >
-                    <q-img
-                      :src="field?.value?.base64 || ''"
-                      spinner-color="white"
-                      class="q-ma-md FurnitureEdit-media"
-                    >
-                      <q-icon
-                        class="absolute all-pointer-events FurnitureEdit-media-icon"
-                        size="32px"
-                        name="mdi-delete-circle"
-                        color="red"
-                        style="top: 8px; left: 8px"
-                        @click="remove(idx)"
-                      />
-                      <q-icon
-                        v-if="!field.isFirst"
-                        class="absolute all-pointer-events FurnitureEdit-media-icon"
-                        size="32px"
-                        name="mdi-arrow-left-drop-circle"
-                        color="primary"
-                        style="bottom: 8px; left: 8px"
-                        @click="move(idx, idx -1)"
-                      />
-                      <q-icon
-                        v-if="!field.isLast"
-                        class="absolute all-pointer-events FurnitureEdit-media-icon"
-                        size="32px"
-                        name="mdi-arrow-right-drop-circle"
-                        color="primary"
-                        style="bottom: 8px; right: 8px"
-                        @click="move(idx, idx +1)"
-                      />
-                    </q-img>
-                  </template>
-                  <QImageWithValidation
-                    class="q-ma-md"
-                    @add="(base64) => push({base64})"
-                  />
-                </div>
-              </FieldArray>
-            </q-card-section>
-          </q-card>
-        </q-expansion-item>
-        <q-btn color="primary" type="submit" :label="$t('label.submit')" />
-      </Form>
-    </div>
-  </q-page>
+                    <q-icon
+                      class="absolute all-pointer-events FurnitureEdit-media-icon"
+                      size="32px"
+                      name="mdi-delete-circle"
+                      color="red"
+                      style="top: 8px; left: 8px"
+                      @click="remove(idx)"
+                    />
+                    <q-icon
+                      v-if="!field.isFirst"
+                      class="absolute all-pointer-events FurnitureEdit-media-icon"
+                      size="32px"
+                      name="mdi-arrow-left-drop-circle"
+                      color="primary"
+                      style="bottom: 8px; left: 8px"
+                      @click="move(idx, idx -1)"
+                    />
+                    <q-icon
+                      v-if="!field.isLast"
+                      class="absolute all-pointer-events FurnitureEdit-media-icon"
+                      size="32px"
+                      name="mdi-arrow-right-drop-circle"
+                      color="primary"
+                      style="bottom: 8px; right: 8px"
+                      @click="move(idx, idx +1)"
+                    />
+                  </q-img>
+                </template>
+                <QImageWithValidation
+                  class="q-ma-md"
+                  @add="(base64) => push({base64})"
+                />
+              </div>
+            </FieldArray>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+      <q-btn color="primary" type="submit" :label="$t('label.submit')" />
+    </Form>
+  </LayoutContent>
 </template>
 
 <script setup lang="ts">
@@ -169,6 +167,7 @@ import { useQuery, UseQueryReturn, useMutation } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { SingleTransition } from "csstype";
 import { useI18n } from "vue-i18n"
+import LayoutContent from "../../components/Layout/LayoutContent.vue";
 
 const $q = useQuasar()
 const router = useRouter()

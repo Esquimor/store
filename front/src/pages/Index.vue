@@ -1,44 +1,39 @@
 <template>
-  <q-page padding class="row justify-center">
-    <div class="col col-lg-8 col-md-10 col-sx-12">
-      <div class="full-width row justify-between items-center" style="border-bottom: 2px solid black">
-        <h2 style="margin-top: 0px; margin-bottom: 0px;">{{$t("order.orders")}}</h2>
-      </div>
-      <div class="q-pa-md q-mt-md">
-        <q-tabs
-          v-model="tab"
-          inline-label
-          class="bg-primary text-white shadow-2"
-          align="left"
-          dense
+  <LayoutList :title="$t('order.orders')">
+    <div class="q-pa-md q-mt-md">
+      <q-tabs
+        v-model="tab"
+        inline-label
+        class="bg-primary text-white shadow-2"
+        align="left"
+        dense
+      >
+        <q-tab 
+          name="all"
         >
-          <q-tab 
-            name="all"
-          >
-            <q-chip>{{all}}</q-chip> {{$t("label.all")}}
-          </q-tab>
-          <q-tab
-            v-for="status in ORDER_STATUS"
-            :key="status"
-            :name="status"
-          >
-          <q-chip>{{ordersCount[status]}}</q-chip> {{ $t(`order.order_status.${status}`) }}
-          </q-tab>
-        </q-tabs>
+          <q-chip>{{all}}</q-chip> {{$t("label.all")}}
+        </q-tab>
+        <q-tab
+          v-for="status in ORDER_STATUS"
+          :key="status"
+          :name="status"
+        >
+        <q-chip>{{ordersCount[status]}}</q-chip> {{ $t(`order.order_status.${status}`) }}
+        </q-tab>
+      </q-tabs>
 
-        <div class="q-mt-md">
-          <q-table
-            :loading="loading"
-            :rows="orders"
-            :columns="columns"
-            v-model:pagination="pagination"
-            :rows-per-page-options="[50]"
-            @row-click="onRowClick"
-          />
-        </div>
+      <div class="q-mt-md">
+        <q-table
+          :loading="loading"
+          :rows="orders"
+          :columns="columns"
+          v-model:pagination="pagination"
+          :rows-per-page-options="[50]"
+          @row-click="onRowClick"
+        />
       </div>
     </div>
-  </q-page>
+  </LayoutList>
 </template>
 
 <script lang="ts" setup>
@@ -51,6 +46,7 @@ import {
 import { useQuery, UseQueryReturn } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { useI18n } from "vue-i18n"
+import LayoutList from "../components/Layout/LayoutList.vue"
 
 const router = useRouter()
 // eslint-disable-next-line @typescript-eslint/unbound-method

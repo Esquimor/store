@@ -1,7 +1,7 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide" :full-width="true" :full-height="true">
     <q-card >
-      <Furniturelist @addOrder="addInInventory"/>
+      <Furniturelist @addOrder="addInInventory" @close="onDialogHide"/>
     </q-card>
   </q-dialog>
 </template>

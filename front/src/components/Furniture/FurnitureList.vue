@@ -3,9 +3,21 @@
     <div class="col col-2 FurnitureList-drawer">
       <FurnitureDrawer v-model="search" @changeCategory="handleCategory" :category="category"/>
     </div>
-    <div class="col col-lg-10 col-md-12 q-pa-md">
-      <div class="row justify-between items-center">
-        <h2 style="margin-top: 0px; margin-bottom: 0px;">{{$t("furniture.furnitures")}}</h2>
+    <div class="col col-lg-10 col-md-12">
+      <div class="row justify-between items-center q-mb-md bg-primary">
+        <h3
+          style="margin-top: 8px; margin-bottom: 8px;"
+          class="q-ma-md text-white"
+        >
+          {{$t("furniture.furnitures")}}
+        </h3>
+        <q-btn
+          color="white"
+          text-color="primary"
+          :label="$t('label.close')"
+          class="q-mr-md"
+          @click=" $emit('close')"
+        />
       </div>
       <div class="q-pa-xs row wrap q-col-gutter-md">
         <FurnituresCard
